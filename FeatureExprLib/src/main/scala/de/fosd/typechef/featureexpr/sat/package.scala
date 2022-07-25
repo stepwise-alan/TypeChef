@@ -1,10 +1,10 @@
 package de.fosd.typechef.featureexpr
 
-import ref.WeakReference
+import scala.ref.WeakReference
 
 package object sat {
-    class NotReference[+T <: AnyRef](x: T) extends WeakReference(x) {}
+  class NotReference[+T <: AnyRef](x: T) extends WeakReference(x) {}
 
-    val NotRef = WeakRef
+  val NotRef: WeakRef.type = WeakRef
 }
 

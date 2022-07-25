@@ -2,20 +2,19 @@ package de.fosd.typechef.crewrite
 
 import de.fosd.typechef.parser.c._
 import org.junit.Test
-import org.scalatest.Matchers
-
-import scala.Predef._
+import org.scalatest.matchers.should.Matchers
 
 class DanglingSwitchCodeTest extends TestHelper with Matchers with CFGHelper with EnforceTreeHelper {
 
-    def danglingSwitchCode(code: String): Boolean = {
-        val tunit = prepareAST[TranslationUnit](parseTranslationUnit(code))
-        val ds = new CIntraAnalysisFrontend(tunit, null)
-        ds.danglingSwitchCode()
-    }
+  def danglingSwitchCode(code: String): Boolean = {
+    val tunit = prepareAST[TranslationUnit](parseTranslationUnit(code))
+    val ds = new CIntraAnalysisFrontend(tunit, null)
+    ds.danglingSwitchCode()
+  }
 
-    @Test def test_danglingswitch_simple() {
-        danglingSwitchCode( """
+  @Test def test_danglingswitch_simple(): Unit = {
+    danglingSwitchCode(
+      """
                void f(void) {
                   int a;
                   switch (a) {
@@ -25,9 +24,10 @@ class DanglingSwitchCodeTest extends TestHelper with Matchers with CFGHelper wit
                   }
                }
         """.stripMargin) should be(false)
-    }
+  }
 
-    danglingSwitchCode( """
+  danglingSwitchCode(
+    """
                void f(void) {
                   int a;
                   switch (a) {
@@ -37,7 +37,8 @@ class DanglingSwitchCodeTest extends TestHelper with Matchers with CFGHelper wit
                }
     """.stripMargin) should be(true)
 
-    danglingSwitchCode( """
+  danglingSwitchCode(
+    """
                void f(void) {
                   int a;
                   switch (a) {
@@ -50,7 +51,8 @@ class DanglingSwitchCodeTest extends TestHelper with Matchers with CFGHelper wit
                }
     """.stripMargin) should be(false)
 
-    danglingSwitchCode( """
+  danglingSwitchCode(
+    """
                void f(void) {
                   int a;
                   #ifdef A

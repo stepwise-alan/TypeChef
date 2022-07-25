@@ -4,7 +4,10 @@ package de.fosd.typechef.lexer;
 import de.fosd.typechef.featureexpr.FeatureExpr;
 import de.fosd.typechef.lexer.macrotable.MacroContext;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.FileHandler;
@@ -12,6 +15,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@SuppressWarnings("CommentedOutCode")
 public abstract class DebuggingPreprocessor {
     public static Logger logger = Logger.getLogger("de.ovgu.jcpp");
 
@@ -23,7 +27,7 @@ public abstract class DebuggingPreprocessor {
 
     int max_nesting = 0;
     int header_count = 0;
-    Set<String> distinctHeaders = new HashSet<String>();
+    Set<String> distinctHeaders = new HashSet<>();
 
     BufferedWriter debugFile;
     BufferedWriter debugSourceFile;
@@ -48,18 +52,16 @@ public abstract class DebuggingPreprocessor {
                 logger.addHandler(fh);
             } catch (SecurityException e) {
                 e.printStackTrace();
-            } catch (IOException e) {
+            } catch (IOException ignored) {
             }
 
         this.outputName = outputName;
 
         try {
             if (getFeature(Feature.DEBUGFILE_TOKENSTREAM))
-                debugFile = new BufferedWriter(new FileWriter(new File(
-                        baseOutName() + ".tokStr")));
+                debugFile = new BufferedWriter(new FileWriter(baseOutName() + ".tokStr"));
             if (getFeature(Feature.DEBUGFILE_SOURCES))
-                debugSourceFile = new BufferedWriter(new FileWriter(new File(
-                        baseOutName() + ".dbgSrc")));
+                debugSourceFile = new BufferedWriter(new FileWriter(baseOutName() + ".dbgSrc"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -89,13 +91,13 @@ public abstract class DebuggingPreprocessor {
             // also add statistics to debugSourceFile
             if (getFeature(Feature.DEBUGFILE_SOURCES))
                 if (debugSourceFile != null) {
-                    debugSourceFile
-                            .append("\n\n\nStatistics (max_nesting,header_count,distinct files):\n"
-                                    + max_nesting
-                                    + ";"
-                                    + header_count
-                                    + ";"
-                                    + distinctHeaders.size() + "\n");
+                    debugSourceFile.append("\n\n\nStatistics (max_nesting,header_count,distinct files):\n")
+                            .append(String.valueOf(max_nesting))
+                            .append(";")
+                            .append(String.valueOf(header_count))
+                            .append(";")
+                            .append(String.valueOf(distinctHeaders.size()))
+                            .append("\n");
                     debugSourceFile.flush();
                 }
 
@@ -141,21 +143,17 @@ public abstract class DebuggingPreprocessor {
             if (source instanceof FileLexerSource) {
                 debugSourceIdx++;
                 try {
-                    StringBuffer b = new StringBuffer();
+                    StringBuilder b = new StringBuilder();
                     max_nesting = Math.max(max_nesting, debugSourceIdx);
                     distinctHeaders.add(source.toString());
                     header_count++;
                     for (int i = 1; i < debugSourceIdx; i++)
                         b.append("\t");
-                    b
-                            .append("push "
-                                    + source.toString()
-                                    + " -- "
-                                    + (state == null ? "null" : state
-                                    .getLocalFeatureExpr()
-                                    + " ("
-                                    + state.getFullPresenceCondition()
-                                    + ")") + "\n");
+                    b.append("push ").append(source).append(" -- ").append(state == null ? "null" : state
+                            .getLocalFeatureExpr()
+                            + " ("
+                            + state.getFullPresenceCondition()
+                            + ")").append("\n");
 //				 System.out.println(b.toString());
                     if (debugSourceFile != null) {
                         debugSourceFile.write(b.toString());
@@ -172,10 +170,10 @@ public abstract class DebuggingPreprocessor {
             if (source instanceof FileLexerSource) {
                 debugSourceIdx--;
                 try {
-                    StringBuffer b = new StringBuffer();
+                    StringBuilder b = new StringBuilder();
                     for (int i = 0; i < debugSourceIdx; i++)
                         b.append("\t");
-                    b.append("pop " + source.toString() + "\n");
+                    b.append("pop ").append(source).append("\n");
 //				 System.out.println(b.toString());
                     if (debugSourceFile != null) {
                         debugSourceFile.write(b.toString());
@@ -188,7 +186,7 @@ public abstract class DebuggingPreprocessor {
     }
 
 
-    protected void logAddMacro(String name, FeatureExpr feature, MacroData m, Source source) {
+    protected void logAddMacro(String name, FeatureExpr feature, @SuppressWarnings("unused") MacroData m, Source source) {
         macroLog.append("#define ");
         macroLog.append(name);
         macroLog.append(" if ");

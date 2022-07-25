@@ -35,7 +35,7 @@ import java.io.StringReader;
 public class StringLexerSource extends LexerSource {
 
 
-    private String string;
+    private final String string;
 
     /**
      * Creates a new Source for lexing the given String.
@@ -43,8 +43,7 @@ public class StringLexerSource extends LexerSource {
      * @param ppvalid true if preprocessor directives are to be
      *                honoured within the string.
      */
-    public StringLexerSource(String string, boolean ppvalid)
-            throws IOException {
+    public StringLexerSource(String string, boolean ppvalid) {
         super(new StringReader(string), ppvalid);
         this.string = string;
     }

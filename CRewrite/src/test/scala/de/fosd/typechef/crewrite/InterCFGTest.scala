@@ -1,15 +1,14 @@
 package de.fosd.typechef.crewrite
 
+import de.fosd.typechef.featureexpr.{FeatureExpr, FeatureExprFactory}
 import de.fosd.typechef.parser.c._
 import org.junit.Test
-import java.io.{StringWriter, FileNotFoundException, InputStream}
-import de.fosd.typechef.featureexpr.{FeatureExpr, FeatureExprFactory}
-import de.fosd.typechef.parser.c.TranslationUnit
-import de.fosd.typechef.parser.c.FunctionDef
+
+import java.io.{FileNotFoundException, InputStream, StringWriter}
 
 class InterCFGTest extends InterCFG with TestHelper with CFGHelper {
 
-  @Test def test_two_functions() {
+  @Test def test_two_functions(): Unit = {
     val folder = "testfiles/"
     val filename = "intercfgtest01.c"
     val is: InputStream = getClass.getResourceAsStream("/" + folder + filename)
@@ -27,10 +26,10 @@ class InterCFGTest extends InterCFG with TestHelper with CFGHelper {
 
     val fsuccs = fdefs.map(getAllSucc(_, env))
 
-      def lookupFExpr(e: AST): FeatureExpr = e match {
-          case o if env.isKnown(o) => env.featureExpr(o)
-          case _ => FeatureExprFactory.True
-      }
+    def lookupFExpr(e: AST): FeatureExpr = e match {
+      case o if env.isKnown(o) => env.featureExpr(o)
+      case _ => FeatureExprFactory.True
+    }
 
     for (s <- fsuccs)
       dot.writeMethodGraph(s, lookupFExpr, "")
@@ -38,6 +37,7 @@ class InterCFGTest extends InterCFG with TestHelper with CFGHelper {
     dot.close()
     println(a)
   }
-    // provide a lookup mechanism for function defs (from the type system or selfimplemented)
-    def getTranslationUnit(): TranslationUnit = null
+
+  // provide a lookup mechanism for function defs (from the type system or selfimplemented)
+  def getTranslationUnit: TranslationUnit = null
 }

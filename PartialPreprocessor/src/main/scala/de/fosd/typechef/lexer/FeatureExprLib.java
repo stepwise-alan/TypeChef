@@ -3,7 +3,7 @@ package de.fosd.typechef.lexer;
 import de.fosd.typechef.featureexpr.*;
 
 /**
- * helper class for more conventient access to scala library
+ * helper class for more convenient access to scala library
  *
  * @author kaestner
  */

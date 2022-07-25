@@ -139,7 +139,7 @@ public abstract class Token implements LexerToken {
      * <p/>
      * This is mostly used for stringification and debugging.
      */
-    public static final String getTokenName(int type) {
+    public static String getTokenName(int type) {
         if (type < 0)
             return "Invalid" + type;
         if (type >= names.length)
@@ -347,14 +347,16 @@ public abstract class Token implements LexerToken {
     /**
      * The position-less space token.
      */
-    /* pp */static final Token space = new SimpleToken(WHITESPACE, -1, -1, " ", null);
+    /* pp */
+    @SuppressWarnings("StaticInitializerReferencesSubClass")
+    static final Token space = new SimpleToken(WHITESPACE, -1, -1, " ", null);
 
     private static final String[] names = new String[_TOKENS];
     protected static final String[] texts = new String[_TOKENS];
 
     static {
         for (int i = 0; i < 255; i++) {
-            texts[i] = String.valueOf(new char[]{(char) i});
+            texts[i] = String.valueOf((char) i);
             names[i] = texts[i];
         }
 

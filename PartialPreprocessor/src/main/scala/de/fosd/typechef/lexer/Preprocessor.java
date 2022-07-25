@@ -40,27 +40,33 @@ import java.util.*;
 import static de.fosd.typechef.lexer.Token.*;
 
 
-/**
- * modified C preprocessor with the following changes
- *
- * * ifdef never hides code (except for include guards
- *   which are recognized with some mechanism)
- *
- * * a history of all defines is remembered and associated
- *   with features. multiple defines for the same macro
- *   are possible.
- *
- * * when applying a macro all alternative expansions are considered
- *
+/*
+  modified C preprocessor with the following changes
+  <p>
+  * ifdef never hides code (except for include guards
+  which are recognized with some mechanism)
+  <p>
+  * a history of all defines is remembered and associated
+  with features. multiple defines for the same macro
+  are possible.
+  <p>
+  * when applying a macro all alternative expansions are considered
+  <p>
+  <p>
+  when to expand macros:
+  *	always expand macros in pure text, do not reexpand expanded tokens
+  * 	expand macros after #include
+  * 	expand macros in expression of #if and #elif, but not in defined(X)
+  * 	no expansion in other # directives, never expand the identifier after #
  */
 
-/**
- * when to expand macros:
- * *	always expand macros in pure text, do not reexpand expanded tokens
- * * 	expand macros after #include
- * * 	expand macros in expression of #if and #elif, but not in defined(X)
- * * 	no expansion in other # directives, never expand the identifier after #
- *
+/*
+  when to expand macros:
+  *	always expand macros in pure text, do not reexpand expanded tokens
+  * 	expand macros after #include
+  * 	expand macros in expression of #if and #elif, but not in defined(X)
+  * 	no expansion in other # directives, never expand the identifier after #
+
  */
 
 /**
@@ -93,13 +99,13 @@ import static de.fosd.typechef.lexer.Token.*;
  * being wrapped in an implicit extern "C" block.
  */
 
+@SuppressWarnings("CommentedOutCode")
 public class Preprocessor extends DebuggingPreprocessor implements Closeable, VALexer {
 
-    @SuppressWarnings("serial")
-    private class ParseParamException extends Exception {
+    private static class ParseParamException extends Exception {
 
-        private Token tok;
-        private String errorMsg;
+        private final Token tok;
+        private final String errorMsg;
 
         public ParseParamException(Token tok, String string) {
             this.tok = tok;
@@ -110,7 +116,7 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
 
     private static final Source INTERNAL = new Source() {
         @Override
-        public Token token() throws IOException, LexerException {
+        public Token token() throws LexerException {
             throw new LexerException("Cannot read from " + getName());
         }
 
@@ -148,17 +154,18 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
     private List<String> quoteincludepath; /* -iquote */
     private List<String> sysincludepath; /* -I */
     private List<String> frameworkspath;
-    private Set<Feature> features;
-    private Set<Warning> warnings;
+    private final Set<Feature> features;
+    private final Set<Warning> warnings;
     private VirtualFileSystem filesystem;
     PreprocessorListener listener;
 
-    private List<MacroConstraint> macroConstraints = new ArrayList<MacroConstraint>();
-    private Map<String, FeatureExpr> includedPragmaOnceFiles;
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+    private final List<MacroConstraint> macroConstraints = new ArrayList<>();
+    private final Map<String, FeatureExpr> includedPragmaOnceFiles;
 
     public Preprocessor(MacroFilter macroFilter, FeatureModel fm) {
         this.featureModel = fm;
-        macros = new MacroContext<MacroData>(featureModel, macroFilter);
+        macros = new MacroContext<>(featureModel, macroFilter);
         for (String name : new String[]{
                 "__LINE__", "__FILE__", "__BASE_FILE__", "__COUNTER__", "__TIME__", "__DATE__"
         }) {
@@ -169,14 +176,14 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
 
         this.counter = 0;
 
-        this.quoteincludepath = new ArrayList<String>();
-        this.sysincludepath = new ArrayList<String>();
-        this.frameworkspath = new ArrayList<String>();
+        this.quoteincludepath = new ArrayList<>();
+        this.sysincludepath = new ArrayList<>();
+        this.frameworkspath = new ArrayList<>();
         this.features = EnumSet.noneOf(Feature.class);
         this.warnings = EnumSet.noneOf(Warning.class);
         this.filesystem = new JavaFileSystem();
         this.listener = null;
-        this.includedPragmaOnceFiles = new HashMap<String, FeatureExpr>();
+        this.includedPragmaOnceFiles = new HashMap<>();
     }
 
     public Preprocessor() {
@@ -198,6 +205,7 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
     /**
      * Sets the VirtualFileSystem used by this Preprocessor.
      */
+    @SuppressWarnings("unused")
     public void setFileSystem(VirtualFileSystem filesystem) {
         this.filesystem = filesystem;
     }
@@ -205,6 +213,7 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
     /**
      * Returns the VirtualFileSystem used by this Preprocessor.
      */
+    @SuppressWarnings("unused")
     public VirtualFileSystem getFileSystem() {
         return filesystem;
     }
@@ -253,6 +262,7 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
     /**
      * Adds features to the feature-set of this Preprocessor.
      */
+    @SuppressWarnings("unused")
     public void addFeatures(Collection<Feature> f) {
         features.addAll(f);
     }
@@ -284,6 +294,7 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
     /**
      * Adds warnings to the warning-set of this Preprocessor.
      */
+    @SuppressWarnings("unused")
     public void addWarnings(Collection<Warning> w) {
         warnings.addAll(w);
     }
@@ -319,6 +330,7 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
             throws LexerException {
         error(line, column, msg, null);
     }
+
     /**
      * Handles an error.
      * <p/>
@@ -377,7 +389,7 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
      * If a PreprocessorListener is installed, it receives the warning.
      * Otherwise, an exception is thrown.
      *
-     * @see #warning(int, int, String)
+     * @see #warning(int, int, String, FeatureExpr)
      */
     protected void warning(Token tok, String msg) throws LexerException {
         warning(tok, msg, null);
@@ -395,9 +407,6 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
      * <p/>
      * There can be multiple macros. They can have different features. Newer
      * macros replace older macros if they cover the same features.
-     *
-     * @param feature
-     * @param name
      */
     public void addMacro(String name, FeatureExpr feature, MacroData m)
             throws LexerException {
@@ -426,12 +435,13 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
             throws LexerException {
         try {
             MacroData m = new MacroData(null);
-            StringLexerSource s = new StringLexerSource(value);
-            for (; ; ) {
-                Token tok = s.token();
-                if (tok.getType() == EOF)
-                    break;
-                m.addToken(tok);
+            try (StringLexerSource s = new StringLexerSource(value)) {
+                for (; ; ) {
+                    Token tok = s.token();
+                    if (tok.getType() == EOF)
+                        break;
+                    m.addToken(tok);
+                }
             }
             addMacro(name, feature, m);
         } catch (IOException e) {
@@ -455,6 +465,7 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
      * Sets the user include path used by this Preprocessor.
      */
     /* Note for future: Create an IncludeHandler? */
+    @SuppressWarnings("unused")
     public void setQuoteIncludePath(List<String> path) {
         this.quoteincludepath = path;
     }
@@ -489,6 +500,7 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
      * Sets the Objective-C frameworks path used by this Preprocessor.
      */
     /* Note for future: Create an IncludeHandler? */
+    @SuppressWarnings("unused")
     public void setFrameworksPath(List<String> path) {
         this.frameworkspath = path;
     }
@@ -498,6 +510,7 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
      * <p/>
      * This list may be freely modified by user code.
      */
+    @SuppressWarnings("unused")
     public List<String> getFrameworksPath() {
         return frameworkspath;
     }
@@ -521,8 +534,6 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
      * <p/>
      * this can happen when a feature is explicitly undefined or explicitly
      * defined in the source code
-     *
-     * @return
      */
     private boolean isActive() {
         return state.isActive(featureModel);
@@ -536,7 +547,7 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
 
     private Token source_token;
 
-    private IfdefPrinter ifdefPrinter = new IfdefPrinter();
+    private final IfdefPrinter ifdefPrinter = new IfdefPrinter();
 
     class IfdefPrinter {
         private class IfdefBlock {
@@ -544,10 +555,10 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
                 this.visible = visible;
             }
 
-            boolean visible = true;
+            boolean visible;
         }
 
-        private Stack<IfdefBlock> stack = new Stack<IfdefBlock>();
+        private final Stack<IfdefBlock> stack = new Stack<>();
 
         public Token startIf(Token tok, boolean parentActive, State state) {
             FeatureExpr localCondition = state.getLocalFeatureExpr();
@@ -603,9 +614,9 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
         }
 
         /*
-           * XXX Make this include the NL, and make all cpp directives eat their
-           * own NL.
-           */
+         * XXX Make this include the NL, and make all cpp directives eat their
+         * own NL.
+         */
         static Token line_token(int line, String name, String extra) {
             StringBuilder buf = new StringBuilder();
             buf.append("#line ").append(line).append(" \"");
@@ -626,7 +637,7 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
         private static List<Token> ifelif_tokenStr(FeatureExpr featureExpr,
                                                    boolean isElif) {
             // #elif featureexpr
-            List<Token> result = new ArrayList<Token>(5);
+            List<Token> result = new ArrayList<>(5);
             result.add(new SimpleToken(Token.HASH, "#", null));
             if (isElif)
                 result.add(new SimpleToken(Token.IDENTIFIER, "elif", null));
@@ -640,7 +651,7 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
 
         static List<Token> inlineIf_tokenStr(FeatureExpr featureExpr) {
             // "__IF__(" + feature.print() + ","
-            List<Token> result = new ArrayList<Token>(5);
+            List<Token> result = new ArrayList<>(5);
             result.add(new SimpleToken(Token.IDENTIFIER, "__IF__", null));
             result.add(new SimpleToken('(', null));
             result.add(new FeatureExprToken(featureExpr, null));
@@ -658,11 +669,11 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
         }
 
         static Token zero() {
-            return new SimpleToken(Token.INTEGER, "0", Long.valueOf(0), null);
+            return new SimpleToken(Token.INTEGER, "0", 0L, null);
         }
 
         static List<Token> else_tokenStr() {
-            List<Token> result = new ArrayList<Token>(5);
+            List<Token> result = new ArrayList<>(5);
             result.add(new SimpleToken(Token.HASH, "#", null));
             result.add(new SimpleToken(Token.IDENTIFIER, "else", null));
             result.add(new SimpleToken(Token.NL, "\n", null));
@@ -671,7 +682,7 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
 
         static List<Token> endif_tokenStr() {
             // return "#endif\n";
-            List<Token> result = new ArrayList<Token>(5);
+            List<Token> result = new ArrayList<>(5);
             result.add(new SimpleToken(Token.HASH, "#", null));
             result.add(new SimpleToken(Token.IDENTIFIER, "endif", null));
             result.add(new SimpleToken(Token.NL, "\n", null));
@@ -686,7 +697,7 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
         static TokenSequenceToken elif_token(int line, FeatureExpr featureExpr,
                                              boolean printEnd, boolean printIf) {
 
-            List<Token> result = new ArrayList<Token>(5);
+            List<Token> result = new ArrayList<>(5);
             if (printEnd) {
                 result.add(new SimpleToken(Token.HASH, "#", null));
                 result.add(new SimpleToken(Token.IDENTIFIER, "endif", null));
@@ -746,10 +757,10 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
             Source t = getSource();
             if (getFeature(Feature.LINEMARKERS) && s.isNumbered() && t != null) {
                 /*
-                     * We actually want 'did the nested source contain a newline
-                     * token', which isNumbered() approximates. This is not perfect,
-                     * but works.
-                     */
+                 * We actually want 'did the nested source contain a newline
+                 * token', which isNumbered() approximates. This is not perfect,
+                 * but works.
+                 */
                 return OutputHelper.line_token(t.getLine() + 1, t.getName(),
                         " 2");
             }
@@ -775,7 +786,7 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
         List<Argument> args;
         assert macroExpansions.length > 0;
 
-        // check compatible macros. We allow a object-like macro to exist together with function-like macros, and check
+        // check compatible macros. We allow an object-like macro to exist together with function-like macros, and check
         // arity of all function-like definitions. Non-variadic function-like definitions are currently restricted to
         // have the same arity; otherwise, each macro invocation would be required to use conditional compilation.
 
@@ -783,8 +794,8 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
         MacroData firstMacro = null;
 
         boolean hasFunctionLikeDefs = false;
-        for (int i = 0; i < macroExpansions.length; i++) {
-            MacroData macro = macroExpansions[i].getExpansion();
+        for (MacroExpansion<MacroData> macroExpansion : macroExpansions) {
+            MacroData macro = macroExpansion.getExpansion();
             if (macro.isFunctionLike() &&
                     (!hasFunctionLikeDefs || firstMacro.isVariadic() && !macro.isVariadic())) {
                 firstMacro = macro;
@@ -818,10 +829,10 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
             }
         }
 
-        List<Token> origArgTokens = new ArrayList<Token>();
+        List<Token> origArgTokens = new ArrayList<>();
         // parse parameters
         try {
-            args = parse_macroParameters(macroName, inlineCppExpression,
+            args = parse_macroParameters(
                     origArgTokens, firstMacro);
         } catch (ParseParamException e) {
             warning(e.tok, e.errorMsg);// ChK: skip errors for now
@@ -834,81 +845,89 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
 
 
         // replace macro
-        if (macroName.equals("__LINE__")) {
-            // origInvokeTok is the original occurrence of __LINE__, which might come from a macro body; therefore, we need to
-            // get the line number from the source.
-            int lineNum = getSource().getLine();
-            sourceManager.push_source(new FixedTokenSource(
-                    new SimpleToken[]{new SimpleToken(INTEGER,
-                            lineNum, getSource().getColumn(),
-                            String.valueOf(lineNum),
-                            Integer.valueOf(lineNum), null)}), true);
-        } else if (macroName.equals("__DATE__")) {
-            outputStringTokenSource(origInvokeTok, String.format(Locale.US, "\"%1$tb %1$2te %1$tY\"", Calendar.getInstance()));
-        } else if (macroName.equals("__TIME__")) {
-            outputStringTokenSource(origInvokeTok, String.format(Locale.US, "\"%1$tT\"", Calendar.getInstance()));
-        } else if (macroName.equals("__FILE__") || macroName.equals("__BASE_FILE__")) {
-            //BASE file refers to the last input, whereas _FILE refers to the current source
-            Source source =
-                    macroName.equals("__BASE_FILE__") ? getLastInput() : getSource();
+        switch (macroName) {
+            case "__LINE__":
+                // origInvokeTok is the original occurrence of __LINE__, which might come from a macro body; therefore, we need to
+                // get the line number from the source.
+                int lineNum = getSource().getLine();
+                sourceManager.push_source(new FixedTokenSource(
+                        new SimpleToken[]{new SimpleToken(INTEGER,
+                                lineNum, getSource().getColumn(),
+                                String.valueOf(lineNum),
+                                lineNum, null)}), true);
+                break;
+            case "__DATE__":
+                outputStringTokenSource(origInvokeTok, String.format(Locale.US, "\"%1$tb %1$2te %1$tY\"", Calendar.getInstance()));
+                break;
+            case "__TIME__":
+                outputStringTokenSource(origInvokeTok, String.format(Locale.US, "\"%1$tT\"", Calendar.getInstance()));
+                break;
+            case "__FILE__":
+            case "__BASE_FILE__":
+                //BASE file refers to the last input, whereas _FILE refers to the current source
+                Source source =
+                        macroName.equals("__BASE_FILE__") ? getLastInput() : getSource();
 
-            StringBuilder buf = new StringBuilder("\"");
-            String name = source == null ? null : source.getName();
-            if (name == null)
-                name = "<no file>";
-            for (int i = 0; i < name.length(); i++) {
-                char c = name.charAt(i);
-                switch (c) {
-                    case '\\':
-                        buf.append("\\\\");
-                        break;
-                    case '"':
-                        buf.append("\\\"");
-                        break;
-                    default:
-                        buf.append(c);
-                        break;
+                StringBuilder buf = new StringBuilder("\"");
+                String name = source == null ? null : source.getName();
+                if (name == null)
+                    name = "<no file>";
+                for (int i = 0; i < name.length(); i++) {
+                    char c = name.charAt(i);
+                    switch (c) {
+                        case '\\':
+                            buf.append("\\\\");
+                            break;
+                        case '"':
+                            buf.append("\\\"");
+                            break;
+                        default:
+                            buf.append(c);
+                            break;
+                    }
                 }
-            }
-            buf.append("\"");
-            String text = buf.toString();
-            outputStringTokenSource(origInvokeTok, text);
-        } else if (macroName.equals("__COUNTER__")) {
-            /*
-                * This could equivalently have been done by adding a special Macro
-                * subclass which overrides getTokens().
-                */
-            int value = this.counter++;
-            sourceManager.push_source(new FixedTokenSource(
-                    new SimpleToken[]{new SimpleToken(INTEGER,
-                            origInvokeTok.getLine(), origInvokeTok.getColumn(), String
-                            .valueOf(value), Integer.valueOf(value),
-                            null)}), true);
-        } else {
-            // check that every variant is covered, there is no case when this
-            // macro
-            // is not replaced
-            // currentstate => (alt1 || alt2|| alt3)
-            FeatureExpr commonCondition = getCommonCondition(macroExpansions);
-            try {
-                if (macroExpansions.length == 1 && isExaustive(commonCondition)) {
-                    sourceManager.push_source(createMacroTokenSource(macroName,
-                            args, macroExpansions[0], origInvokeTok, inlineCppExpression), true);
+                buf.append("\"");
+                String text = buf.toString();
+                outputStringTokenSource(origInvokeTok, text);
+                break;
+            case "__COUNTER__":
+                /*
+                 * This could equivalently have been done by adding a special Macro
+                 * subclass which overrides getTokens().
+                 */
+                int value = this.counter++;
+                sourceManager.push_source(new FixedTokenSource(
+                        new SimpleToken[]{new SimpleToken(INTEGER,
+                                origInvokeTok.getLine(), origInvokeTok.getColumn(), String
+                                .valueOf(value), value,
+                                null)}), true);
+                break;
+            default:
+                // check that every variant is covered, there is no case when this
+                // macro
+                // is not replaced
+                // currentstate => (alt1 || alt2|| alt3)
+                FeatureExpr commonCondition = getCommonCondition(macroExpansions);
+                try {
+                    if (macroExpansions.length == 1 && isExhaustive(commonCondition)) {
+                        sourceManager.push_source(createMacroTokenSource(macroName,
+                                args, macroExpansions[0], origInvokeTok, inlineCppExpression), true);
 
-                    // expand all alternative macros
-                } else {
-                    if (inlineCppExpression)
-                        macro_expandAlternativesInline(macroName, macroExpansions,
-                                args, origInvokeTok, origArgTokens, commonCondition);
-                    else
-                        macro_expandAlternatives(macroName, macroExpansions, args,
-                                origInvokeTok, origArgTokens, commonCondition);
+                        // expand all alternative macros
+                    } else {
+                        if (inlineCppExpression)
+                            macro_expandAlternativesInline(macroName, macroExpansions,
+                                    args, origInvokeTok, origArgTokens, commonCondition);
+                        else
+                            macro_expandAlternatives(macroName, macroExpansions, args,
+                                    origInvokeTok, origArgTokens, commonCondition);
+                    }
+                } catch (ParseParamException e) {
+                    e.printStackTrace();
+                    warning(e.tok, e.errorMsg, null);
+                    return false;
                 }
-            } catch (ParseParamException e) {
-                e.printStackTrace();
-                warning(e.tok, e.errorMsg, null);
-                return false;
-            }
+                break;
         }
 
         logger.info("expanding " + macroName // + " by "
@@ -942,8 +961,7 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
     // return commonCondition;
     // }
 
-    private List<Argument> parse_macroParameters(String macroName,
-                                                 boolean inlineCppExpression, List<Token> originalTokens,
+    private List<Argument> parse_macroParameters(List<Token> originalTokens,
                                                  MacroData firstMacro) throws IOException, LexerException,
             ParseParamException {
         Token tok;
@@ -982,13 +1000,13 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
             //that away. It makes a difference if the argument is stringified!
             originalTokens.add(tok);
 
-            args = new ArrayList<Argument>();
+            args = new ArrayList<>();
             /*
-                * We either have, or we should have args. This deals elegantly with
-                * the case that we have one empty arg.
-                */
+             * We either have, or we should have args. This deals elegantly with
+             * the case that we have one empty arg.
+             */
             if (tok.getType() != ')' || firstMacro.getArgCount() > 0) {
-                List<Token> argTokens = new ArrayList<Token>();
+                List<Token> argTokens = new ArrayList<>();
                 int depth = 0;
                 boolean space = false;
 
@@ -1002,7 +1020,7 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
                         case ',':
                             if (depth == 0) {
                                 args.add(MacroArg.create(argTokens));
-                                argTokens = new ArrayList<Token>();
+                                argTokens = new ArrayList<>();
                             } else {
                                 argTokens.add(tok);
                             }
@@ -1038,9 +1056,9 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
                             // LexerException("Unimplemented handling of # in macro args, important TODO!");
                         default:
                             /*
-                                * Do not put space on the beginning of an argument
-                                * token.
-                                */
+                             * Do not put space on the beginning of an argument
+                             * token.
+                             */
                             if (space && !argTokens.isEmpty())
                                 argTokens.add(Token.space);
                             argTokens.add(tok);
@@ -1053,9 +1071,9 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
                     originalTokens.add(tok);
                 }
                 /*
-                     * space may still be true here, thus trailing space is stripped
-                     * from arguments.
-                     */
+                 * space may still be true here, thus trailing space is stripped
+                 * from arguments.
+                 */
             }
             /* Otherwise, nargs == 0 and we (correctly) got (); so leave the list
              * empty. Don't use Collections.emptyList() because that's
@@ -1077,7 +1095,7 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
      * @code {args} is unchanged.
      */
     private List<Argument> checkExpansionArity(String macroName, MacroExpansion<MacroData> macroExpansion, Token tok, List<Argument> args)
-            throws LexerException, ParseParamException {
+            throws LexerException {
         MacroData expansion = macroExpansion.getExpansion();
         assert (!expansion.isFunctionLike() || args != null);
 
@@ -1091,15 +1109,15 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
                         && getFeature(Feature.GNUCEXTENSIONS)) {
                     // This is a GCC extension:
                     // http://gcc.gnu.org/onlinedocs/cpp/Variadic-Macros.html
-                    List<Argument> argsCopy = new ArrayList<Argument>(args.size() + 1);
+                    List<Argument> argsCopy = new ArrayList<>(args.size() + 1);
                     argsCopy.addAll(args);
                     argsCopy.add(MacroArg.omittedVariadicArgument());
                     return argsCopy;
                 } else if (args.size() > expansion.getArgCount()) {
                     //Remember that fromList accepts a [from, to[ range!
-                    List<Argument> newArgs = new ArrayList<Argument>(args.subList(0, expansion.getArgCount() - 1));
+                    List<Argument> newArgs = new ArrayList<>(args.subList(0, expansion.getArgCount() - 1));
                     List<Argument> argsToJoin = args.subList(expansion.getArgCount() - 1, args.size());
-                    List<Token> joinedArgToks = new ArrayList<Token>();
+                    List<Token> joinedArgToks = new ArrayList<>();
 
                     int i = 0;
                     for (Argument arg : argsToJoin) {
@@ -1122,16 +1140,14 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
                     + " parameters (variadic: " + expansion.isVariadic() + ") for expansion under condition "
                     + macroExpansion.getFeature() + " but given " + args.size()
                     + " args", macroExpansion.getFeature());
-            return args;
-        } else {
-            return args;
         }
+        return args;
     }
 
     List<Source> macro_expandAlternative(String macroName, MacroExpansion<MacroData> macroExpansion, List<Argument> args,
                                          Token origInvokeTok, List<Token> origArgTokens, boolean inline)
-            throws IOException, LexerException, ParseParamException {
-        List<Source> resultList = new ArrayList<Source>();
+            throws LexerException, ParseParamException {
+        List<Source> resultList = new ArrayList<>();
         //push_state();
         //state.putLocalFeature(macroExpansion.getFeature(), macros);
         //XXX: here, the current status is not saved in the created macro token source. The caller will not understand the needed ifdef directives.
@@ -1146,13 +1162,12 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
     private void macro_expandAlternatives(String macroName,
                                           MacroExpansion<MacroData>[] macroExpansions, List<Argument> args,
                                           Token origInvokeTok, List<Token> origArgTokens, FeatureExpr commonCondition)
-            throws IOException, LexerException, ParseParamException {
-        boolean alternativesExaustive = isExaustive(commonCondition);
+            throws LexerException, ParseParamException {
+        boolean alternativesExhaustive = isExhaustive(commonCondition);
 
-        List<Source> resultList = new ArrayList<Source>();
+        List<Source> resultList = new ArrayList<>();
         for (int i = macroExpansions.length - 1; i >= 0; i--) {
             FeatureExpr feature = macroExpansions[i].getFeature();
-            MacroData macroData = macroExpansions[i].getExpansion();
 
             if (i == macroExpansions.length - 1)
                 resultList.add(new UnnumberedUnexpandingTokenStreamSource(
@@ -1161,7 +1176,7 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
                 resultList.add(new UnnumberedUnexpandingTokenStreamSource(
                         prependNL(OutputHelper.elif_tokenStr(feature))));
             resultList.addAll(macro_expandAlternative(macroName, macroExpansions[i], args, origInvokeTok, origArgTokens, false));
-            if (i == 0 && !alternativesExaustive) {
+            if (i == 0 && !alternativesExhaustive) {
                 resultList.add(new UnnumberedUnexpandingTokenStreamSource(
                         prependNL(OutputHelper.else_tokenStr())));
                 resultList.add(new FixedUnexpandingTokenSource(Collections.singletonList(origInvokeTok),
@@ -1176,7 +1191,7 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
     }
 
     private List<Token> prependNL(List<Token> tokenList) {
-        ArrayList<Token> result = new ArrayList<Token>(tokenList.size() + 1);
+        ArrayList<Token> result = new ArrayList<>(tokenList.size() + 1);
         result.add(new SimpleToken(Token.NL, "\n", null));
         result.addAll(tokenList);
         return result;
@@ -1186,15 +1201,14 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
                                                     List<Argument> args,
                                                     MacroExpansion<MacroData> macroExpansion,
                                                     Token origTok,
-                                                    boolean inlineCppExpansion) throws ParseParamException, IOException, LexerException {
+                                                    boolean inlineCppExpansion) throws ParseParamException, LexerException {
         List<Argument> argsFixed = checkExpansionArity(macroName, macroExpansion, origTok, args);
         MacroData macroData = macroExpansion.getExpansion();
         if (macroData.isFunctionLike())
             for (Argument arg : argsFixed)
                 arg.expand(this, inlineCppExpansion, macroName);
-        MacroTokenSource ret = new MacroTokenSource(macroName, macroData, argsFixed,
+        return new MacroTokenSource(macroName, macroData, argsFixed,
                 getFeature(Feature.GNUCEXTENSIONS));
-        return ret;
     }
 
     /**
@@ -1209,54 +1223,48 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
      * can be used even if just a single expansion is required. in case that the
      * presence condition of this expansion is not a tautology (exhaustive) it
      * is only conditionally expanded
-     *
-     * @param macroExpansions
-     * @param args
-     * @throws IOException
-     * @throws LexerException
      */
     private void macro_expandAlternativesInline(final String macroName,
                                                 MacroExpansion<MacroData>[] macroExpansions, List<Argument> args,
                                                 Token origInvokeTok, List<Token> origArgTokens, FeatureExpr commonCondition)
-            throws IOException, LexerException, ParseParamException {
-        boolean alternativesExaustive = isExaustive(commonCondition);
-        if (!alternativesExaustive)
+            throws LexerException, ParseParamException {
+        boolean alternativesExhaustive = isExhaustive(commonCondition);
+        if (!alternativesExhaustive)
             macroConstraints.add(new MacroConstraint(macroName,
                     MacroConstraintKind.NOTEXPANDING, commonCondition.not()));
 
-        List<Source> resultList = new ArrayList<Source>();
+        List<Source> resultList = new ArrayList<>();
         for (int i = macroExpansions.length - 1; i >= 0; i--) {
             FeatureExpr feature = macroExpansions[i].getFeature();
-            MacroData macroData = macroExpansions[i].getExpansion();
 
-            if (i > 0 || !alternativesExaustive)
+            if (i > 0 || !alternativesExhaustive)
                 resultList.add(new UnnumberedUnexpandingTokenStreamSource(
                         OutputHelper.inlineIf_tokenStr(feature)));// "__IF__(feature,"
             resultList.addAll(macro_expandAlternative(macroName, macroExpansions[i], args, origInvokeTok, origArgTokens, true));
-            if (i > 0 || !alternativesExaustive)
+            if (i > 0 || !alternativesExhaustive)
                 resultList.add(new UnnumberedUnexpandingTokenStreamSource(
                         Collections.singletonList(OutputHelper.comma())));
         }
 
-        if (!alternativesExaustive) {
+        if (!alternativesExhaustive) {
             warning(origInvokeTok,
                     "inline expansion of macro " + macroName
-                            + " is not exaustive. assuming 0 for "
+                            + " is not exhaustive. assuming 0 for "
                             + commonCondition.not(), commonCondition.not());
             resultList.add(new UnnumberedUnexpandingTokenStreamSource(
                     Collections.singletonList(OutputHelper.zero())));
         }
-        List<Token> closingBrackets = new ArrayList<Token>();
+        List<Token> closingBrackets = new ArrayList<>();
         for (int i = macroExpansions.length - 2; i >= 0; i--)
             closingBrackets.add(OutputHelper.closing_bracket());
-        if (!alternativesExaustive)
+        if (!alternativesExhaustive)
             closingBrackets.add(OutputHelper.closing_bracket());
         resultList.add(new UnnumberedUnexpandingTokenStreamSource(
                 closingBrackets));
         sourceManager.push_sources(resultList, true);
     }
 
-    private boolean isExaustive(FeatureExpr commonCondition) {
+    private boolean isExhaustive(FeatureExpr commonCondition) {
         //commonCondition is already an implication (see
         //getCommonCondition), therefore this is correct: it checks
         //whether the alternative expansions are correct in the context
@@ -1275,16 +1283,13 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
 
     /**
      * Expands an argument.
-     *
-     * @param inlineCppExpression
-     * @param macroName
      */
-    /* I'd rather this were done lazily, but doing so breaks spec. */
+    /* I'd rather this was done lazily, but doing so breaks spec. */
     /* pp */List<Token> macro_expandArgument(List<Token> arg,
-                                             boolean inlineCppExpression, String macroName) throws IOException,
+                                             boolean inlineCppExpression) throws IOException,
             LexerException {
         // return arg;//ChK lazytest
-        List<Token> expansion = new ArrayList<Token>();
+        List<Token> expansion = new ArrayList<>();
         boolean space = false;
 
         sourceManager.push_source(new FixedTokenSource(arg), false);
@@ -1337,24 +1342,19 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
         tok = retrieveTokenFromSource();
         if (tok.getType() == '(') {
             tok = source_token_nonwhite();
-            boolean seenParamName = false;
             if (tok.getType() != ')') {
-                args = new ArrayList<String>();
+                args = new ArrayList<>();
                 ARGS:
                 for (; ; ) {
                     switch (tok.getType()) {
                         case IDENTIFIER:
                             args.add(tok.getText());
-                            seenParamName = true;
                             break;
                         case ELLIPSIS:
-                            assert !seenParamName; // PG: let's check this.
-                            if (!seenParamName) {
-                                // This trick correctly implements the semantics of
-                                // C99 variadic macros as described by the standard
-                                // (6.3.10.1).
-                                args.add("__VA_ARGS__");
-                            }
+                            // This trick correctly implements the semantics of
+                            // C99 variadic macros as described by the standard
+                            // (6.3.10.1).
+                            args.add("__VA_ARGS__");
                             tok = source_token_nonwhite();
                             if (tok.getType() != ')')
                                 error(tok, "ellipsis must be on last argument");
@@ -1372,10 +1372,8 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
                     tok = source_token_nonwhite();
                     switch (tok.getType()) {
                         case ',':
-                            seenParamName = false;
                             break;
                         case ELLIPSIS:
-                            assert seenParamName; // PG: verify if this is true
                             tok = source_token_nonwhite();
                             if (tok.getType() != ')')
                                 error(tok, "ellipsis must be on last argument");
@@ -1433,7 +1431,6 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
         for (; ; ) {
             switch (tok.getType()) {
                 case EOF:
-                    break EXPANSION;
                 case NL:
                     break EXPANSION;
 
@@ -1467,8 +1464,7 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
                     if (la.getType() == IDENTIFIER
                             && ((idx = args.indexOf(la.getText())) != -1)) {
                         m.addToken(new SimpleToken(M_STRING, la.getLine(), la
-                                .getColumn(), "#" + la.getText(), Integer
-                                .valueOf(idx), null));
+                                .getColumn(), "#" + la.getText(), idx, null));
                     } else {
                         m.addToken(tok);
                         /* Allow for special processing. */
@@ -1486,7 +1482,7 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
                         m.addToken(tok);
                     else
                         m.addToken(new SimpleToken(M_ARG, tok.getLine(), tok
-                                .getColumn(), tok.getText(), Integer.valueOf(idx),
+                                .getColumn(), tok.getText(), idx,
                                 null));
                     break;
 
@@ -1525,8 +1521,7 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
      * <p/>
      * User code may override this method to implement a virtual file system.
      */
-    private boolean include(VirtualFile file) throws IOException,
-            LexerException {
+    private boolean include(VirtualFile file) throws IOException {
         // System.out.println("Try to include " + file);
         if (!file.isFile())
             return false;
@@ -1555,7 +1550,7 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
      * Includes a file from an include path, by name.
      */
     private boolean include(Iterable<String> path, String name)
-            throws IOException, LexerException {
+            throws IOException {
         for (String dir : path) {
             VirtualFile file = filesystem.getFile(dir, name);
             if (include(file))
@@ -1566,8 +1561,6 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
 
     /**
      * Handles an include directive.
-     *
-     * @param next
      */
     private void include(String parent, int line, String name, boolean quoted,
                          boolean next) throws IOException, LexerException {
@@ -1625,11 +1618,11 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
 
             if (tok.getType() == STRING) {
                 /*
-                     * XXX Use the original text, not the value. Backslashes must
-                     * not be treated as escapes here.
-                     * PG: the above is no more needed, because the lexerSource does
-                     * not handle backslashes as escapes when processing includes.
-                     */
+                 * XXX Use the original text, not the value. Backslashes must
+                 * not be treated as escapes here.
+                 * PG: the above is no more needed, because the lexerSource does
+                 * not handle backslashes as escapes when processing includes.
+                 */
                 buf.append((String) tok.getValue());
                 HEADER:
                 for (; ; ) {
@@ -1702,9 +1695,9 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
                     quoted, next);
 
             /*
-                * 'tok' is the 'nl' after the include. We use it after the #line
-                * directive.
-                */
+             * 'tok' is the 'nl' after the include. We use it after the #line
+             * directive.
+             */
             if (getFeature(Feature.LINEMARKERS))
                 return OutputHelper.line_token(1, sourceManager.getSource()
                         .getName(), " 1");
@@ -1715,7 +1708,7 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
         }
     }
 
-    protected void pragma(Token nameTok, List<Token> value) throws IOException,
+    protected void pragma(Token nameTok, @SuppressWarnings("unused") List<Token> value) throws IOException,
             LexerException {
         String pragmaName = nameTok.getText();
 
@@ -1743,9 +1736,9 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
             switch (tok.getType()) {
                 case EOF:
                     /*
-                      * There ought to be a newline before EOF. At least, in any
-                      * skipline context.
-                      */
+                     * There ought to be a newline before EOF. At least, in any
+                     * skipline context.
+                     */
                     /* XXX Are we sure about this? */
                     warning(tok, "End of file in #" + "pragma");
                     return tok;
@@ -1756,7 +1749,7 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
                 case CCOMMENT:
                 case CPPCOMMENT:
                 case WHITESPACE:
-                    continue NAME;
+                    continue;
                 case IDENTIFIER:
                     name = tok;
                     break NAME;
@@ -1766,16 +1759,16 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
         }
 
         Token tok;
-        List<Token> value = new ArrayList<Token>();
+        List<Token> value = new ArrayList<>();
         VALUE:
         for (; ; ) {
             tok = getNextToken();
             switch (tok.getType()) {
                 case EOF:
                     /*
-                      * There ought to be a newline before EOF. At least, in any
-                      * skipline context.
-                      */
+                     * There ought to be a newline before EOF. At least, in any
+                     * skipline context.
+                     */
                     /* XXX Are we sure about this? */
                     warning(tok, "End of file in #" + "pragma");
                     break VALUE;
@@ -1784,9 +1777,6 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
                     break VALUE;
                 case CCOMMENT:
                 case CPPCOMMENT:
-                    break;
-                case WHITESPACE:
-                    value.add(tok);
                     break;
                 default:
                     value.add(tok);
@@ -1867,17 +1857,17 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
     private int hack_definedCounter = 2;
 
     /*
-      * This bypasses token() for #elif expressions. If we don't do this, then
-      * isActive() == false causes token() to simply chew the entire input line.
-      *
-      * hack_definedActivated excludes the parameter of a defined statement from
-      * expansion during pre-expansion of arguments
-      *
-      * TODO: this is completely broken for partial preprocessing. It only passes on #if directives, does not parse them.
-      * Therefore, we do not correctly update the state, which in turn results in getApplicableMacroExpansions returning
-      * too many expansions, including ones which might be invalid. It should probably just call parse_main again
-      * (actually, I fear something more complicated is needed).
-      */
+     * This bypasses token() for #elif expressions. If we don't do this, then
+     * isActive() == false causes token() to simply chew the entire input line.
+     *
+     * hack_definedActivated excludes the parameter of a defined statement from
+     * expansion during pre-expansion of arguments
+     *
+     * TODO: this is completely broken for partial preprocessing. It only passes on #if directives, does not parse them.
+     * Therefore, we do not correctly update the state, which in turn results in getApplicableMacroExpansions returning
+     * too many expansions, including ones which might be invalid. It should probably just call parse_main again
+     * (actually, I fear something more complicated is needed).
+     */
     private Token expanded_token(boolean inlineCppExpression,
                                  boolean hack_definedActivated) throws IOException, LexerException {
         for (; ; ) {
@@ -1934,7 +1924,7 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
     }
 
     //XXX:Rename as expr_token_unget
-    private void expr_untoken(Token tok) throws LexerException {
+    private void expr_untoken(Token tok) {
         if (expr_token != null)
             throw new InternalException("Cannot unget two expression tokens.");
         expr_token = tok;
@@ -1943,29 +1933,21 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
     private int expr_priority(Token op) {
         switch (op.getType()) {
             case '/':
-                return 11;
             case '%':
-                return 11;
             case '*':
                 return 11;
             case '+':
-                return 10;
             case '-':
                 return 10;
             case LSH:
-                return 9;
             case RSH:
                 return 9;
             case '<':
-                return 8;
             case '>':
-                return 8;
             case LE:
-                return 8;
             case GE:
                 return 8;
             case EQ:
-                return 7;
             case NE:
                 return 7;
             case '&':
@@ -2020,16 +2002,15 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
             if (value == null) {
                 warning(tok, "expecting value before token, found boolean expression " + expr + " instead");
 
-                return (FeatureExprTree<Object>)
-                        FeatureExprLib.l().createIf(expr,
-                                FeatureExprLib.l().createInteger(1),
-                                FeatureExprLib.l().createInteger(0)
-                        );
+                return FeatureExprLib.l().createIf(expr,
+                        FeatureExprLib.l().createInteger(1),
+                        FeatureExprLib.l().createInteger(0)
+                );
             } else
                 return value;
         }
 
-        public FeatureExpr assumeExpression(Token tok) throws LexerException {
+        public FeatureExpr assumeExpression(@SuppressWarnings("unused") Token tok) {
             if (expr == null) {
 //                warning(tok, "interpreting value " + value + " as expression " + value.toFeatureExpr());
 //                System.out.println("interpreting value " + value + " as expression " + FeatureExprLib.toFeatureExpr(value));
@@ -2043,9 +2024,9 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
             LexerException {
 
         /*
-           * System.out.flush(); (new Exception("expr(" + priority +
-           * ") called")).printStackTrace(); System.err.flush();
-           */
+         * System.out.flush(); (new Exception("expr(" + priority +
+         * ") called")).printStackTrace(); System.err.flush();
+         */
 
         Token tok = expr_token(true);
         ExprOrValue lhs;
@@ -2117,7 +2098,6 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
                 return new ExprOrValue(FeatureExprLib.False(), FeatureExprLib.zero());
         }
 
-        EXPR:
         for (; ; ) {
             // System.out.println("expr: lhs is " + lhs + ", pri = " +
             // priority);
@@ -2125,7 +2105,7 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
             int pri = expr_priority(op); /* 0 if not a binop. */
             if (pri == 0 || priority >= pri) {
                 expr_untoken(op);
-                break EXPR;
+                break;
             }
             // System.out.println("rhs token is " + rhs);
             switch (op.getType()) {
@@ -2230,9 +2210,9 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
         }
 
         /*
-           * System.out.flush(); (new Exception("expr returning " +
-           * lhs)).printStackTrace(); System.err.flush();
-           */
+         * System.out.flush(); (new Exception("expr returning " +
+         * lhs)).printStackTrace(); System.err.flush();
+         */
         // System.out.println("expr returning " + lhs);
 
         return lhs;
@@ -2313,9 +2293,6 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
      *
      * @param condition The parsed condition
      * @param tok       Used only for error reporting.
-     * @return
-     * @throws IOException
-     * @throws LexerException
      */
     private ExprOrValue parse_qifExpr(FeatureExpr condition, Token tok) throws IOException, LexerException {
         ExprOrValue thenBranch = parse_featureExprOrValue(0, false);
@@ -2327,7 +2304,7 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
             return new ExprOrValue(FeatureExprLib.l().createIf(condition, thenBranch.assumeValue(tok), elseBranch.assumeValue(tok)));
     }
 
-    private void consumeToken(int tokenType, boolean inlineCppExpression)
+    private void consumeToken(int tokenType, @SuppressWarnings("SameParameterValue") boolean inlineCppExpression)
             throws IOException, LexerException {
         Token la = expr_token(inlineCppExpression);
         if (la.getType() != tokenType)
@@ -2421,10 +2398,11 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
 
                 case WHITESPACE:
                 case NL:
-                    return tok;
 
                 case CCOMMENT:
                 case CPPCOMMENT:
+
+                case INTEGER:
                     return tok;
 
                 case '!':
@@ -2487,9 +2465,6 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
                 case XOR_EQ:
                     return tok;
 
-                case INTEGER:
-                    return tok;
-
                 case IDENTIFIER:
                     // apply macro (in visible code)
                     MacroExpansion<MacroData>[] m = macros.getApplicableMacroExpansions(tok
@@ -2534,7 +2509,7 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
                                 + tok.getText() + ", skipping line");
                         return source_skipline(false);
                     }
-                    int ppcmd = _ppcmd.intValue();
+                    int ppcmd = _ppcmd;
 
                     // PP:
                     switch (ppcmd) {
@@ -2574,9 +2549,9 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
                             return ret_tok;
                         // break;
 
-                        /**
-                         * error tokens are not processed by the jcpp but left for
-                         * the type system
+                        /*
+                          error tokens are not processed by the jcpp but left for
+                          the type system
                          */
                         case PP_WARNING:
                         case PP_ERROR:
@@ -2706,10 +2681,10 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
 
                         default:
                             /*
-                            * Actual unknown directives are processed above. If we get
-                            * here, we succeeded the map lookup but failed to handle
-                            * it. Therefore, this is (unconditionally?) fatal.
-                            */
+                             * Actual unknown directives are processed above. If we get
+                             * here, we succeeded the map lookup but failed to handle
+                             * it. Therefore, this is (unconditionally?) fatal.
+                             */
                             // if (isActive()) /* XXX Could be warning. */
                             throw new InternalException(
                                     "Internal error: Unknown directive " + tok);
@@ -2778,24 +2753,24 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
     private static final int PP_INCLUDE_NEXT = 14;
     private static final int PP_IMPORT = 15;
 
-    private static final Map<String, Integer> ppcmds = new HashMap<String, Integer>();
+    private static final Map<String, Integer> ppcmds = new HashMap<>();
 
     static {
-        ppcmds.put("define", Integer.valueOf(PP_DEFINE));
-        ppcmds.put("elif", Integer.valueOf(PP_ELIF));
-        ppcmds.put("else", Integer.valueOf(PP_ELSE));
-        ppcmds.put("endif", Integer.valueOf(PP_ENDIF));
-        ppcmds.put("error", Integer.valueOf(PP_ERROR));
-        ppcmds.put("if", Integer.valueOf(PP_IF));
-        ppcmds.put("ifdef", Integer.valueOf(PP_IFDEF));
-        ppcmds.put("ifndef", Integer.valueOf(PP_IFNDEF));
-        ppcmds.put("include", Integer.valueOf(PP_INCLUDE));
-        ppcmds.put("line", Integer.valueOf(PP_LINE));
-        ppcmds.put("pragma", Integer.valueOf(PP_PRAGMA));
-        ppcmds.put("undef", Integer.valueOf(PP_UNDEF));
-        ppcmds.put("warning", Integer.valueOf(PP_WARNING));
-        ppcmds.put("include_next", Integer.valueOf(PP_INCLUDE_NEXT));
-        ppcmds.put("import", Integer.valueOf(PP_IMPORT));
+        ppcmds.put("define", PP_DEFINE);
+        ppcmds.put("elif", PP_ELIF);
+        ppcmds.put("else", PP_ELSE);
+        ppcmds.put("endif", PP_ENDIF);
+        ppcmds.put("error", PP_ERROR);
+        ppcmds.put("if", PP_IF);
+        ppcmds.put("ifdef", PP_IFDEF);
+        ppcmds.put("ifndef", PP_IFNDEF);
+        ppcmds.put("include", PP_INCLUDE);
+        ppcmds.put("line", PP_LINE);
+        ppcmds.put("pragma", PP_PRAGMA);
+        ppcmds.put("undef", PP_UNDEF);
+        ppcmds.put("warning", PP_WARNING);
+        ppcmds.put("include_next", PP_INCLUDE_NEXT);
+        ppcmds.put("import", PP_IMPORT);
     }
 
     public String toString() {
@@ -2803,11 +2778,11 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
 
         Source s = getSource();
         while (s != null) {
-            buf.append(" -> ").append(String.valueOf(s)).append("\n");
+            buf.append(" -> ").append(s).append("\n");
             s = s.getParent();
         }
 
-        buf.append(macros.toString() + "\n");
+        buf.append(macros.toString()).append("\n");
 
         return buf.toString();
     }
@@ -2845,7 +2820,6 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
     /**
      * Return the token representation or an empty string.
      *
-     * @param tok
      * @return String representation or empty string.
      */
     public String getTextOrDefault(Token tok, String def) {
@@ -2859,8 +2833,6 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
 
     /**
      * for compatibility with the VALexer interface
-     *
-     * @param folder
      */
     @Override
     public void addSystemIncludePath(String folder) {
@@ -2869,8 +2841,6 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
 
     /**
      * for compatibility with the VALexer interface
-     *
-     * @param folder
      */
     @Override
     public void addQuoteIncludePath(String folder) {
@@ -2880,8 +2850,6 @@ public class Preprocessor extends DebuggingPreprocessor implements Closeable, VA
 
     /**
      * * for compatibility with the VALexer interface
-     *
-     * @param source
      */
     @Override
     public void addInput(LexerInput source) throws IOException {

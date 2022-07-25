@@ -1,3243 +1,3545 @@
 package de.fosd.typechef.typesystem.generated
 
-import org.junit._
 import de.fosd.typechef.typesystem._
+import org.junit._
 
 /** generated tests! do not modify! */
 class GeneratedReturnConstantTests extends TestHelperTS {
 
-    @Test def test_conf0_0() {
-        correct("""
+  @Test def test_cof0_0(): Unit = {
+    correct(
+      """
               char x() { return 0; }
                 """)
-        correct("""
+    correct(
+      """
               char x() {
                 char a = 0;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf0_1() {
-        correct("""
+  @Test def test_conf0_1(): Unit = {
+    correct(
+      """
               char x() { return 1; }
                 """)
-        correct("""
+    correct(
+      """
               char x() {
                 char a = 1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf0_2() {
-        correct("""
+  @Test def test_conf0_2(): Unit = {
+    correct(
+      """
               char x() { return -1; }
                 """)
-        correct("""
+    correct(
+      """
               char x() {
                 char a = -1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf0_3() {
-        correct("""
+  @Test def test_conf0_3(): Unit = {
+    correct(
+      """
               char x() { return 1l; }
                 """)
-        correct("""
+    correct(
+      """
               char x() {
                 char a = 1l;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf0_4() {
-        correct("""
+  @Test def test_conf0_4(): Unit = {
+    correct(
+      """
               char x() { return 0xa4; }
                 """)
-        correct("""
+    correct(
+      """
               char x() {
                 char a = 0xa4;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf0_5() {
-        correct("""
+  @Test def test_conf0_5(): Unit = {
+    correct(
+      """
               char x() { return 0.2; }
                 """)
-        correct("""
+    correct(
+      """
               char x() {
                 char a = 0.2;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf0_6() {
-        /* gcc reports:
+  @Test def test_conf0_6(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:26: warning: return makes integer from pointer without a cast
-               char x() { return "0.2"; }
-                          ^
+           char x() { return "0.2"; }
+                      ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               char x() { return "0.2"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:26: warning: initialization makes integer from pointer without a cast
-                 char a = "0.2";
-                          ^
+             char a = "0.2";
+                      ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               char x() {
                 char a = "0.2";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf0_7() {
-        /* gcc reports:
+  @Test def test_conf0_7(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:26: warning: return makes integer from pointer without a cast
-               char x() { return &"foo"; }
-                          ^
+           char x() { return &"foo"; }
+                      ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               char x() { return &"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:26: warning: initialization makes integer from pointer without a cast
-                 char a = &"foo";
-                          ^
+             char a = &"foo";
+                      ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               char x() {
                 char a = &"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf0_8() {
-        correct("""
+  @Test def test_conf0_8(): Unit = {
+    correct(
+      """
               char x() { return *"foo"; }
                 """)
-        correct("""
+    correct(
+      """
               char x() {
                 char a = *"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf0_9() {
-        /* gcc reports:
+  @Test def test_conf0_9(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:33: error: lvalue required as unary '&' operand
-               char x() { return &1; }
-                                 ^
+           char x() { return &1; }
+                             ^
 
-        */
-        error("""
+    */
+    error(
+      """
               char x() { return &1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:26: error: lvalue required as unary '&' operand
-                 char a = &1;
-                          ^
+             char a = &1;
+                      ^
 
-        */
-        error("""
+    */
+    error(
+      """
               char x() {
                 char a = &1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf1_0() {
-        correct("""
+  @Test def test_conf1_0(): Unit = {
+    correct(
+      """
               signed char x() { return 0; }
                 """)
-        correct("""
+    correct(
+      """
               signed char x() {
                 signed char a = 0;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf1_1() {
-        correct("""
+  @Test def test_conf1_1(): Unit = {
+    correct(
+      """
               signed char x() { return 1; }
                 """)
-        correct("""
+    correct(
+      """
               signed char x() {
                 signed char a = 1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf1_2() {
-        correct("""
+  @Test def test_conf1_2(): Unit = {
+    correct(
+      """
               signed char x() { return -1; }
                 """)
-        correct("""
+    correct(
+      """
               signed char x() {
                 signed char a = -1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf1_3() {
-        correct("""
+  @Test def test_conf1_3(): Unit = {
+    correct(
+      """
               signed char x() { return 1l; }
                 """)
-        correct("""
+    correct(
+      """
               signed char x() {
                 signed char a = 1l;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf1_4() {
-        correct("""
+  @Test def test_conf1_4(): Unit = {
+    correct(
+      """
               signed char x() { return 0xa4; }
                 """)
-        correct("""
+    correct(
+      """
               signed char x() {
                 signed char a = 0xa4;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf1_5() {
-        correct("""
+  @Test def test_conf1_5(): Unit = {
+    correct(
+      """
               signed char x() { return 0.2; }
                 """)
-        correct("""
+    correct(
+      """
               signed char x() {
                 signed char a = 0.2;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf1_6() {
-        /* gcc reports:
+  @Test def test_conf1_6(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:33: warning: return makes integer from pointer without a cast
-               signed char x() { return "0.2"; }
-                                 ^
+           signed char x() { return "0.2"; }
+                             ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed char x() { return "0.2"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:33: warning: initialization makes integer from pointer without a cast
-                 signed char a = "0.2";
-                                 ^
+             signed char a = "0.2";
+                             ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed char x() {
                 signed char a = "0.2";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf1_7() {
-        /* gcc reports:
+  @Test def test_conf1_7(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:33: warning: return makes integer from pointer without a cast
-               signed char x() { return &"foo"; }
-                                 ^
+           signed char x() { return &"foo"; }
+                             ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed char x() { return &"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:33: warning: initialization makes integer from pointer without a cast
-                 signed char a = &"foo";
-                                 ^
+             signed char a = &"foo";
+                             ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed char x() {
                 signed char a = &"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf1_8() {
-        correct("""
+  @Test def test_conf1_8(): Unit = {
+    correct(
+      """
               signed char x() { return *"foo"; }
                 """)
-        correct("""
+    correct(
+      """
               signed char x() {
                 signed char a = *"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf1_9() {
-        /* gcc reports:
+  @Test def test_conf1_9(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:40: error: lvalue required as unary '&' operand
-               signed char x() { return &1; }
-                                        ^
+           signed char x() { return &1; }
+                                    ^
 
-        */
-        error("""
+    */
+    error(
+      """
               signed char x() { return &1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:33: error: lvalue required as unary '&' operand
-                 signed char a = &1;
-                                 ^
+             signed char a = &1;
+                             ^
 
-        */
-        error("""
+    */
+    error(
+      """
               signed char x() {
                 signed char a = &1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf2_0() {
-        correct("""
+  @Test def test_conf2_0(): Unit = {
+    correct(
+      """
               unsigned char x() { return 0; }
                 """)
-        correct("""
+    correct(
+      """
               unsigned char x() {
                 unsigned char a = 0;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf2_1() {
-        correct("""
+  @Test def test_conf2_1(): Unit = {
+    correct(
+      """
               unsigned char x() { return 1; }
                 """)
-        correct("""
+    correct(
+      """
               unsigned char x() {
                 unsigned char a = 1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf2_2() {
-        correct("""
+  @Test def test_conf2_2(): Unit = {
+    correct(
+      """
               unsigned char x() { return -1; }
                 """)
-        correct("""
+    correct(
+      """
               unsigned char x() {
                 unsigned char a = -1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf2_3() {
-        correct("""
+  @Test def test_conf2_3(): Unit = {
+    correct(
+      """
               unsigned char x() { return 1l; }
                 """)
-        correct("""
+    correct(
+      """
               unsigned char x() {
                 unsigned char a = 1l;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf2_4() {
-        correct("""
+  @Test def test_conf2_4(): Unit = {
+    correct(
+      """
               unsigned char x() { return 0xa4; }
                 """)
-        correct("""
+    correct(
+      """
               unsigned char x() {
                 unsigned char a = 0xa4;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf2_5() {
-        correct("""
+  @Test def test_conf2_5(): Unit = {
+    correct(
+      """
               unsigned char x() { return 0.2; }
                 """)
-        correct("""
+    correct(
+      """
               unsigned char x() {
                 unsigned char a = 0.2;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf2_6() {
-        /* gcc reports:
+  @Test def test_conf2_6(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:35: warning: return makes integer from pointer without a cast
-               unsigned char x() { return "0.2"; }
-                                   ^
+           unsigned char x() { return "0.2"; }
+                               ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned char x() { return "0.2"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:35: warning: initialization makes integer from pointer without a cast
-                 unsigned char a = "0.2";
-                                   ^
+             unsigned char a = "0.2";
+                               ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned char x() {
                 unsigned char a = "0.2";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf2_7() {
-        /* gcc reports:
+  @Test def test_conf2_7(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:35: warning: return makes integer from pointer without a cast
-               unsigned char x() { return &"foo"; }
-                                   ^
+           unsigned char x() { return &"foo"; }
+                               ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned char x() { return &"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:35: warning: initialization makes integer from pointer without a cast
-                 unsigned char a = &"foo";
-                                   ^
+             unsigned char a = &"foo";
+                               ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned char x() {
                 unsigned char a = &"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf2_8() {
-        correct("""
+  @Test def test_conf2_8(): Unit = {
+    correct(
+      """
               unsigned char x() { return *"foo"; }
                 """)
-        correct("""
+    correct(
+      """
               unsigned char x() {
                 unsigned char a = *"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf2_9() {
-        /* gcc reports:
+  @Test def test_conf2_9(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:42: error: lvalue required as unary '&' operand
-               unsigned char x() { return &1; }
-                                          ^
+           unsigned char x() { return &1; }
+                                      ^
 
-        */
-        error("""
+    */
+    error(
+      """
               unsigned char x() { return &1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:35: error: lvalue required as unary '&' operand
-                 unsigned char a = &1;
-                                   ^
+             unsigned char a = &1;
+                               ^
 
-        */
-        error("""
+    */
+    error(
+      """
               unsigned char x() {
                 unsigned char a = &1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf3_0() {
-        correct("""
+  @Test def test_conf3_0(): Unit = {
+    correct(
+      """
               unsigned int x() { return 0; }
                 """)
-        correct("""
+    correct(
+      """
               unsigned int x() {
                 unsigned int a = 0;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf3_1() {
-        correct("""
+  @Test def test_conf3_1(): Unit = {
+    correct(
+      """
               unsigned int x() { return 1; }
                 """)
-        correct("""
+    correct(
+      """
               unsigned int x() {
                 unsigned int a = 1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf3_2() {
-        correct("""
+  @Test def test_conf3_2(): Unit = {
+    correct(
+      """
               unsigned int x() { return -1; }
                 """)
-        correct("""
+    correct(
+      """
               unsigned int x() {
                 unsigned int a = -1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf3_3() {
-        correct("""
+  @Test def test_conf3_3(): Unit = {
+    correct(
+      """
               unsigned int x() { return 1l; }
                 """)
-        correct("""
+    correct(
+      """
               unsigned int x() {
                 unsigned int a = 1l;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf3_4() {
-        correct("""
+  @Test def test_conf3_4(): Unit = {
+    correct(
+      """
               unsigned int x() { return 0xa4; }
                 """)
-        correct("""
+    correct(
+      """
               unsigned int x() {
                 unsigned int a = 0xa4;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf3_5() {
-        correct("""
+  @Test def test_conf3_5(): Unit = {
+    correct(
+      """
               unsigned int x() { return 0.2; }
                 """)
-        correct("""
+    correct(
+      """
               unsigned int x() {
                 unsigned int a = 0.2;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf3_6() {
-        /* gcc reports:
+  @Test def test_conf3_6(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:34: warning: return makes integer from pointer without a cast
-               unsigned int x() { return "0.2"; }
-                                  ^
+           unsigned int x() { return "0.2"; }
+                              ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned int x() { return "0.2"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:34: warning: initialization makes integer from pointer without a cast
-                 unsigned int a = "0.2";
-                                  ^
+             unsigned int a = "0.2";
+                              ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned int x() {
                 unsigned int a = "0.2";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf3_7() {
-        /* gcc reports:
+  @Test def test_conf3_7(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:34: warning: return makes integer from pointer without a cast
-               unsigned int x() { return &"foo"; }
-                                  ^
+           unsigned int x() { return &"foo"; }
+                              ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned int x() { return &"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:34: warning: initialization makes integer from pointer without a cast
-                 unsigned int a = &"foo";
-                                  ^
+             unsigned int a = &"foo";
+                              ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned int x() {
                 unsigned int a = &"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf3_8() {
-        correct("""
+  @Test def test_conf3_8(): Unit = {
+    correct(
+      """
               unsigned int x() { return *"foo"; }
                 """)
-        correct("""
+    correct(
+      """
               unsigned int x() {
                 unsigned int a = *"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf3_9() {
-        /* gcc reports:
+  @Test def test_conf3_9(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:41: error: lvalue required as unary '&' operand
-               unsigned int x() { return &1; }
-                                         ^
+           unsigned int x() { return &1; }
+                                     ^
 
-        */
-        error("""
+    */
+    error(
+      """
               unsigned int x() { return &1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:34: error: lvalue required as unary '&' operand
-                 unsigned int a = &1;
-                                  ^
+             unsigned int a = &1;
+                              ^
 
-        */
-        error("""
+    */
+    error(
+      """
               unsigned int x() {
                 unsigned int a = &1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf4_0() {
-        correct("""
+  @Test def test_conf4_0(): Unit = {
+    correct(
+      """
               signed int x() { return 0; }
                 """)
-        correct("""
+    correct(
+      """
               signed int x() {
                 signed int a = 0;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf4_1() {
-        correct("""
+  @Test def test_conf4_1(): Unit = {
+    correct(
+      """
               signed int x() { return 1; }
                 """)
-        correct("""
+    correct(
+      """
               signed int x() {
                 signed int a = 1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf4_2() {
-        correct("""
+  @Test def test_conf4_2(): Unit = {
+    correct(
+      """
               signed int x() { return -1; }
                 """)
-        correct("""
+    correct(
+      """
               signed int x() {
                 signed int a = -1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf4_3() {
-        correct("""
+  @Test def test_conf4_3(): Unit = {
+    correct(
+      """
               signed int x() { return 1l; }
                 """)
-        correct("""
+    correct(
+      """
               signed int x() {
                 signed int a = 1l;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf4_4() {
-        correct("""
+  @Test def test_conf4_4(): Unit = {
+    correct(
+      """
               signed int x() { return 0xa4; }
                 """)
-        correct("""
+    correct(
+      """
               signed int x() {
                 signed int a = 0xa4;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf4_5() {
-        correct("""
+  @Test def test_conf4_5(): Unit = {
+    correct(
+      """
               signed int x() { return 0.2; }
                 """)
-        correct("""
+    correct(
+      """
               signed int x() {
                 signed int a = 0.2;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf4_6() {
-        /* gcc reports:
+  @Test def test_conf4_6(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:32: warning: return makes integer from pointer without a cast
-               signed int x() { return "0.2"; }
-                                ^
+           signed int x() { return "0.2"; }
+                            ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed int x() { return "0.2"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:32: warning: initialization makes integer from pointer without a cast
-                 signed int a = "0.2";
-                                ^
+             signed int a = "0.2";
+                            ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed int x() {
                 signed int a = "0.2";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf4_7() {
-        /* gcc reports:
+  @Test def test_conf4_7(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:32: warning: return makes integer from pointer without a cast
-               signed int x() { return &"foo"; }
-                                ^
+           signed int x() { return &"foo"; }
+                            ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed int x() { return &"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:32: warning: initialization makes integer from pointer without a cast
-                 signed int a = &"foo";
-                                ^
+             signed int a = &"foo";
+                            ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed int x() {
                 signed int a = &"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf4_8() {
-        correct("""
+  @Test def test_conf4_8(): Unit = {
+    correct(
+      """
               signed int x() { return *"foo"; }
                 """)
-        correct("""
+    correct(
+      """
               signed int x() {
                 signed int a = *"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf4_9() {
-        /* gcc reports:
+  @Test def test_conf4_9(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:39: error: lvalue required as unary '&' operand
-               signed int x() { return &1; }
-                                       ^
+           signed int x() { return &1; }
+                                   ^
 
-        */
-        error("""
+    */
+    error(
+      """
               signed int x() { return &1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:32: error: lvalue required as unary '&' operand
-                 signed int a = &1;
-                                ^
+             signed int a = &1;
+                            ^
 
-        */
-        error("""
+    */
+    error(
+      """
               signed int x() {
                 signed int a = &1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf5_0() {
-        correct("""
+  @Test def test_conf5_0(): Unit = {
+    correct(
+      """
               long x() { return 0; }
                 """)
-        correct("""
+    correct(
+      """
               long x() {
                 long a = 0;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf5_1() {
-        correct("""
+  @Test def test_conf5_1(): Unit = {
+    correct(
+      """
               long x() { return 1; }
                 """)
-        correct("""
+    correct(
+      """
               long x() {
                 long a = 1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf5_2() {
-        correct("""
+  @Test def test_conf5_2(): Unit = {
+    correct(
+      """
               long x() { return -1; }
                 """)
-        correct("""
+    correct(
+      """
               long x() {
                 long a = -1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf5_3() {
-        correct("""
+  @Test def test_conf5_3(): Unit = {
+    correct(
+      """
               long x() { return 1l; }
                 """)
-        correct("""
+    correct(
+      """
               long x() {
                 long a = 1l;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf5_4() {
-        correct("""
+  @Test def test_conf5_4(): Unit = {
+    correct(
+      """
               long x() { return 0xa4; }
                 """)
-        correct("""
+    correct(
+      """
               long x() {
                 long a = 0xa4;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf5_5() {
-        correct("""
+  @Test def test_conf5_5(): Unit = {
+    correct(
+      """
               long x() { return 0.2; }
                 """)
-        correct("""
+    correct(
+      """
               long x() {
                 long a = 0.2;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf5_6() {
-        /* gcc reports:
+  @Test def test_conf5_6(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:26: warning: return makes integer from pointer without a cast
-               long x() { return "0.2"; }
-                          ^
+           long x() { return "0.2"; }
+                      ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               long x() { return "0.2"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:26: warning: initialization makes integer from pointer without a cast
-                 long a = "0.2";
-                          ^
+             long a = "0.2";
+                      ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               long x() {
                 long a = "0.2";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf5_7() {
-        /* gcc reports:
+  @Test def test_conf5_7(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:26: warning: return makes integer from pointer without a cast
-               long x() { return &"foo"; }
-                          ^
+           long x() { return &"foo"; }
+                      ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               long x() { return &"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:26: warning: initialization makes integer from pointer without a cast
-                 long a = &"foo";
-                          ^
+             long a = &"foo";
+                      ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               long x() {
                 long a = &"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf5_8() {
-        correct("""
+  @Test def test_conf5_8(): Unit = {
+    correct(
+      """
               long x() { return *"foo"; }
                 """)
-        correct("""
+    correct(
+      """
               long x() {
                 long a = *"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf5_9() {
-        /* gcc reports:
+  @Test def test_conf5_9(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:33: error: lvalue required as unary '&' operand
-               long x() { return &1; }
-                                 ^
+           long x() { return &1; }
+                             ^
 
-        */
-        error("""
+    */
+    error(
+      """
               long x() { return &1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:26: error: lvalue required as unary '&' operand
-                 long a = &1;
-                          ^
+             long a = &1;
+                      ^
 
-        */
-        error("""
+    */
+    error(
+      """
               long x() {
                 long a = &1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf6_0() {
-        correct("""
+  @Test def test_conf6_0(): Unit = {
+    correct(
+      """
               double x() { return 0; }
                 """)
-        correct("""
+    correct(
+      """
               double x() {
                 double a = 0;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf6_1() {
-        correct("""
+  @Test def test_conf6_1(): Unit = {
+    correct(
+      """
               double x() { return 1; }
                 """)
-        correct("""
+    correct(
+      """
               double x() {
                 double a = 1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf6_2() {
-        correct("""
+  @Test def test_conf6_2(): Unit = {
+    correct(
+      """
               double x() { return -1; }
                 """)
-        correct("""
+    correct(
+      """
               double x() {
                 double a = -1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf6_3() {
-        correct("""
+  @Test def test_conf6_3(): Unit = {
+    correct(
+      """
               double x() { return 1l; }
                 """)
-        correct("""
+    correct(
+      """
               double x() {
                 double a = 1l;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf6_4() {
-        correct("""
+  @Test def test_conf6_4(): Unit = {
+    correct(
+      """
               double x() { return 0xa4; }
                 """)
-        correct("""
+    correct(
+      """
               double x() {
                 double a = 0xa4;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf6_5() {
-        correct("""
+  @Test def test_conf6_5(): Unit = {
+    correct(
+      """
               double x() { return 0.2; }
                 """)
-        correct("""
+    correct(
+      """
               double x() {
                 double a = 0.2;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf6_6() {
-        /* gcc reports:
+  @Test def test_conf6_6(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:28: error: incompatible types when returning type 'char *' but 'double' was expected
-               double x() { return "0.2"; }
-                            ^
+           double x() { return "0.2"; }
+                        ^
 
-        */
-        error("""
+    */
+    error(
+      """
               double x() { return "0.2"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:28: error: incompatible types when initializing type 'double' using type 'char *'
-                 double a = "0.2";
-                            ^
+             double a = "0.2";
+                        ^
 
-        */
-        error("""
+    */
+    error(
+      """
               double x() {
                 double a = "0.2";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf6_7() {
-        /* gcc reports:
+  @Test def test_conf6_7(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:28: error: incompatible types when returning type 'char (*)[4]' but 'double' was expected
-               double x() { return &"foo"; }
-                            ^
+           double x() { return &"foo"; }
+                        ^
 
-        */
-        error("""
+    */
+    error(
+      """
               double x() { return &"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:28: error: incompatible types when initializing type 'double' using type 'char (*)[4]'
-                 double a = &"foo";
-                            ^
+             double a = &"foo";
+                        ^
 
-        */
-        error("""
+    */
+    error(
+      """
               double x() {
                 double a = &"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf6_8() {
-        correct("""
+  @Test def test_conf6_8(): Unit = {
+    correct(
+      """
               double x() { return *"foo"; }
                 """)
-        correct("""
+    correct(
+      """
               double x() {
                 double a = *"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf6_9() {
-        /* gcc reports:
+  @Test def test_conf6_9(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:35: error: lvalue required as unary '&' operand
-               double x() { return &1; }
-                                   ^
+           double x() { return &1; }
+                               ^
 
-        */
-        error("""
+    */
+    error(
+      """
               double x() { return &1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:28: error: lvalue required as unary '&' operand
-                 double a = &1;
-                            ^
+             double a = &1;
+                        ^
 
-        */
-        error("""
+    */
+    error(
+      """
               double x() {
                 double a = &1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf7_0() {
-        correct("""
+  @Test def test_conf7_0(): Unit = {
+    correct(
+      """
               int * x() { return 0; }
                 """)
-        correct("""
+    correct(
+      """
               int * x() {
                 int * a = 0;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf7_1() {
-        /* gcc reports:
+  @Test def test_conf7_1(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:27: warning: return makes pointer from integer without a cast
-               int * x() { return 1; }
-                           ^
+           int * x() { return 1; }
+                       ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               int * x() { return 1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:27: warning: initialization makes pointer from integer without a cast
-                 int * a = 1;
-                           ^
+             int * a = 1;
+                       ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               int * x() {
                 int * a = 1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf7_2() {
-        /* gcc reports:
+  @Test def test_conf7_2(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:27: warning: return makes pointer from integer without a cast
-               int * x() { return -1; }
-                           ^
+           int * x() { return -1; }
+                       ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               int * x() { return -1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:27: warning: initialization makes pointer from integer without a cast
-                 int * a = -1;
-                           ^
+             int * a = -1;
+                       ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               int * x() {
                 int * a = -1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf7_3() {
-        /* gcc reports:
+  @Test def test_conf7_3(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:27: warning: return makes pointer from integer without a cast
-               int * x() { return 1l; }
-                           ^
+           int * x() { return 1l; }
+                       ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               int * x() { return 1l; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:27: warning: initialization makes pointer from integer without a cast
-                 int * a = 1l;
-                           ^
+             int * a = 1l;
+                       ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               int * x() {
                 int * a = 1l;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf7_4() {
-        /* gcc reports:
+  @Test def test_conf7_4(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:27: warning: return makes pointer from integer without a cast
-               int * x() { return 0xa4; }
-                           ^
+           int * x() { return 0xa4; }
+                       ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               int * x() { return 0xa4; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:27: warning: initialization makes pointer from integer without a cast
-                 int * a = 0xa4;
-                           ^
+             int * a = 0xa4;
+                       ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               int * x() {
                 int * a = 0xa4;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf7_5() {
-        /* gcc reports:
+  @Test def test_conf7_5(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:27: error: incompatible types when returning type 'double' but 'int *' was expected
-               int * x() { return 0.2; }
-                           ^
+           int * x() { return 0.2; }
+                       ^
 
-        */
-        error("""
+    */
+    error(
+      """
               int * x() { return 0.2; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:27: error: incompatible types when initializing type 'int *' using type 'double'
-                 int * a = 0.2;
-                           ^
+             int * a = 0.2;
+                       ^
 
-        */
-        error("""
+    */
+    error(
+      """
               int * x() {
                 int * a = 0.2;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf7_6() {
-        /* gcc reports:
+  @Test def test_conf7_6(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:27: warning: return from incompatible pointer type
-               int * x() { return "0.2"; }
-                           ^
+           int * x() { return "0.2"; }
+                       ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               int * x() { return "0.2"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:27: warning: initialization from incompatible pointer type
-                 int * a = "0.2";
-                           ^
+             int * a = "0.2";
+                       ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               int * x() {
                 int * a = "0.2";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf7_7() {
-        /* gcc reports:
+  @Test def test_conf7_7(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:27: warning: return from incompatible pointer type
-               int * x() { return &"foo"; }
-                           ^
+           int * x() { return &"foo"; }
+                       ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               int * x() { return &"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:27: warning: initialization from incompatible pointer type
-                 int * a = &"foo";
-                           ^
+             int * a = &"foo";
+                       ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               int * x() {
                 int * a = &"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf7_8() {
-        /* gcc reports:
+  @Test def test_conf7_8(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:27: warning: return makes pointer from integer without a cast
-               int * x() { return *"foo"; }
-                           ^
+           int * x() { return *"foo"; }
+                       ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               int * x() { return *"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:27: warning: initialization makes pointer from integer without a cast
-                 int * a = *"foo";
-                           ^
+             int * a = *"foo";
+                       ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               int * x() {
                 int * a = *"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf7_9() {
-        /* gcc reports:
+  @Test def test_conf7_9(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:34: error: lvalue required as unary '&' operand
-               int * x() { return &1; }
-                                  ^
+           int * x() { return &1; }
+                              ^
 
-        */
-        error("""
+    */
+    error(
+      """
               int * x() { return &1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:27: error: lvalue required as unary '&' operand
-                 int * a = &1;
-                           ^
+             int * a = &1;
+                       ^
 
-        */
-        error("""
+    */
+    error(
+      """
               int * x() {
                 int * a = &1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf8_0() {
-        correct("""
+  @Test def test_conf8_0(): Unit = {
+    correct(
+      """
               char * x() { return 0; }
                 """)
-        correct("""
+    correct(
+      """
               char * x() {
                 char * a = 0;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf8_1() {
-        /* gcc reports:
+  @Test def test_conf8_1(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:28: warning: return makes pointer from integer without a cast
-               char * x() { return 1; }
-                            ^
+           char * x() { return 1; }
+                        ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               char * x() { return 1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:28: warning: initialization makes pointer from integer without a cast
-                 char * a = 1;
-                            ^
+             char * a = 1;
+                        ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               char * x() {
                 char * a = 1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf8_2() {
-        /* gcc reports:
+  @Test def test_conf8_2(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:28: warning: return makes pointer from integer without a cast
-               char * x() { return -1; }
-                            ^
+           char * x() { return -1; }
+                        ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               char * x() { return -1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:28: warning: initialization makes pointer from integer without a cast
-                 char * a = -1;
-                            ^
+             char * a = -1;
+                        ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               char * x() {
                 char * a = -1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf8_3() {
-        /* gcc reports:
+  @Test def test_conf8_3(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:28: warning: return makes pointer from integer without a cast
-               char * x() { return 1l; }
-                            ^
+           char * x() { return 1l; }
+                        ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               char * x() { return 1l; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:28: warning: initialization makes pointer from integer without a cast
-                 char * a = 1l;
-                            ^
+             char * a = 1l;
+                        ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               char * x() {
                 char * a = 1l;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf8_4() {
-        /* gcc reports:
+  @Test def test_conf8_4(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:28: warning: return makes pointer from integer without a cast
-               char * x() { return 0xa4; }
-                            ^
+           char * x() { return 0xa4; }
+                        ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               char * x() { return 0xa4; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:28: warning: initialization makes pointer from integer without a cast
-                 char * a = 0xa4;
-                            ^
+             char * a = 0xa4;
+                        ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               char * x() {
                 char * a = 0xa4;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf8_5() {
-        /* gcc reports:
+  @Test def test_conf8_5(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:28: error: incompatible types when returning type 'double' but 'char *' was expected
-               char * x() { return 0.2; }
-                            ^
+           char * x() { return 0.2; }
+                        ^
 
-        */
-        error("""
+    */
+    error(
+      """
               char * x() { return 0.2; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:28: error: incompatible types when initializing type 'char *' using type 'double'
-                 char * a = 0.2;
-                            ^
+             char * a = 0.2;
+                        ^
 
-        */
-        error("""
+    */
+    error(
+      """
               char * x() {
                 char * a = 0.2;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf8_6() {
-        correct("""
+  @Test def test_conf8_6(): Unit = {
+    correct(
+      """
               char * x() { return "0.2"; }
                 """)
-        correct("""
+    correct(
+      """
               char * x() {
                 char * a = "0.2";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf8_7() {
-        /* gcc reports:
+  @Test def test_conf8_7(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:28: warning: return from incompatible pointer type
-               char * x() { return &"foo"; }
-                            ^
+           char * x() { return &"foo"; }
+                        ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               char * x() { return &"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:28: warning: initialization from incompatible pointer type
-                 char * a = &"foo";
-                            ^
+             char * a = &"foo";
+                        ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               char * x() {
                 char * a = &"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf8_8() {
-        /* gcc reports:
+  @Test def test_conf8_8(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:28: warning: return makes pointer from integer without a cast
-               char * x() { return *"foo"; }
-                            ^
+           char * x() { return *"foo"; }
+                        ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               char * x() { return *"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:28: warning: initialization makes pointer from integer without a cast
-                 char * a = *"foo";
-                            ^
+             char * a = *"foo";
+                        ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               char * x() {
                 char * a = *"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf8_9() {
-        /* gcc reports:
+  @Test def test_conf8_9(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:35: error: lvalue required as unary '&' operand
-               char * x() { return &1; }
-                                   ^
+           char * x() { return &1; }
+                               ^
 
-        */
-        error("""
+    */
+    error(
+      """
               char * x() { return &1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:28: error: lvalue required as unary '&' operand
-                 char * a = &1;
-                            ^
+             char * a = &1;
+                        ^
 
-        */
-        error("""
+    */
+    error(
+      """
               char * x() {
                 char * a = &1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf9_0() {
-        correct("""
+  @Test def test_conf9_0(): Unit = {
+    correct(
+      """
               signed char * x() { return 0; }
                 """)
-        correct("""
+    correct(
+      """
               signed char * x() {
                 signed char * a = 0;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf9_1() {
-        /* gcc reports:
+  @Test def test_conf9_1(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:35: warning: return makes pointer from integer without a cast
-               signed char * x() { return 1; }
-                                   ^
+           signed char * x() { return 1; }
+                               ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed char * x() { return 1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:35: warning: initialization makes pointer from integer without a cast
-                 signed char * a = 1;
-                                   ^
+             signed char * a = 1;
+                               ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed char * x() {
                 signed char * a = 1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf9_2() {
-        /* gcc reports:
+  @Test def test_conf9_2(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:35: warning: return makes pointer from integer without a cast
-               signed char * x() { return -1; }
-                                   ^
+           signed char * x() { return -1; }
+                               ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed char * x() { return -1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:35: warning: initialization makes pointer from integer without a cast
-                 signed char * a = -1;
-                                   ^
+             signed char * a = -1;
+                               ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed char * x() {
                 signed char * a = -1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf9_3() {
-        /* gcc reports:
+  @Test def test_conf9_3(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:35: warning: return makes pointer from integer without a cast
-               signed char * x() { return 1l; }
-                                   ^
+           signed char * x() { return 1l; }
+                               ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed char * x() { return 1l; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:35: warning: initialization makes pointer from integer without a cast
-                 signed char * a = 1l;
-                                   ^
+             signed char * a = 1l;
+                               ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed char * x() {
                 signed char * a = 1l;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf9_4() {
-        /* gcc reports:
+  @Test def test_conf9_4(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:35: warning: return makes pointer from integer without a cast
-               signed char * x() { return 0xa4; }
-                                   ^
+           signed char * x() { return 0xa4; }
+                               ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed char * x() { return 0xa4; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:35: warning: initialization makes pointer from integer without a cast
-                 signed char * a = 0xa4;
-                                   ^
+             signed char * a = 0xa4;
+                               ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed char * x() {
                 signed char * a = 0xa4;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf9_5() {
-        /* gcc reports:
+  @Test def test_conf9_5(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:35: error: incompatible types when returning type 'double' but 'signed char *' was expected
-               signed char * x() { return 0.2; }
-                                   ^
+           signed char * x() { return 0.2; }
+                               ^
 
-        */
-        error("""
+    */
+    error(
+      """
               signed char * x() { return 0.2; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:35: error: incompatible types when initializing type 'signed char *' using type 'double'
-                 signed char * a = 0.2;
-                                   ^
+             signed char * a = 0.2;
+                               ^
 
-        */
-        error("""
+    */
+    error(
+      """
               signed char * x() {
                 signed char * a = 0.2;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf9_6() {
-        correct("""
+  @Test def test_conf9_6(): Unit = {
+    correct(
+      """
               signed char * x() { return "0.2"; }
                 """)
-        correct("""
+    correct(
+      """
               signed char * x() {
                 signed char * a = "0.2";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf9_7() {
-        /* gcc reports:
+  @Test def test_conf9_7(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:35: warning: return from incompatible pointer type
-               signed char * x() { return &"foo"; }
-                                   ^
+           signed char * x() { return &"foo"; }
+                               ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed char * x() { return &"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:35: warning: initialization from incompatible pointer type
-                 signed char * a = &"foo";
-                                   ^
+             signed char * a = &"foo";
+                               ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed char * x() {
                 signed char * a = &"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf9_8() {
-        /* gcc reports:
+  @Test def test_conf9_8(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:35: warning: return makes pointer from integer without a cast
-               signed char * x() { return *"foo"; }
-                                   ^
+           signed char * x() { return *"foo"; }
+                               ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed char * x() { return *"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:35: warning: initialization makes pointer from integer without a cast
-                 signed char * a = *"foo";
-                                   ^
+             signed char * a = *"foo";
+                               ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed char * x() {
                 signed char * a = *"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf9_9() {
-        /* gcc reports:
+  @Test def test_conf9_9(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:42: error: lvalue required as unary '&' operand
-               signed char * x() { return &1; }
-                                          ^
+           signed char * x() { return &1; }
+                                      ^
 
-        */
-        error("""
+    */
+    error(
+      """
               signed char * x() { return &1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:35: error: lvalue required as unary '&' operand
-                 signed char * a = &1;
-                                   ^
+             signed char * a = &1;
+                               ^
 
-        */
-        error("""
+    */
+    error(
+      """
               signed char * x() {
                 signed char * a = &1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf10_0() {
-        correct("""
+  @Test def test_conf10_0(): Unit = {
+    correct(
+      """
               unsigned char * x() { return 0; }
                 """)
-        correct("""
+    correct(
+      """
               unsigned char * x() {
                 unsigned char * a = 0;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf10_1() {
-        /* gcc reports:
+  @Test def test_conf10_1(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:37: warning: return makes pointer from integer without a cast
-               unsigned char * x() { return 1; }
-                                     ^
+           unsigned char * x() { return 1; }
+                                 ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned char * x() { return 1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:37: warning: initialization makes pointer from integer without a cast
-                 unsigned char * a = 1;
-                                     ^
+             unsigned char * a = 1;
+                                 ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned char * x() {
                 unsigned char * a = 1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf10_2() {
-        /* gcc reports:
+  @Test def test_conf10_2(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:37: warning: return makes pointer from integer without a cast
-               unsigned char * x() { return -1; }
-                                     ^
+           unsigned char * x() { return -1; }
+                                 ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned char * x() { return -1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:37: warning: initialization makes pointer from integer without a cast
-                 unsigned char * a = -1;
-                                     ^
+             unsigned char * a = -1;
+                                 ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned char * x() {
                 unsigned char * a = -1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf10_3() {
-        /* gcc reports:
+  @Test def test_conf10_3(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:37: warning: return makes pointer from integer without a cast
-               unsigned char * x() { return 1l; }
-                                     ^
+           unsigned char * x() { return 1l; }
+                                 ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned char * x() { return 1l; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:37: warning: initialization makes pointer from integer without a cast
-                 unsigned char * a = 1l;
-                                     ^
+             unsigned char * a = 1l;
+                                 ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned char * x() {
                 unsigned char * a = 1l;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf10_4() {
-        /* gcc reports:
+  @Test def test_conf10_4(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:37: warning: return makes pointer from integer without a cast
-               unsigned char * x() { return 0xa4; }
-                                     ^
+           unsigned char * x() { return 0xa4; }
+                                 ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned char * x() { return 0xa4; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:37: warning: initialization makes pointer from integer without a cast
-                 unsigned char * a = 0xa4;
-                                     ^
+             unsigned char * a = 0xa4;
+                                 ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned char * x() {
                 unsigned char * a = 0xa4;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf10_5() {
-        /* gcc reports:
+  @Test def test_conf10_5(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:37: error: incompatible types when returning type 'double' but 'unsigned char *' was expected
-               unsigned char * x() { return 0.2; }
-                                     ^
+           unsigned char * x() { return 0.2; }
+                                 ^
 
-        */
-        error("""
+    */
+    error(
+      """
               unsigned char * x() { return 0.2; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:37: error: incompatible types when initializing type 'unsigned char *' using type 'double'
-                 unsigned char * a = 0.2;
-                                     ^
+             unsigned char * a = 0.2;
+                                 ^
 
-        */
-        error("""
+    */
+    error(
+      """
               unsigned char * x() {
                 unsigned char * a = 0.2;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf10_6() {
-        correct("""
+  @Test def test_conf10_6(): Unit = {
+    correct(
+      """
               unsigned char * x() { return "0.2"; }
                 """)
-        correct("""
+    correct(
+      """
               unsigned char * x() {
                 unsigned char * a = "0.2";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf10_7() {
-        /* gcc reports:
+  @Test def test_conf10_7(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:37: warning: return from incompatible pointer type
-               unsigned char * x() { return &"foo"; }
-                                     ^
+           unsigned char * x() { return &"foo"; }
+                                 ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned char * x() { return &"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:37: warning: initialization from incompatible pointer type
-                 unsigned char * a = &"foo";
-                                     ^
+             unsigned char * a = &"foo";
+                                 ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned char * x() {
                 unsigned char * a = &"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf10_8() {
-        /* gcc reports:
+  @Test def test_conf10_8(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:37: warning: return makes pointer from integer without a cast
-               unsigned char * x() { return *"foo"; }
-                                     ^
+           unsigned char * x() { return *"foo"; }
+                                 ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned char * x() { return *"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:37: warning: initialization makes pointer from integer without a cast
-                 unsigned char * a = *"foo";
-                                     ^
+             unsigned char * a = *"foo";
+                                 ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned char * x() {
                 unsigned char * a = *"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf10_9() {
-        /* gcc reports:
+  @Test def test_conf10_9(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:44: error: lvalue required as unary '&' operand
-               unsigned char * x() { return &1; }
-                                            ^
+           unsigned char * x() { return &1; }
+                                        ^
 
-        */
-        error("""
+    */
+    error(
+      """
               unsigned char * x() { return &1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:37: error: lvalue required as unary '&' operand
-                 unsigned char * a = &1;
-                                     ^
+             unsigned char * a = &1;
+                                 ^
 
-        */
-        error("""
+    */
+    error(
+      """
               unsigned char * x() {
                 unsigned char * a = &1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf11_0() {
-        correct("""
+  @Test def test_conf11_0(): Unit = {
+    correct(
+      """
               char ** x() { return 0; }
                 """)
-        correct("""
+    correct(
+      """
               char ** x() {
                 char ** a = 0;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf11_1() {
-        /* gcc reports:
+  @Test def test_conf11_1(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:29: warning: return makes pointer from integer without a cast
-               char ** x() { return 1; }
-                             ^
+           char ** x() { return 1; }
+                         ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               char ** x() { return 1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:29: warning: initialization makes pointer from integer without a cast
-                 char ** a = 1;
-                             ^
+             char ** a = 1;
+                         ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               char ** x() {
                 char ** a = 1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf11_2() {
-        /* gcc reports:
+  @Test def test_conf11_2(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:29: warning: return makes pointer from integer without a cast
-               char ** x() { return -1; }
-                             ^
+           char ** x() { return -1; }
+                         ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               char ** x() { return -1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:29: warning: initialization makes pointer from integer without a cast
-                 char ** a = -1;
-                             ^
+             char ** a = -1;
+                         ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               char ** x() {
                 char ** a = -1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf11_3() {
-        /* gcc reports:
+  @Test def test_conf11_3(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:29: warning: return makes pointer from integer without a cast
-               char ** x() { return 1l; }
-                             ^
+           char ** x() { return 1l; }
+                         ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               char ** x() { return 1l; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:29: warning: initialization makes pointer from integer without a cast
-                 char ** a = 1l;
-                             ^
+             char ** a = 1l;
+                         ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               char ** x() {
                 char ** a = 1l;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf11_4() {
-        /* gcc reports:
+  @Test def test_conf11_4(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:29: warning: return makes pointer from integer without a cast
-               char ** x() { return 0xa4; }
-                             ^
+           char ** x() { return 0xa4; }
+                         ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               char ** x() { return 0xa4; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:29: warning: initialization makes pointer from integer without a cast
-                 char ** a = 0xa4;
-                             ^
+             char ** a = 0xa4;
+                         ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               char ** x() {
                 char ** a = 0xa4;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf11_5() {
-        /* gcc reports:
+  @Test def test_conf11_5(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:29: error: incompatible types when returning type 'double' but 'char **' was expected
-               char ** x() { return 0.2; }
-                             ^
+           char ** x() { return 0.2; }
+                         ^
 
-        */
-        error("""
+    */
+    error(
+      """
               char ** x() { return 0.2; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:29: error: incompatible types when initializing type 'char **' using type 'double'
-                 char ** a = 0.2;
-                             ^
+             char ** a = 0.2;
+                         ^
 
-        */
-        error("""
+    */
+    error(
+      """
               char ** x() {
                 char ** a = 0.2;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf11_6() {
-        /* gcc reports:
+  @Test def test_conf11_6(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:29: warning: return from incompatible pointer type
-               char ** x() { return "0.2"; }
-                             ^
+           char ** x() { return "0.2"; }
+                         ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               char ** x() { return "0.2"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:29: warning: initialization from incompatible pointer type
-                 char ** a = "0.2";
-                             ^
+             char ** a = "0.2";
+                         ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               char ** x() {
                 char ** a = "0.2";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Ignore("handling of string literals (array with fixed length) is not precise enough")
-   @Test def test_conf11_7() {
-        /* gcc reports:
+  @Ignore("handling of string literals (array with fixed length) is not precise enough")
+  @Test def test_conf11_7(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:29: warning: return from incompatible pointer type
-               char ** x() { return &"foo"; }
-                             ^
+           char ** x() { return &"foo"; }
+                         ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               char ** x() { return &"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:29: warning: initialization from incompatible pointer type
-                 char ** a = &"foo";
-                             ^
+             char ** a = &"foo";
+                         ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               char ** x() {
                 char ** a = &"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf11_8() {
-        /* gcc reports:
+  @Test def test_conf11_8(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:29: warning: return makes pointer from integer without a cast
-               char ** x() { return *"foo"; }
-                             ^
+           char ** x() { return *"foo"; }
+                         ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               char ** x() { return *"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:29: warning: initialization makes pointer from integer without a cast
-                 char ** a = *"foo";
-                             ^
+             char ** a = *"foo";
+                         ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               char ** x() {
                 char ** a = *"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf11_9() {
-        /* gcc reports:
+  @Test def test_conf11_9(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:36: error: lvalue required as unary '&' operand
-               char ** x() { return &1; }
-                                    ^
+           char ** x() { return &1; }
+                                ^
 
-        */
-        error("""
+    */
+    error(
+      """
               char ** x() { return &1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:29: error: lvalue required as unary '&' operand
-                 char ** a = &1;
-                             ^
+             char ** a = &1;
+                         ^
 
-        */
-        error("""
+    */
+    error(
+      """
               char ** x() {
                 char ** a = &1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf12_0() {
-        correct("""
+  @Test def test_conf12_0(): Unit = {
+    correct(
+      """
               unsigned char ** x() { return 0; }
                 """)
-        correct("""
+    correct(
+      """
               unsigned char ** x() {
                 unsigned char ** a = 0;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf12_1() {
-        /* gcc reports:
+  @Test def test_conf12_1(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:38: warning: return makes pointer from integer without a cast
-               unsigned char ** x() { return 1; }
-                                      ^
+           unsigned char ** x() { return 1; }
+                                  ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned char ** x() { return 1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:38: warning: initialization makes pointer from integer without a cast
-                 unsigned char ** a = 1;
-                                      ^
+             unsigned char ** a = 1;
+                                  ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned char ** x() {
                 unsigned char ** a = 1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf12_2() {
-        /* gcc reports:
+  @Test def test_conf12_2(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:38: warning: return makes pointer from integer without a cast
-               unsigned char ** x() { return -1; }
-                                      ^
+           unsigned char ** x() { return -1; }
+                                  ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned char ** x() { return -1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:38: warning: initialization makes pointer from integer without a cast
-                 unsigned char ** a = -1;
-                                      ^
+             unsigned char ** a = -1;
+                                  ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned char ** x() {
                 unsigned char ** a = -1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf12_3() {
-        /* gcc reports:
+  @Test def test_conf12_3(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:38: warning: return makes pointer from integer without a cast
-               unsigned char ** x() { return 1l; }
-                                      ^
+           unsigned char ** x() { return 1l; }
+                                  ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned char ** x() { return 1l; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:38: warning: initialization makes pointer from integer without a cast
-                 unsigned char ** a = 1l;
-                                      ^
+             unsigned char ** a = 1l;
+                                  ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned char ** x() {
                 unsigned char ** a = 1l;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf12_4() {
-        /* gcc reports:
+  @Test def test_conf12_4(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:38: warning: return makes pointer from integer without a cast
-               unsigned char ** x() { return 0xa4; }
-                                      ^
+           unsigned char ** x() { return 0xa4; }
+                                  ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned char ** x() { return 0xa4; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:38: warning: initialization makes pointer from integer without a cast
-                 unsigned char ** a = 0xa4;
-                                      ^
+             unsigned char ** a = 0xa4;
+                                  ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned char ** x() {
                 unsigned char ** a = 0xa4;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf12_5() {
-        /* gcc reports:
+  @Test def test_conf12_5(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:38: error: incompatible types when returning type 'double' but 'unsigned char **' was expected
-               unsigned char ** x() { return 0.2; }
-                                      ^
+           unsigned char ** x() { return 0.2; }
+                                  ^
 
-        */
-        error("""
+    */
+    error(
+      """
               unsigned char ** x() { return 0.2; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:38: error: incompatible types when initializing type 'unsigned char **' using type 'double'
-                 unsigned char ** a = 0.2;
-                                      ^
+             unsigned char ** a = 0.2;
+                                  ^
 
-        */
-        error("""
+    */
+    error(
+      """
               unsigned char ** x() {
                 unsigned char ** a = 0.2;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf12_6() {
-        /* gcc reports:
+  @Test def test_conf12_6(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:38: warning: return from incompatible pointer type
-               unsigned char ** x() { return "0.2"; }
-                                      ^
+           unsigned char ** x() { return "0.2"; }
+                                  ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned char ** x() { return "0.2"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:38: warning: initialization from incompatible pointer type
-                 unsigned char ** a = "0.2";
-                                      ^
+             unsigned char ** a = "0.2";
+                                  ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned char ** x() {
                 unsigned char ** a = "0.2";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf12_7() {
-        /* gcc reports:
+  @Test def test_conf12_7(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:38: warning: return from incompatible pointer type
-               unsigned char ** x() { return &"foo"; }
-                                      ^
+           unsigned char ** x() { return &"foo"; }
+                                  ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned char ** x() { return &"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:38: warning: initialization from incompatible pointer type
-                 unsigned char ** a = &"foo";
-                                      ^
+             unsigned char ** a = &"foo";
+                                  ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned char ** x() {
                 unsigned char ** a = &"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf12_8() {
-        /* gcc reports:
+  @Test def test_conf12_8(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:38: warning: return makes pointer from integer without a cast
-               unsigned char ** x() { return *"foo"; }
-                                      ^
+           unsigned char ** x() { return *"foo"; }
+                                  ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned char ** x() { return *"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:38: warning: initialization makes pointer from integer without a cast
-                 unsigned char ** a = *"foo";
-                                      ^
+             unsigned char ** a = *"foo";
+                                  ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               unsigned char ** x() {
                 unsigned char ** a = *"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf12_9() {
-        /* gcc reports:
+  @Test def test_conf12_9(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:45: error: lvalue required as unary '&' operand
-               unsigned char ** x() { return &1; }
-                                             ^
+           unsigned char ** x() { return &1; }
+                                         ^
 
-        */
-        error("""
+    */
+    error(
+      """
               unsigned char ** x() { return &1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:38: error: lvalue required as unary '&' operand
-                 unsigned char ** a = &1;
-                                      ^
+             unsigned char ** a = &1;
+                                  ^
 
-        */
-        error("""
+    */
+    error(
+      """
               unsigned char ** x() {
                 unsigned char ** a = &1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf13_0() {
-        correct("""
+  @Test def test_conf13_0(): Unit = {
+    correct(
+      """
               signed char ** x() { return 0; }
                 """)
-        correct("""
+    correct(
+      """
               signed char ** x() {
                 signed char ** a = 0;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf13_1() {
-        /* gcc reports:
+  @Test def test_conf13_1(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:36: warning: return makes pointer from integer without a cast
-               signed char ** x() { return 1; }
-                                    ^
+           signed char ** x() { return 1; }
+                                ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed char ** x() { return 1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:36: warning: initialization makes pointer from integer without a cast
-                 signed char ** a = 1;
-                                    ^
+             signed char ** a = 1;
+                                ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed char ** x() {
                 signed char ** a = 1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf13_2() {
-        /* gcc reports:
+  @Test def test_conf13_2(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:36: warning: return makes pointer from integer without a cast
-               signed char ** x() { return -1; }
-                                    ^
+           signed char ** x() { return -1; }
+                                ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed char ** x() { return -1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:36: warning: initialization makes pointer from integer without a cast
-                 signed char ** a = -1;
-                                    ^
+             signed char ** a = -1;
+                                ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed char ** x() {
                 signed char ** a = -1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf13_3() {
-        /* gcc reports:
+  @Test def test_conf13_3(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:36: warning: return makes pointer from integer without a cast
-               signed char ** x() { return 1l; }
-                                    ^
+           signed char ** x() { return 1l; }
+                                ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed char ** x() { return 1l; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:36: warning: initialization makes pointer from integer without a cast
-                 signed char ** a = 1l;
-                                    ^
+             signed char ** a = 1l;
+                                ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed char ** x() {
                 signed char ** a = 1l;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf13_4() {
-        /* gcc reports:
+  @Test def test_conf13_4(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:36: warning: return makes pointer from integer without a cast
-               signed char ** x() { return 0xa4; }
-                                    ^
+           signed char ** x() { return 0xa4; }
+                                ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed char ** x() { return 0xa4; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:36: warning: initialization makes pointer from integer without a cast
-                 signed char ** a = 0xa4;
-                                    ^
+             signed char ** a = 0xa4;
+                                ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed char ** x() {
                 signed char ** a = 0xa4;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf13_5() {
-        /* gcc reports:
+  @Test def test_conf13_5(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:36: error: incompatible types when returning type 'double' but 'signed char **' was expected
-               signed char ** x() { return 0.2; }
-                                    ^
+           signed char ** x() { return 0.2; }
+                                ^
 
-        */
-        error("""
+    */
+    error(
+      """
               signed char ** x() { return 0.2; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:36: error: incompatible types when initializing type 'signed char **' using type 'double'
-                 signed char ** a = 0.2;
-                                    ^
+             signed char ** a = 0.2;
+                                ^
 
-        */
-        error("""
+    */
+    error(
+      """
               signed char ** x() {
                 signed char ** a = 0.2;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf13_6() {
-        /* gcc reports:
+  @Test def test_conf13_6(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:36: warning: return from incompatible pointer type
-               signed char ** x() { return "0.2"; }
-                                    ^
+           signed char ** x() { return "0.2"; }
+                                ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed char ** x() { return "0.2"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:36: warning: initialization from incompatible pointer type
-                 signed char ** a = "0.2";
-                                    ^
+             signed char ** a = "0.2";
+                                ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed char ** x() {
                 signed char ** a = "0.2";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf13_7() {
-        /* gcc reports:
+  @Test def test_conf13_7(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:36: warning: return from incompatible pointer type
-               signed char ** x() { return &"foo"; }
-                                    ^
+           signed char ** x() { return &"foo"; }
+                                ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed char ** x() { return &"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:36: warning: initialization from incompatible pointer type
-                 signed char ** a = &"foo";
-                                    ^
+             signed char ** a = &"foo";
+                                ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed char ** x() {
                 signed char ** a = &"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf13_8() {
-        /* gcc reports:
+  @Test def test_conf13_8(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:36: warning: return makes pointer from integer without a cast
-               signed char ** x() { return *"foo"; }
-                                    ^
+           signed char ** x() { return *"foo"; }
+                                ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed char ** x() { return *"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:36: warning: initialization makes pointer from integer without a cast
-                 signed char ** a = *"foo";
-                                    ^
+             signed char ** a = *"foo";
+                                ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               signed char ** x() {
                 signed char ** a = *"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf13_9() {
-        /* gcc reports:
+  @Test def test_conf13_9(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:43: error: lvalue required as unary '&' operand
-               signed char ** x() { return &1; }
-                                           ^
+           signed char ** x() { return &1; }
+                                       ^
 
-        */
-        error("""
+    */
+    error(
+      """
               signed char ** x() { return &1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:36: error: lvalue required as unary '&' operand
-                 signed char ** a = &1;
-                                    ^
+             signed char ** a = &1;
+                                ^
 
-        */
-        error("""
+    */
+    error(
+      """
               signed char ** x() {
                 signed char ** a = &1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf14_0() {
-        correct("""
+  @Test def test_conf14_0(): Unit = {
+    correct(
+      """
               double * x() { return 0; }
                 """)
-        correct("""
+    correct(
+      """
               double * x() {
                 double * a = 0;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf14_1() {
-        /* gcc reports:
+  @Test def test_conf14_1(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:30: warning: return makes pointer from integer without a cast
-               double * x() { return 1; }
-                              ^
+           double * x() { return 1; }
+                          ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               double * x() { return 1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:30: warning: initialization makes pointer from integer without a cast
-                 double * a = 1;
-                              ^
+             double * a = 1;
+                          ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               double * x() {
                 double * a = 1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf14_2() {
-        /* gcc reports:
+  @Test def test_conf14_2(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:30: warning: return makes pointer from integer without a cast
-               double * x() { return -1; }
-                              ^
+           double * x() { return -1; }
+                          ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               double * x() { return -1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:30: warning: initialization makes pointer from integer without a cast
-                 double * a = -1;
-                              ^
+             double * a = -1;
+                          ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               double * x() {
                 double * a = -1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf14_3() {
-        /* gcc reports:
+  @Test def test_conf14_3(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:30: warning: return makes pointer from integer without a cast
-               double * x() { return 1l; }
-                              ^
+           double * x() { return 1l; }
+                          ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               double * x() { return 1l; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:30: warning: initialization makes pointer from integer without a cast
-                 double * a = 1l;
-                              ^
+             double * a = 1l;
+                          ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               double * x() {
                 double * a = 1l;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf14_4() {
-        /* gcc reports:
+  @Test def test_conf14_4(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:30: warning: return makes pointer from integer without a cast
-               double * x() { return 0xa4; }
-                              ^
+           double * x() { return 0xa4; }
+                          ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               double * x() { return 0xa4; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:30: warning: initialization makes pointer from integer without a cast
-                 double * a = 0xa4;
-                              ^
+             double * a = 0xa4;
+                          ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               double * x() {
                 double * a = 0xa4;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf14_5() {
-        /* gcc reports:
+  @Test def test_conf14_5(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:30: error: incompatible types when returning type 'double' but 'double *' was expected
-               double * x() { return 0.2; }
-                              ^
+           double * x() { return 0.2; }
+                          ^
 
-        */
-        error("""
+    */
+    error(
+      """
               double * x() { return 0.2; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:30: error: incompatible types when initializing type 'double *' using type 'double'
-                 double * a = 0.2;
-                              ^
+             double * a = 0.2;
+                          ^
 
-        */
-        error("""
+    */
+    error(
+      """
               double * x() {
                 double * a = 0.2;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf14_6() {
-        /* gcc reports:
+  @Test def test_conf14_6(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:30: warning: return from incompatible pointer type
-               double * x() { return "0.2"; }
-                              ^
+           double * x() { return "0.2"; }
+                          ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               double * x() { return "0.2"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:30: warning: initialization from incompatible pointer type
-                 double * a = "0.2";
-                              ^
+             double * a = "0.2";
+                          ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               double * x() {
                 double * a = "0.2";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf14_7() {
-        /* gcc reports:
+  @Test def test_conf14_7(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:30: warning: return from incompatible pointer type
-               double * x() { return &"foo"; }
-                              ^
+           double * x() { return &"foo"; }
+                          ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               double * x() { return &"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:30: warning: initialization from incompatible pointer type
-                 double * a = &"foo";
-                              ^
+             double * a = &"foo";
+                          ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               double * x() {
                 double * a = &"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf14_8() {
-        /* gcc reports:
+  @Test def test_conf14_8(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:30: warning: return makes pointer from integer without a cast
-               double * x() { return *"foo"; }
-                              ^
+           double * x() { return *"foo"; }
+                          ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               double * x() { return *"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:30: warning: initialization makes pointer from integer without a cast
-                 double * a = *"foo";
-                              ^
+             double * a = *"foo";
+                          ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               double * x() {
                 double * a = *"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf14_9() {
-        /* gcc reports:
+  @Test def test_conf14_9(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:37: error: lvalue required as unary '&' operand
-               double * x() { return &1; }
-                                     ^
+           double * x() { return &1; }
+                                 ^
 
-        */
-        error("""
+    */
+    error(
+      """
               double * x() { return &1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:30: error: lvalue required as unary '&' operand
-                 double * a = &1;
-                              ^
+             double * a = &1;
+                          ^
 
-        */
-        error("""
+    */
+    error(
+      """
               double * x() {
                 double * a = &1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf15_0() {
-        /* gcc reports:
+  @Test def test_conf15_0(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:3:30: error: incompatible types when returning type 'int' but 'struct S' was expected
-               struct S x() { return 0; }
-                              ^
+           struct S x() { return 0; }
+                          ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct S { int x; int y; };
 
               struct S x() { return 0; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:4:24: error: invalid initializer
-                 struct S a = 0;
-                        ^
+             struct S a = 0;
+                    ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct S { int x; int y; };
 
               struct S x() {
@@ -3245,30 +3547,32 @@ test.c:4:24: error: invalid initializer
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf15_1() {
-        /* gcc reports:
+  @Test def test_conf15_1(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:3:30: error: incompatible types when returning type 'int' but 'struct S' was expected
-               struct S x() { return 1; }
-                              ^
+           struct S x() { return 1; }
+                          ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct S { int x; int y; };
 
               struct S x() { return 1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:4:24: error: invalid initializer
-                 struct S a = 1;
-                        ^
+             struct S a = 1;
+                    ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct S { int x; int y; };
 
               struct S x() {
@@ -3276,30 +3580,32 @@ test.c:4:24: error: invalid initializer
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf15_2() {
-        /* gcc reports:
+  @Test def test_conf15_2(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:3:30: error: incompatible types when returning type 'int' but 'struct S' was expected
-               struct S x() { return -1; }
-                              ^
+           struct S x() { return -1; }
+                          ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct S { int x; int y; };
 
               struct S x() { return -1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:4:24: error: invalid initializer
-                 struct S a = -1;
-                        ^
+             struct S a = -1;
+                    ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct S { int x; int y; };
 
               struct S x() {
@@ -3307,30 +3613,32 @@ test.c:4:24: error: invalid initializer
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf15_3() {
-        /* gcc reports:
+  @Test def test_conf15_3(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:3:30: error: incompatible types when returning type 'long int' but 'struct S' was expected
-               struct S x() { return 1l; }
-                              ^
+           struct S x() { return 1l; }
+                          ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct S { int x; int y; };
 
               struct S x() { return 1l; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:4:24: error: invalid initializer
-                 struct S a = 1l;
-                        ^
+             struct S a = 1l;
+                    ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct S { int x; int y; };
 
               struct S x() {
@@ -3338,30 +3646,32 @@ test.c:4:24: error: invalid initializer
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf15_4() {
-        /* gcc reports:
+  @Test def test_conf15_4(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:3:30: error: incompatible types when returning type 'int' but 'struct S' was expected
-               struct S x() { return 0xa4; }
-                              ^
+           struct S x() { return 0xa4; }
+                          ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct S { int x; int y; };
 
               struct S x() { return 0xa4; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:4:24: error: invalid initializer
-                 struct S a = 0xa4;
-                        ^
+             struct S a = 0xa4;
+                    ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct S { int x; int y; };
 
               struct S x() {
@@ -3369,30 +3679,32 @@ test.c:4:24: error: invalid initializer
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf15_5() {
-        /* gcc reports:
+  @Test def test_conf15_5(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:3:30: error: incompatible types when returning type 'double' but 'struct S' was expected
-               struct S x() { return 0.2; }
-                              ^
+           struct S x() { return 0.2; }
+                          ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct S { int x; int y; };
 
               struct S x() { return 0.2; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:4:24: error: invalid initializer
-                 struct S a = 0.2;
-                        ^
+             struct S a = 0.2;
+                    ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct S { int x; int y; };
 
               struct S x() {
@@ -3400,30 +3712,32 @@ test.c:4:24: error: invalid initializer
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf15_6() {
-        /* gcc reports:
+  @Test def test_conf15_6(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:3:30: error: incompatible types when returning type 'char *' but 'struct S' was expected
-               struct S x() { return "0.2"; }
-                              ^
+           struct S x() { return "0.2"; }
+                          ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct S { int x; int y; };
 
               struct S x() { return "0.2"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:4:24: error: invalid initializer
-                 struct S a = "0.2";
-                        ^
+             struct S a = "0.2";
+                    ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct S { int x; int y; };
 
               struct S x() {
@@ -3431,30 +3745,32 @@ test.c:4:24: error: invalid initializer
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf15_7() {
-        /* gcc reports:
+  @Test def test_conf15_7(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:3:30: error: incompatible types when returning type 'char (*)[4]' but 'struct S' was expected
-               struct S x() { return &"foo"; }
-                              ^
+           struct S x() { return &"foo"; }
+                          ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct S { int x; int y; };
 
               struct S x() { return &"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:4:24: error: invalid initializer
-                 struct S a = &"foo";
-                        ^
+             struct S a = &"foo";
+                    ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct S { int x; int y; };
 
               struct S x() {
@@ -3462,30 +3778,32 @@ test.c:4:24: error: invalid initializer
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf15_8() {
-        /* gcc reports:
+  @Test def test_conf15_8(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:3:30: error: incompatible types when returning type 'char' but 'struct S' was expected
-               struct S x() { return *"foo"; }
-                              ^
+           struct S x() { return *"foo"; }
+                          ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct S { int x; int y; };
 
               struct S x() { return *"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:4:24: error: invalid initializer
-                 struct S a = *"foo";
-                        ^
+             struct S a = *"foo";
+                    ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct S { int x; int y; };
 
               struct S x() {
@@ -3493,30 +3811,32 @@ test.c:4:24: error: invalid initializer
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf15_9() {
-        /* gcc reports:
+  @Test def test_conf15_9(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:3:37: error: lvalue required as unary '&' operand
-               struct S x() { return &1; }
-                                     ^
+           struct S x() { return &1; }
+                                 ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct S { int x; int y; };
 
               struct S x() { return &1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:4:30: error: lvalue required as unary '&' operand
-                 struct S a = &1;
-                              ^
+             struct S a = &1;
+                          ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct S { int x; int y; };
 
               struct S x() {
@@ -3524,2077 +3844,2255 @@ test.c:4:30: error: lvalue required as unary '&' operand
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf16_0() {
-        /* gcc reports:
+  @Test def test_conf16_0(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:41: error: incompatible types when returning type 'int' but 'struct <anonymous>' was expected
-               struct { float b; } x() { return 0; }
-                                         ^
+           struct { float b; } x() { return 0; }
+                                     ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct { float b; } x() { return 0; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:24: error: invalid initializer
-                 struct { float b; } a = 0;
-                        ^
+             struct { float b; } a = 0;
+                    ^
 test.c:3:17: error: incompatible types when returning type 'struct <anonymous>' but 'struct <anonymous>' was expected
-                 return a;
-                 ^
+             return a;
+             ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct { float b; } x() {
                 struct { float b; } a = 0;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf16_1() {
-        /* gcc reports:
+  @Test def test_conf16_1(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:41: error: incompatible types when returning type 'int' but 'struct <anonymous>' was expected
-               struct { float b; } x() { return 1; }
-                                         ^
+           struct { float b; } x() { return 1; }
+                                     ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct { float b; } x() { return 1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:24: error: invalid initializer
-                 struct { float b; } a = 1;
-                        ^
+             struct { float b; } a = 1;
+                    ^
 test.c:3:17: error: incompatible types when returning type 'struct <anonymous>' but 'struct <anonymous>' was expected
-                 return a;
-                 ^
+             return a;
+             ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct { float b; } x() {
                 struct { float b; } a = 1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf16_2() {
-        /* gcc reports:
+  @Test def test_conf16_2(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:41: error: incompatible types when returning type 'int' but 'struct <anonymous>' was expected
-               struct { float b; } x() { return -1; }
-                                         ^
+           struct { float b; } x() { return -1; }
+                                     ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct { float b; } x() { return -1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:24: error: invalid initializer
-                 struct { float b; } a = -1;
-                        ^
+             struct { float b; } a = -1;
+                    ^
 test.c:3:17: error: incompatible types when returning type 'struct <anonymous>' but 'struct <anonymous>' was expected
-                 return a;
-                 ^
+             return a;
+             ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct { float b; } x() {
                 struct { float b; } a = -1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf16_3() {
-        /* gcc reports:
+  @Test def test_conf16_3(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:41: error: incompatible types when returning type 'long int' but 'struct <anonymous>' was expected
-               struct { float b; } x() { return 1l; }
-                                         ^
+           struct { float b; } x() { return 1l; }
+                                     ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct { float b; } x() { return 1l; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:24: error: invalid initializer
-                 struct { float b; } a = 1l;
-                        ^
+             struct { float b; } a = 1l;
+                    ^
 test.c:3:17: error: incompatible types when returning type 'struct <anonymous>' but 'struct <anonymous>' was expected
-                 return a;
-                 ^
+             return a;
+             ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct { float b; } x() {
                 struct { float b; } a = 1l;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf16_4() {
-        /* gcc reports:
+  @Test def test_conf16_4(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:41: error: incompatible types when returning type 'int' but 'struct <anonymous>' was expected
-               struct { float b; } x() { return 0xa4; }
-                                         ^
+           struct { float b; } x() { return 0xa4; }
+                                     ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct { float b; } x() { return 0xa4; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:24: error: invalid initializer
-                 struct { float b; } a = 0xa4;
-                        ^
+             struct { float b; } a = 0xa4;
+                    ^
 test.c:3:17: error: incompatible types when returning type 'struct <anonymous>' but 'struct <anonymous>' was expected
-                 return a;
-                 ^
+             return a;
+             ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct { float b; } x() {
                 struct { float b; } a = 0xa4;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf16_5() {
-        /* gcc reports:
+  @Test def test_conf16_5(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:41: error: incompatible types when returning type 'double' but 'struct <anonymous>' was expected
-               struct { float b; } x() { return 0.2; }
-                                         ^
+           struct { float b; } x() { return 0.2; }
+                                     ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct { float b; } x() { return 0.2; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:24: error: invalid initializer
-                 struct { float b; } a = 0.2;
-                        ^
+             struct { float b; } a = 0.2;
+                    ^
 test.c:3:17: error: incompatible types when returning type 'struct <anonymous>' but 'struct <anonymous>' was expected
-                 return a;
-                 ^
+             return a;
+             ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct { float b; } x() {
                 struct { float b; } a = 0.2;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf16_6() {
-        /* gcc reports:
+  @Test def test_conf16_6(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:41: error: incompatible types when returning type 'char *' but 'struct <anonymous>' was expected
-               struct { float b; } x() { return "0.2"; }
-                                         ^
+           struct { float b; } x() { return "0.2"; }
+                                     ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct { float b; } x() { return "0.2"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:24: error: invalid initializer
-                 struct { float b; } a = "0.2";
-                        ^
+             struct { float b; } a = "0.2";
+                    ^
 test.c:3:17: error: incompatible types when returning type 'struct <anonymous>' but 'struct <anonymous>' was expected
-                 return a;
-                 ^
+             return a;
+             ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct { float b; } x() {
                 struct { float b; } a = "0.2";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf16_7() {
-        /* gcc reports:
+  @Test def test_conf16_7(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:41: error: incompatible types when returning type 'char (*)[4]' but 'struct <anonymous>' was expected
-               struct { float b; } x() { return &"foo"; }
-                                         ^
+           struct { float b; } x() { return &"foo"; }
+                                     ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct { float b; } x() { return &"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:24: error: invalid initializer
-                 struct { float b; } a = &"foo";
-                        ^
+             struct { float b; } a = &"foo";
+                    ^
 test.c:3:17: error: incompatible types when returning type 'struct <anonymous>' but 'struct <anonymous>' was expected
-                 return a;
-                 ^
+             return a;
+             ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct { float b; } x() {
                 struct { float b; } a = &"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf16_8() {
-        /* gcc reports:
+  @Test def test_conf16_8(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:41: error: incompatible types when returning type 'char' but 'struct <anonymous>' was expected
-               struct { float b; } x() { return *"foo"; }
-                                         ^
+           struct { float b; } x() { return *"foo"; }
+                                     ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct { float b; } x() { return *"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:24: error: invalid initializer
-                 struct { float b; } a = *"foo";
-                        ^
+             struct { float b; } a = *"foo";
+                    ^
 test.c:3:17: error: incompatible types when returning type 'struct <anonymous>' but 'struct <anonymous>' was expected
-                 return a;
-                 ^
+             return a;
+             ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct { float b; } x() {
                 struct { float b; } a = *"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf16_9() {
-        /* gcc reports:
+  @Test def test_conf16_9(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:48: error: lvalue required as unary '&' operand
-               struct { float b; } x() { return &1; }
-                                                ^
+           struct { float b; } x() { return &1; }
+                                            ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct { float b; } x() { return &1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:41: error: lvalue required as unary '&' operand
-                 struct { float b; } a = &1;
-                                         ^
+             struct { float b; } a = &1;
+                                     ^
 test.c:3:17: error: incompatible types when returning type 'struct <anonymous>' but 'struct <anonymous>' was expected
-                 return a;
-                 ^
+             return a;
+             ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct { float b; } x() {
                 struct { float b; } a = &1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf17_0() {
-        correct("""
+  @Test def test_conf17_0(): Unit = {
+    correct(
+      """
               volatile int x() { return 0; }
                 """)
-        correct("""
+    correct(
+      """
               volatile int x() {
                 volatile int a = 0;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf17_1() {
-        correct("""
+  @Test def test_conf17_1(): Unit = {
+    correct(
+      """
               volatile int x() { return 1; }
                 """)
-        correct("""
+    correct(
+      """
               volatile int x() {
                 volatile int a = 1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf17_2() {
-        correct("""
+  @Test def test_conf17_2(): Unit = {
+    correct(
+      """
               volatile int x() { return -1; }
                 """)
-        correct("""
+    correct(
+      """
               volatile int x() {
                 volatile int a = -1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf17_3() {
-        correct("""
+  @Test def test_conf17_3(): Unit = {
+    correct(
+      """
               volatile int x() { return 1l; }
                 """)
-        correct("""
+    correct(
+      """
               volatile int x() {
                 volatile int a = 1l;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf17_4() {
-        correct("""
+  @Test def test_conf17_4(): Unit = {
+    correct(
+      """
               volatile int x() { return 0xa4; }
                 """)
-        correct("""
+    correct(
+      """
               volatile int x() {
                 volatile int a = 0xa4;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf17_5() {
-        correct("""
+  @Test def test_conf17_5(): Unit = {
+    correct(
+      """
               volatile int x() { return 0.2; }
                 """)
-        correct("""
+    correct(
+      """
               volatile int x() {
                 volatile int a = 0.2;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf17_6() {
-        /* gcc reports:
+  @Test def test_conf17_6(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:34: warning: return makes integer from pointer without a cast
-               volatile int x() { return "0.2"; }
-                                  ^
+           volatile int x() { return "0.2"; }
+                              ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               volatile int x() { return "0.2"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:34: warning: initialization makes integer from pointer without a cast
-                 volatile int a = "0.2";
-                                  ^
+             volatile int a = "0.2";
+                              ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               volatile int x() {
                 volatile int a = "0.2";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf17_7() {
-        /* gcc reports:
+  @Test def test_conf17_7(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:34: warning: return makes integer from pointer without a cast
-               volatile int x() { return &"foo"; }
-                                  ^
+           volatile int x() { return &"foo"; }
+                              ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               volatile int x() { return &"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:34: warning: initialization makes integer from pointer without a cast
-                 volatile int a = &"foo";
-                                  ^
+             volatile int a = &"foo";
+                              ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               volatile int x() {
                 volatile int a = &"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf17_8() {
-        correct("""
+  @Test def test_conf17_8(): Unit = {
+    correct(
+      """
               volatile int x() { return *"foo"; }
                 """)
-        correct("""
+    correct(
+      """
               volatile int x() {
                 volatile int a = *"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf17_9() {
-        /* gcc reports:
+  @Test def test_conf17_9(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:41: error: lvalue required as unary '&' operand
-               volatile int x() { return &1; }
-                                         ^
+           volatile int x() { return &1; }
+                                     ^
 
-        */
-        error("""
+    */
+    error(
+      """
               volatile int x() { return &1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:34: error: lvalue required as unary '&' operand
-                 volatile int a = &1;
-                                  ^
+             volatile int a = &1;
+                              ^
 
-        */
-        error("""
+    */
+    error(
+      """
               volatile int x() {
                 volatile int a = &1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf18_0() {
-        correct("""
+  @Test def test_conf18_0(): Unit = {
+    correct(
+      """
               const int x() { return 0; }
                 """)
-        correct("""
+    correct(
+      """
               const int x() {
                 const int a = 0;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf18_1() {
-        correct("""
+  @Test def test_conf18_1(): Unit = {
+    correct(
+      """
               const int x() { return 1; }
                 """)
-        correct("""
+    correct(
+      """
               const int x() {
                 const int a = 1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf18_2() {
-        correct("""
+  @Test def test_conf18_2(): Unit = {
+    correct(
+      """
               const int x() { return -1; }
                 """)
-        correct("""
+    correct(
+      """
               const int x() {
                 const int a = -1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf18_3() {
-        correct("""
+  @Test def test_conf18_3(): Unit = {
+    correct(
+      """
               const int x() { return 1l; }
                 """)
-        correct("""
+    correct(
+      """
               const int x() {
                 const int a = 1l;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf18_4() {
-        correct("""
+  @Test def test_conf18_4(): Unit = {
+    correct(
+      """
               const int x() { return 0xa4; }
                 """)
-        correct("""
+    correct(
+      """
               const int x() {
                 const int a = 0xa4;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf18_5() {
-        correct("""
+  @Test def test_conf18_5(): Unit = {
+    correct(
+      """
               const int x() { return 0.2; }
                 """)
-        correct("""
+    correct(
+      """
               const int x() {
                 const int a = 0.2;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf18_6() {
-        /* gcc reports:
+  @Test def test_conf18_6(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:31: warning: return makes integer from pointer without a cast
-               const int x() { return "0.2"; }
-                               ^
+           const int x() { return "0.2"; }
+                           ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               const int x() { return "0.2"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:31: warning: initialization makes integer from pointer without a cast
-                 const int a = "0.2";
-                               ^
+             const int a = "0.2";
+                           ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               const int x() {
                 const int a = "0.2";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf18_7() {
-        /* gcc reports:
+  @Test def test_conf18_7(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:31: warning: return makes integer from pointer without a cast
-               const int x() { return &"foo"; }
-                               ^
+           const int x() { return &"foo"; }
+                           ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               const int x() { return &"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:31: warning: initialization makes integer from pointer without a cast
-                 const int a = &"foo";
-                               ^
+             const int a = &"foo";
+                           ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               const int x() {
                 const int a = &"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf18_8() {
-        correct("""
+  @Test def test_conf18_8(): Unit = {
+    correct(
+      """
               const int x() { return *"foo"; }
                 """)
-        correct("""
+    correct(
+      """
               const int x() {
                 const int a = *"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf18_9() {
-        /* gcc reports:
+  @Test def test_conf18_9(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:38: error: lvalue required as unary '&' operand
-               const int x() { return &1; }
-                                      ^
+           const int x() { return &1; }
+                                  ^
 
-        */
-        error("""
+    */
+    error(
+      """
               const int x() { return &1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:31: error: lvalue required as unary '&' operand
-                 const int a = &1;
-                               ^
+             const int a = &1;
+                           ^
 
-        */
-        error("""
+    */
+    error(
+      """
               const int x() {
                 const int a = &1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf19_0() {
-        correct("""
+  @Test def test_conf19_0(): Unit = {
+    correct(
+      """
               const double x() { return 0; }
                 """)
-        correct("""
+    correct(
+      """
               const double x() {
                 const double a = 0;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf19_1() {
-        correct("""
+  @Test def test_conf19_1(): Unit = {
+    correct(
+      """
               const double x() { return 1; }
                 """)
-        correct("""
+    correct(
+      """
               const double x() {
                 const double a = 1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf19_2() {
-        correct("""
+  @Test def test_conf19_2(): Unit = {
+    correct(
+      """
               const double x() { return -1; }
                 """)
-        correct("""
+    correct(
+      """
               const double x() {
                 const double a = -1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf19_3() {
-        correct("""
+  @Test def test_conf19_3(): Unit = {
+    correct(
+      """
               const double x() { return 1l; }
                 """)
-        correct("""
+    correct(
+      """
               const double x() {
                 const double a = 1l;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf19_4() {
-        correct("""
+  @Test def test_conf19_4(): Unit = {
+    correct(
+      """
               const double x() { return 0xa4; }
                 """)
-        correct("""
+    correct(
+      """
               const double x() {
                 const double a = 0xa4;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf19_5() {
-        correct("""
+  @Test def test_conf19_5(): Unit = {
+    correct(
+      """
               const double x() { return 0.2; }
                 """)
-        correct("""
+    correct(
+      """
               const double x() {
                 const double a = 0.2;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf19_6() {
-        /* gcc reports:
+  @Test def test_conf19_6(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:34: error: incompatible types when returning type 'char *' but 'double' was expected
-               const double x() { return "0.2"; }
-                                  ^
+           const double x() { return "0.2"; }
+                              ^
 
-        */
-        error("""
+    */
+    error(
+      """
               const double x() { return "0.2"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:34: error: incompatible types when initializing type 'double' using type 'char *'
-                 const double a = "0.2";
-                                  ^
+             const double a = "0.2";
+                              ^
 
-        */
-        error("""
+    */
+    error(
+      """
               const double x() {
                 const double a = "0.2";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf19_7() {
-        /* gcc reports:
+  @Test def test_conf19_7(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:34: error: incompatible types when returning type 'char (*)[4]' but 'double' was expected
-               const double x() { return &"foo"; }
-                                  ^
+           const double x() { return &"foo"; }
+                              ^
 
-        */
-        error("""
+    */
+    error(
+      """
               const double x() { return &"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:34: error: incompatible types when initializing type 'double' using type 'char (*)[4]'
-                 const double a = &"foo";
-                                  ^
+             const double a = &"foo";
+                              ^
 
-        */
-        error("""
+    */
+    error(
+      """
               const double x() {
                 const double a = &"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf19_8() {
-        correct("""
+  @Test def test_conf19_8(): Unit = {
+    correct(
+      """
               const double x() { return *"foo"; }
                 """)
-        correct("""
+    correct(
+      """
               const double x() {
                 const double a = *"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf19_9() {
-        /* gcc reports:
+  @Test def test_conf19_9(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:41: error: lvalue required as unary '&' operand
-               const double x() { return &1; }
-                                         ^
+           const double x() { return &1; }
+                                     ^
 
-        */
-        error("""
+    */
+    error(
+      """
               const double x() { return &1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:34: error: lvalue required as unary '&' operand
-                 const double a = &1;
-                                  ^
+             const double a = &1;
+                              ^
 
-        */
-        error("""
+    */
+    error(
+      """
               const double x() {
                 const double a = &1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf20_0() {
-        correct("""
+  @Test def test_conf20_0(): Unit = {
+    correct(
+      """
               volatile double x() { return 0; }
                 """)
-        correct("""
+    correct(
+      """
               volatile double x() {
                 volatile double a = 0;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf20_1() {
-        correct("""
+  @Test def test_conf20_1(): Unit = {
+    correct(
+      """
               volatile double x() { return 1; }
                 """)
-        correct("""
+    correct(
+      """
               volatile double x() {
                 volatile double a = 1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf20_2() {
-        correct("""
+  @Test def test_conf20_2(): Unit = {
+    correct(
+      """
               volatile double x() { return -1; }
                 """)
-        correct("""
+    correct(
+      """
               volatile double x() {
                 volatile double a = -1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf20_3() {
-        correct("""
+  @Test def test_conf20_3(): Unit = {
+    correct(
+      """
               volatile double x() { return 1l; }
                 """)
-        correct("""
+    correct(
+      """
               volatile double x() {
                 volatile double a = 1l;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf20_4() {
-        correct("""
+  @Test def test_conf20_4(): Unit = {
+    correct(
+      """
               volatile double x() { return 0xa4; }
                 """)
-        correct("""
+    correct(
+      """
               volatile double x() {
                 volatile double a = 0xa4;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf20_5() {
-        correct("""
+  @Test def test_conf20_5(): Unit = {
+    correct(
+      """
               volatile double x() { return 0.2; }
                 """)
-        correct("""
+    correct(
+      """
               volatile double x() {
                 volatile double a = 0.2;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf20_6() {
-        /* gcc reports:
+  @Test def test_conf20_6(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:37: error: incompatible types when returning type 'char *' but 'double' was expected
-               volatile double x() { return "0.2"; }
-                                     ^
+           volatile double x() { return "0.2"; }
+                                 ^
 
-        */
-        error("""
+    */
+    error(
+      """
               volatile double x() { return "0.2"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:37: error: incompatible types when initializing type 'double' using type 'char *'
-                 volatile double a = "0.2";
-                                     ^
+             volatile double a = "0.2";
+                                 ^
 
-        */
-        error("""
+    */
+    error(
+      """
               volatile double x() {
                 volatile double a = "0.2";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf20_7() {
-        /* gcc reports:
+  @Test def test_conf20_7(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:37: error: incompatible types when returning type 'char (*)[4]' but 'double' was expected
-               volatile double x() { return &"foo"; }
-                                     ^
+           volatile double x() { return &"foo"; }
+                                 ^
 
-        */
-        error("""
+    */
+    error(
+      """
               volatile double x() { return &"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:37: error: incompatible types when initializing type 'double' using type 'char (*)[4]'
-                 volatile double a = &"foo";
-                                     ^
+             volatile double a = &"foo";
+                                 ^
 
-        */
-        error("""
+    */
+    error(
+      """
               volatile double x() {
                 volatile double a = &"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf20_8() {
-        correct("""
+  @Test def test_conf20_8(): Unit = {
+    correct(
+      """
               volatile double x() { return *"foo"; }
                 """)
-        correct("""
+    correct(
+      """
               volatile double x() {
                 volatile double a = *"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf20_9() {
-        /* gcc reports:
+  @Test def test_conf20_9(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:44: error: lvalue required as unary '&' operand
-               volatile double x() { return &1; }
-                                            ^
+           volatile double x() { return &1; }
+                                        ^
 
-        */
-        error("""
+    */
+    error(
+      """
               volatile double x() { return &1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:37: error: lvalue required as unary '&' operand
-                 volatile double a = &1;
-                                     ^
+             volatile double a = &1;
+                                 ^
 
-        */
-        error("""
+    */
+    error(
+      """
               volatile double x() {
                 volatile double a = &1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf21_0() {
-        correct("""
+  @Test def test_conf21_0(): Unit = {
+    correct(
+      """
               int * x() { return 0; }
                 """)
-        correct("""
+    correct(
+      """
               int * x() {
                 int * a = 0;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf21_1() {
-        /* gcc reports:
+  @Test def test_conf21_1(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:27: warning: return makes pointer from integer without a cast
-               int * x() { return 1; }
-                           ^
+           int * x() { return 1; }
+                       ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               int * x() { return 1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:27: warning: initialization makes pointer from integer without a cast
-                 int * a = 1;
-                           ^
+             int * a = 1;
+                       ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               int * x() {
                 int * a = 1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf21_2() {
-        /* gcc reports:
+  @Test def test_conf21_2(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:27: warning: return makes pointer from integer without a cast
-               int * x() { return -1; }
-                           ^
+           int * x() { return -1; }
+                       ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               int * x() { return -1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:27: warning: initialization makes pointer from integer without a cast
-                 int * a = -1;
-                           ^
+             int * a = -1;
+                       ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               int * x() {
                 int * a = -1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf21_3() {
-        /* gcc reports:
+  @Test def test_conf21_3(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:27: warning: return makes pointer from integer without a cast
-               int * x() { return 1l; }
-                           ^
+           int * x() { return 1l; }
+                       ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               int * x() { return 1l; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:27: warning: initialization makes pointer from integer without a cast
-                 int * a = 1l;
-                           ^
+             int * a = 1l;
+                       ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               int * x() {
                 int * a = 1l;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf21_4() {
-        /* gcc reports:
+  @Test def test_conf21_4(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:27: warning: return makes pointer from integer without a cast
-               int * x() { return 0xa4; }
-                           ^
+           int * x() { return 0xa4; }
+                       ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               int * x() { return 0xa4; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:27: warning: initialization makes pointer from integer without a cast
-                 int * a = 0xa4;
-                           ^
+             int * a = 0xa4;
+                       ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               int * x() {
                 int * a = 0xa4;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf21_5() {
-        /* gcc reports:
+  @Test def test_conf21_5(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:27: error: incompatible types when returning type 'double' but 'int *' was expected
-               int * x() { return 0.2; }
-                           ^
+           int * x() { return 0.2; }
+                       ^
 
-        */
-        error("""
+    */
+    error(
+      """
               int * x() { return 0.2; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:27: error: incompatible types when initializing type 'int *' using type 'double'
-                 int * a = 0.2;
-                           ^
+             int * a = 0.2;
+                       ^
 
-        */
-        error("""
+    */
+    error(
+      """
               int * x() {
                 int * a = 0.2;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf21_6() {
-        /* gcc reports:
+  @Test def test_conf21_6(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:27: warning: return from incompatible pointer type
-               int * x() { return "0.2"; }
-                           ^
+           int * x() { return "0.2"; }
+                       ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               int * x() { return "0.2"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:27: warning: initialization from incompatible pointer type
-                 int * a = "0.2";
-                           ^
+             int * a = "0.2";
+                       ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               int * x() {
                 int * a = "0.2";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf21_7() {
-        /* gcc reports:
+  @Test def test_conf21_7(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:27: warning: return from incompatible pointer type
-               int * x() { return &"foo"; }
-                           ^
+           int * x() { return &"foo"; }
+                       ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               int * x() { return &"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:27: warning: initialization from incompatible pointer type
-                 int * a = &"foo";
-                           ^
+             int * a = &"foo";
+                       ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               int * x() {
                 int * a = &"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf21_8() {
-        /* gcc reports:
+  @Test def test_conf21_8(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:27: warning: return makes pointer from integer without a cast
-               int * x() { return *"foo"; }
-                           ^
+           int * x() { return *"foo"; }
+                       ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               int * x() { return *"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:27: warning: initialization makes pointer from integer without a cast
-                 int * a = *"foo";
-                           ^
+             int * a = *"foo";
+                       ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               int * x() {
                 int * a = *"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf21_9() {
-        /* gcc reports:
+  @Test def test_conf21_9(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:34: error: lvalue required as unary '&' operand
-               int * x() { return &1; }
-                                  ^
+           int * x() { return &1; }
+                              ^
 
-        */
-        error("""
+    */
+    error(
+      """
               int * x() { return &1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:27: error: lvalue required as unary '&' operand
-                 int * a = &1;
-                           ^
+             int * a = &1;
+                       ^
 
-        */
-        error("""
+    */
+    error(
+      """
               int * x() {
                 int * a = &1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf22_0() {
-        correct("""
+  @Test def test_conf22_0(): Unit = {
+    correct(
+      """
               const int * x() { return 0; }
                 """)
-        correct("""
+    correct(
+      """
               const int * x() {
                 const int * a = 0;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf22_1() {
-        /* gcc reports:
+  @Test def test_conf22_1(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:33: warning: return makes pointer from integer without a cast
-               const int * x() { return 1; }
-                                 ^
+           const int * x() { return 1; }
+                             ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               const int * x() { return 1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:33: warning: initialization makes pointer from integer without a cast
-                 const int * a = 1;
-                                 ^
+             const int * a = 1;
+                             ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               const int * x() {
                 const int * a = 1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf22_2() {
-        /* gcc reports:
+  @Test def test_conf22_2(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:33: warning: return makes pointer from integer without a cast
-               const int * x() { return -1; }
-                                 ^
+           const int * x() { return -1; }
+                             ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               const int * x() { return -1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:33: warning: initialization makes pointer from integer without a cast
-                 const int * a = -1;
-                                 ^
+             const int * a = -1;
+                             ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               const int * x() {
                 const int * a = -1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf22_3() {
-        /* gcc reports:
+  @Test def test_conf22_3(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:33: warning: return makes pointer from integer without a cast
-               const int * x() { return 1l; }
-                                 ^
+           const int * x() { return 1l; }
+                             ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               const int * x() { return 1l; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:33: warning: initialization makes pointer from integer without a cast
-                 const int * a = 1l;
-                                 ^
+             const int * a = 1l;
+                             ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               const int * x() {
                 const int * a = 1l;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf22_4() {
-        /* gcc reports:
+  @Test def test_conf22_4(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:33: warning: return makes pointer from integer without a cast
-               const int * x() { return 0xa4; }
-                                 ^
+           const int * x() { return 0xa4; }
+                             ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               const int * x() { return 0xa4; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:33: warning: initialization makes pointer from integer without a cast
-                 const int * a = 0xa4;
-                                 ^
+             const int * a = 0xa4;
+                             ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               const int * x() {
                 const int * a = 0xa4;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf22_5() {
-        /* gcc reports:
+  @Test def test_conf22_5(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:33: error: incompatible types when returning type 'double' but 'const int *' was expected
-               const int * x() { return 0.2; }
-                                 ^
+           const int * x() { return 0.2; }
+                             ^
 
-        */
-        error("""
+    */
+    error(
+      """
               const int * x() { return 0.2; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:33: error: incompatible types when initializing type 'const int *' using type 'double'
-                 const int * a = 0.2;
-                                 ^
+             const int * a = 0.2;
+                             ^
 
-        */
-        error("""
+    */
+    error(
+      """
               const int * x() {
                 const int * a = 0.2;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf22_6() {
-        /* gcc reports:
+  @Test def test_conf22_6(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:33: warning: return from incompatible pointer type
-               const int * x() { return "0.2"; }
-                                 ^
+           const int * x() { return "0.2"; }
+                             ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               const int * x() { return "0.2"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:33: warning: initialization from incompatible pointer type
-                 const int * a = "0.2";
-                                 ^
+             const int * a = "0.2";
+                             ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               const int * x() {
                 const int * a = "0.2";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf22_7() {
-        /* gcc reports:
+  @Test def test_conf22_7(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:33: warning: return from incompatible pointer type
-               const int * x() { return &"foo"; }
-                                 ^
+           const int * x() { return &"foo"; }
+                             ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               const int * x() { return &"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:33: warning: initialization from incompatible pointer type
-                 const int * a = &"foo";
-                                 ^
+             const int * a = &"foo";
+                             ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               const int * x() {
                 const int * a = &"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf22_8() {
-        /* gcc reports:
+  @Test def test_conf22_8(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:33: warning: return makes pointer from integer without a cast
-               const int * x() { return *"foo"; }
-                                 ^
+           const int * x() { return *"foo"; }
+                             ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               const int * x() { return *"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:33: warning: initialization makes pointer from integer without a cast
-                 const int * a = *"foo";
-                                 ^
+             const int * a = *"foo";
+                             ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               const int * x() {
                 const int * a = *"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf22_9() {
-        /* gcc reports:
+  @Test def test_conf22_9(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:40: error: lvalue required as unary '&' operand
-               const int * x() { return &1; }
-                                        ^
+           const int * x() { return &1; }
+                                    ^
 
-        */
-        error("""
+    */
+    error(
+      """
               const int * x() { return &1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:33: error: lvalue required as unary '&' operand
-                 const int * a = &1;
-                                 ^
+             const int * a = &1;
+                             ^
 
-        */
-        error("""
+    */
+    error(
+      """
               const int * x() {
                 const int * a = &1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf23_0() {
-        correct("""
+  @Test def test_conf23_0(): Unit = {
+    correct(
+      """
               volatile int * x() { return 0; }
                 """)
-        correct("""
+    correct(
+      """
               volatile int * x() {
                 volatile int * a = 0;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf23_1() {
-        /* gcc reports:
+  @Test def test_conf23_1(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:36: warning: return makes pointer from integer without a cast
-               volatile int * x() { return 1; }
-                                    ^
+           volatile int * x() { return 1; }
+                                ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               volatile int * x() { return 1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:36: warning: initialization makes pointer from integer without a cast
-                 volatile int * a = 1;
-                                    ^
+             volatile int * a = 1;
+                                ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               volatile int * x() {
                 volatile int * a = 1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf23_2() {
-        /* gcc reports:
+  @Test def test_conf23_2(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:36: warning: return makes pointer from integer without a cast
-               volatile int * x() { return -1; }
-                                    ^
+           volatile int * x() { return -1; }
+                                ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               volatile int * x() { return -1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:36: warning: initialization makes pointer from integer without a cast
-                 volatile int * a = -1;
-                                    ^
+             volatile int * a = -1;
+                                ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               volatile int * x() {
                 volatile int * a = -1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf23_3() {
-        /* gcc reports:
+  @Test def test_conf23_3(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:36: warning: return makes pointer from integer without a cast
-               volatile int * x() { return 1l; }
-                                    ^
+           volatile int * x() { return 1l; }
+                                ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               volatile int * x() { return 1l; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:36: warning: initialization makes pointer from integer without a cast
-                 volatile int * a = 1l;
-                                    ^
+             volatile int * a = 1l;
+                                ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               volatile int * x() {
                 volatile int * a = 1l;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf23_4() {
-        /* gcc reports:
+  @Test def test_conf23_4(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:36: warning: return makes pointer from integer without a cast
-               volatile int * x() { return 0xa4; }
-                                    ^
+           volatile int * x() { return 0xa4; }
+                                ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               volatile int * x() { return 0xa4; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:36: warning: initialization makes pointer from integer without a cast
-                 volatile int * a = 0xa4;
-                                    ^
+             volatile int * a = 0xa4;
+                                ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               volatile int * x() {
                 volatile int * a = 0xa4;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf23_5() {
-        /* gcc reports:
+  @Test def test_conf23_5(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:36: error: incompatible types when returning type 'double' but 'volatile int *' was expected
-               volatile int * x() { return 0.2; }
-                                    ^
+           volatile int * x() { return 0.2; }
+                                ^
 
-        */
-        error("""
+    */
+    error(
+      """
               volatile int * x() { return 0.2; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:36: error: incompatible types when initializing type 'volatile int *' using type 'double'
-                 volatile int * a = 0.2;
-                                    ^
+             volatile int * a = 0.2;
+                                ^
 
-        */
-        error("""
+    */
+    error(
+      """
               volatile int * x() {
                 volatile int * a = 0.2;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf23_6() {
-        /* gcc reports:
+  @Test def test_conf23_6(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:36: warning: return from incompatible pointer type
-               volatile int * x() { return "0.2"; }
-                                    ^
+           volatile int * x() { return "0.2"; }
+                                ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               volatile int * x() { return "0.2"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:36: warning: initialization from incompatible pointer type
-                 volatile int * a = "0.2";
-                                    ^
+             volatile int * a = "0.2";
+                                ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               volatile int * x() {
                 volatile int * a = "0.2";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf23_7() {
-        /* gcc reports:
+  @Test def test_conf23_7(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:36: warning: return from incompatible pointer type
-               volatile int * x() { return &"foo"; }
-                                    ^
+           volatile int * x() { return &"foo"; }
+                                ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               volatile int * x() { return &"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:36: warning: initialization from incompatible pointer type
-                 volatile int * a = &"foo";
-                                    ^
+             volatile int * a = &"foo";
+                                ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               volatile int * x() {
                 volatile int * a = &"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf23_8() {
-        /* gcc reports:
+  @Test def test_conf23_8(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:36: warning: return makes pointer from integer without a cast
-               volatile int * x() { return *"foo"; }
-                                    ^
+           volatile int * x() { return *"foo"; }
+                                ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               volatile int * x() { return *"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:36: warning: initialization makes pointer from integer without a cast
-                 volatile int * a = *"foo";
-                                    ^
+             volatile int * a = *"foo";
+                                ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               volatile int * x() {
                 volatile int * a = *"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf23_9() {
-        /* gcc reports:
+  @Test def test_conf23_9(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:43: error: lvalue required as unary '&' operand
-               volatile int * x() { return &1; }
-                                           ^
+           volatile int * x() { return &1; }
+                                       ^
 
-        */
-        error("""
+    */
+    error(
+      """
               volatile int * x() { return &1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:36: error: lvalue required as unary '&' operand
-                 volatile int * a = &1;
-                                    ^
+             volatile int * a = &1;
+                                ^
 
-        */
-        error("""
+    */
+    error(
+      """
               volatile int * x() {
                 volatile int * a = &1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf24_0() {
-        /* gcc reports:
+  @Test def test_conf24_0(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:26: warning: 'return' with a value, in function returning void
-               void x() { return 0; }
-                          ^
+           void x() { return 0; }
+                      ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               void x() { return 0; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:22: error: variable or field 'a' declared void
-                 void a = 0;
-                      ^
+             void a = 0;
+                  ^
 test.c:3:17: warning: 'return' with a value, in function returning void
-                 return a;
-                 ^
+             return a;
+             ^
 
-        */
-        error("""
+    */
+    error(
+      """
               void x() {
                 void a = 0;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf24_1() {
-        /* gcc reports:
+  @Test def test_conf24_1(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:26: warning: 'return' with a value, in function returning void
-               void x() { return 1; }
-                          ^
+           void x() { return 1; }
+                      ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               void x() { return 1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:22: error: variable or field 'a' declared void
-                 void a = 1;
-                      ^
+             void a = 1;
+                  ^
 test.c:3:17: warning: 'return' with a value, in function returning void
-                 return a;
-                 ^
+             return a;
+             ^
 
-        */
-        error("""
+    */
+    error(
+      """
               void x() {
                 void a = 1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf24_2() {
-        /* gcc reports:
+  @Test def test_conf24_2(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:26: warning: 'return' with a value, in function returning void
-               void x() { return -1; }
-                          ^
+           void x() { return -1; }
+                      ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               void x() { return -1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:22: error: variable or field 'a' declared void
-                 void a = -1;
-                      ^
+             void a = -1;
+                  ^
 test.c:3:17: warning: 'return' with a value, in function returning void
-                 return a;
-                 ^
+             return a;
+             ^
 
-        */
-        error("""
+    */
+    error(
+      """
               void x() {
                 void a = -1;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf24_3() {
-        /* gcc reports:
+  @Test def test_conf24_3(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:26: warning: 'return' with a value, in function returning void
-               void x() { return 1l; }
-                          ^
+           void x() { return 1l; }
+                      ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               void x() { return 1l; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:22: error: variable or field 'a' declared void
-                 void a = 1l;
-                      ^
+             void a = 1l;
+                  ^
 test.c:3:17: warning: 'return' with a value, in function returning void
-                 return a;
-                 ^
+             return a;
+             ^
 
-        */
-        error("""
+    */
+    error(
+      """
               void x() {
                 void a = 1l;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf24_4() {
-        /* gcc reports:
+  @Test def test_conf24_4(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:26: warning: 'return' with a value, in function returning void
-               void x() { return 0xa4; }
-                          ^
+           void x() { return 0xa4; }
+                      ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               void x() { return 0xa4; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:22: error: variable or field 'a' declared void
-                 void a = 0xa4;
-                      ^
+             void a = 0xa4;
+                  ^
 test.c:3:17: warning: 'return' with a value, in function returning void
-                 return a;
-                 ^
+             return a;
+             ^
 
-        */
-        error("""
+    */
+    error(
+      """
               void x() {
                 void a = 0xa4;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf24_5() {
-        /* gcc reports:
+  @Test def test_conf24_5(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:26: warning: 'return' with a value, in function returning void
-               void x() { return 0.2; }
-                          ^
+           void x() { return 0.2; }
+                      ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               void x() { return 0.2; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:22: error: variable or field 'a' declared void
-                 void a = 0.2;
-                      ^
+             void a = 0.2;
+                  ^
 test.c:3:17: warning: 'return' with a value, in function returning void
-                 return a;
-                 ^
+             return a;
+             ^
 
-        */
-        error("""
+    */
+    error(
+      """
               void x() {
                 void a = 0.2;
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf24_6() {
-        /* gcc reports:
+  @Test def test_conf24_6(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:26: warning: 'return' with a value, in function returning void
-               void x() { return "0.2"; }
-                          ^
+           void x() { return "0.2"; }
+                      ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               void x() { return "0.2"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:22: error: variable or field 'a' declared void
-                 void a = "0.2";
-                      ^
+             void a = "0.2";
+                  ^
 test.c:2:26: warning: initialization makes integer from pointer without a cast
-                 void a = "0.2";
-                          ^
+             void a = "0.2";
+                      ^
 test.c:3:17: warning: 'return' with a value, in function returning void
-                 return a;
-                 ^
+             return a;
+             ^
 
-        */
-        error("""
+    */
+    error(
+      """
               void x() {
                 void a = "0.2";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf24_7() {
-        /* gcc reports:
+  @Test def test_conf24_7(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:26: warning: 'return' with a value, in function returning void
-               void x() { return &"foo"; }
-                          ^
+           void x() { return &"foo"; }
+                      ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               void x() { return &"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:22: error: variable or field 'a' declared void
-                 void a = &"foo";
-                      ^
+             void a = &"foo";
+                  ^
 test.c:2:26: warning: initialization makes integer from pointer without a cast
-                 void a = &"foo";
-                          ^
+             void a = &"foo";
+                      ^
 test.c:3:17: warning: 'return' with a value, in function returning void
-                 return a;
-                 ^
+             return a;
+             ^
 
-        */
-        error("""
+    */
+    error(
+      """
               void x() {
                 void a = &"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf24_8() {
-        /* gcc reports:
+  @Test def test_conf24_8(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:26: warning: 'return' with a value, in function returning void
-               void x() { return *"foo"; }
-                          ^
+           void x() { return *"foo"; }
+                      ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               void x() { return *"foo"; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:22: error: variable or field 'a' declared void
-                 void a = *"foo";
-                      ^
+             void a = *"foo";
+                  ^
 test.c:3:17: warning: 'return' with a value, in function returning void
-                 return a;
-                 ^
+             return a;
+             ^
 
-        */
-        error("""
+    */
+    error(
+      """
               void x() {
                 void a = *"foo";
                 return a;
               }
                 """)
-   }
+  }
 
 
-   @Test def test_conf24_9() {
-        /* gcc reports:
+  @Test def test_conf24_9(): Unit = {
+    /* gcc reports:
 test.c: In function 'x':
 test.c:1:33: error: lvalue required as unary '&' operand
-               void x() { return &1; }
-                                 ^
+           void x() { return &1; }
+                             ^
 test.c:1:26: warning: 'return' with a value, in function returning void
-               void x() { return &1; }
-                          ^
+           void x() { return &1; }
+                      ^
 
-        */
-        error("""
+    */
+    error(
+      """
               void x() { return &1; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'x':
 test.c:2:22: error: variable or field 'a' declared void
-                 void a = &1;
-                      ^
+             void a = &1;
+                  ^
 test.c:2:26: error: lvalue required as unary '&' operand
-                 void a = &1;
-                          ^
+             void a = &1;
+                      ^
 test.c:3:17: warning: 'return' with a value, in function returning void
-                 return a;
-                 ^
+             return a;
+             ^
 
-        */
-        error("""
+    */
+    error(
+      """
               void x() {
                 void a = &1;
                 return a;
               }
                 """)
-   }
-
-
+  }
 
 
 }

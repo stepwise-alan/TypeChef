@@ -1,10 +1,9 @@
 package de.fosd.typechef.crewrite
 
-import org.kiama.rewriting.Rewriter._
-
+import de.fosd.typechef.featureexpr.FeatureModel
 import de.fosd.typechef.parser.c._
 import de.fosd.typechef.typesystem.{DeclUseMap, UseDeclMap}
-import de.fosd.typechef.featureexpr.FeatureModel
+import org.bitbucket.inkytonik.kiama.rewriting.Rewriter._
 
 // implements a simple analysis of double-free
 // freeing memory multiple times
@@ -40,106 +39,106 @@ import de.fosd.typechef.featureexpr.FeatureModel
 // F  = flow
 class DoubleFree(env: ASTEnv, dum: DeclUseMap, udm: UseDeclMap, fm: FeatureModel, casestudy: String) extends MonotoneFWIdLab(env, dum, udm, fm) with IntraCFG with CFGHelper with ASTNavigation {
 
-    val freecalls = {
-        if (casestudy == "linux") List("free", "kfree")
-        else if (casestudy == "openssl") List("free", "CRYPTO_free")
-        else List("free")
-    }
+  val freecalls: List[String] = {
+    if (casestudy == "linux") List("free", "kfree")
+    else if (casestudy == "openssl") List("free", "CRYPTO_free")
+    else List("free")
+  }
 
-    def kill(a: AST): L = {
-        var res = l
-        val assignments = manytd(query[AST] {
-            case AssignExpr(target: Id, "=", _) => res ++= fromCache(target, true)
-        })
+  def kill(a: AST): L = {
+    var res = l
+    val assignments = manytd(query[AST] {
+      case AssignExpr(target: Id, "=", _) => res ++= fromCache(target, isKill = true)
+    })
 
-        assignments(a)
-        res
-    }
+    assignments(a)
+    res
+  }
 
-    def gen(a: AST): L = {
-        var res = l
+  def gen(a: AST): L = {
+    var res = l
 
-        // add a free target independent of & and *
-        def addFreeTarget(e: Expr) {
-            // free(_->b)
-            val sp = filterAllASTElems[PointerPostfixSuffix](e)
-            if (!sp.isEmpty) {
-                for (spe <- filterAllASTElems[Id](sp.reverse.head)) res ++= fromCache(spe)
+    // add a free target independent of & and *
+    def addFreeTarget(e: Expr): Unit = {
+      // free(_->b)
+      val sp = filterAllASTElems[PointerPostfixSuffix](e)
+      if (sp.nonEmpty) {
+        for (spe <- filterAllASTElems[Id](sp.reverse.head)) res ++= fromCache(spe)
 
-                return
-            }
+        return
+      }
 
-            // free(a[_])
-            val ap = filterAllASTElems[ArrayAccess](e)
-            if (!ap.isEmpty) {
-                for (ape <- filterAllASTElems[PostfixExpr](e)) {
-                    ape match {
-                        case PostfixExpr(i: Id, ArrayAccess(_)) => res ++= fromCache(i)
-                        case _ =>
-                    }
-                }
-
-                return
-            }
-
-            // free(a)
-            val fp = filterAllASTElems[Id](e)
-
-            for (ni <- fp) res ++= fromCache(ni)
+      // free(a[_])
+      val ap = filterAllASTElems[ArrayAccess](e)
+      if (ap.nonEmpty) {
+        for (ape <- filterAllASTElems[PostfixExpr](e)) {
+          ape match {
+            case PostfixExpr(i: Id, ArrayAccess(_)) => res ++= fromCache(i)
+            case _ =>
+          }
         }
 
+        return
+      }
 
-        val freedpointers = manytd(query[AST] {
-            // realloc(*ptr, size) is used for reallocation of memory
-            case PostfixExpr(Id("realloc"), FunctionCall(l)) => {
-                // realloc has two arguments but more than two elements may be passed to
-                // the function. this is the case when elements form alternative groups, such as,
-                // realloc(#ifdef A aptr #else naptr endif, ...)
-                // so we check from the start whether parameter list elements
-                // form alternative groups. if so we look for Ids in each
-                // of the alternative elements. if not we stop, because then we encounter
-                // a size element.
-                var actx = List(l.exprs.head.condition)
-                var finished = false
+      // free(a)
+      val fp = filterAllASTElems[Id](e)
 
-                for (ni <- filterAllASTElems[Id](l.exprs.head.entry)) res ++= fromCache(ni)
-
-                for (ce <- l.exprs.tail) {
-                    if (actx.reduce(_ or _) isTautology fm)
-                        finished = true
-
-                    if (!finished && actx.forall(_ and ce.condition isContradiction fm)) {
-                        for (ni <- filterAllASTElems[Id](ce.entry)) res ++= fromCache(ni)
-                        actx ::= ce.condition
-                    } else {
-                        finished = true
-                    }
-
-                }
-
-            }
-            // calls to free or to derivatives of free
-            case PostfixExpr(Id(n), FunctionCall(l)) => {
-
-                if (freecalls.contains(n)) {
-                    for (e <- l.exprs) {
-                        addFreeTarget(e.entry)
-                    }
-                }
-            }
-
-        })
-
-        freedpointers(a)
-        res
+      for (ni <- fp) res ++= fromCache(ni)
     }
 
-    protected def F(e: AST) = flow(e)
 
-    protected val i = l
-    protected def b = l
-    protected def combinationOperator(l1: L, l2: L) = union(l1, l2)
+    val freedpointers = manytd(query[AST] {
+      // realloc(*ptr, size) is used for reallocation of memory
+      case PostfixExpr(Id("realloc"), FunctionCall(l)) =>
+        // realloc has two arguments but more than two elements may be passed to
+        // the function. this is the case when elements form alternative groups, such as,
+        // realloc(#ifdef A aptr #else naptr endif, ...)
+        // so we check from the start whether parameter list elements
+        // form alternative groups. if so we look for Ids in each
+        // of the alternative elements. if not we stop, because then we encounter
+        // a size element.
+        var actx = List(l.exprs.head.condition)
+        var finished = false
 
-    protected def infunction(a: AST): L = combinator(a)
-    protected def outfunction(a: AST): L = f_l(a)
+        for (ni <- filterAllASTElems[Id](l.exprs.head.entry)) res ++= fromCache(ni)
+
+        for (ce <- l.exprs.tail) {
+          if (actx.reduce(_ or _) isTautology fm)
+            finished = true
+
+          if (!finished && actx.forall(_ and ce.condition isContradiction fm)) {
+            for (ni <- filterAllASTElems[Id](ce.entry)) res ++= fromCache(ni)
+            actx ::= ce.condition
+          } else {
+            finished = true
+          }
+
+        }
+      // calls to free or to derivatives of free
+      case PostfixExpr(Id(n), FunctionCall(l)) =>
+
+        if (freecalls.contains(n)) {
+          for (e <- l.exprs) {
+            addFreeTarget(e.entry)
+          }
+        }
+
+    })
+
+    freedpointers(a)
+    res
+  }
+
+  protected def F(e: AST): CFG = flow(e)
+
+  protected val i: L = l
+
+  protected def b: L = l
+
+  protected def combinationOperator(l1: L, l2: L): L = union(l1, l2)
+
+  protected def infunction(a: AST): L = combinator(a)
+
+  protected def outfunction(a: AST): L = f_l(a)
 }

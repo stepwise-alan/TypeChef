@@ -1,17 +1,17 @@
 package de.fosd.typechef.parser.test.parsers
 
-import de.fosd.typechef.parser._
-import de.fosd.typechef.featureexpr.{FeatureExpr, FeatureExprFactory}
 import de.fosd.typechef.error.Position
+import de.fosd.typechef.featureexpr.{FeatureExpr, FeatureExprFactory}
+import de.fosd.typechef.parser._
 
 class MyToken(val text: String, val feature: FeatureExpr) extends ProfilingToken {
-  def t() = text
+  def t(): String = text
 
-  def getText = text
+  def getText: String = text
 
-  def getFeature = feature
+  def getFeature: FeatureExpr = feature
 
-  def getPosition = new Position {
+  def getPosition: Position = new Position {
     def getFile = "stream"
 
     def getLine = 1
@@ -19,7 +19,7 @@ class MyToken(val text: String, val feature: FeatureExpr) extends ProfilingToken
     def getColumn = 1
   }
 
-  override def toString = "\"" + text + "\"" + (if (!feature.isTautology()) feature else "")
+  override def toString: String = "\"" + text + "\"" + (if (!feature.isTautology) feature else "")
 
   def isInteger: Boolean = false
 

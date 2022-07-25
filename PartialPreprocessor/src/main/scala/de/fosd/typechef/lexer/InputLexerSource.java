@@ -24,7 +24,6 @@
 package de.fosd.typechef.lexer;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -35,14 +34,14 @@ import java.io.InputStreamReader;
  *
  * @see Source
  */
+@SuppressWarnings("unused")
 public class InputLexerSource extends LexerSource {
     /**
      * Creates a new Source for lexing the given Reader.
      * <p/>
      * Preprocessor directives are honoured within the file.
      */
-    public InputLexerSource(InputStream input)
-            throws IOException {
+    public InputLexerSource(InputStream input) {
         super(
                 new BufferedReader(
                         new InputStreamReader(

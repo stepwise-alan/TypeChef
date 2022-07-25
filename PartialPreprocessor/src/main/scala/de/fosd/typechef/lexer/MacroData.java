@@ -28,24 +28,26 @@ import java.util.List;
  * replacement. The replacement token stream may contain the extra tokens
  * {Token#M_ARG} and {Token#M_STRING}.
  */
+@SuppressWarnings("CommentedOutCode")
 public class MacroData {
     private Source source;
     /*
-      * It's an explicit decision to keep these around here. We don't need to;
-      * the argument token type is M_ARG and the value is the index. The strings
-      * themselves are only used in stringification of the macro, for debugging.
-      */
+     * It's an explicit decision to keep these around here. We don't need to;
+     * the argument token type is M_ARG and the value is the index. The strings
+     * themselves are only used in stringification of the macro, for debugging.
+     */
     private List<String> args;
     private boolean variadic;
-    private List<Token> tokens;
+    private final List<Token> tokens;
 
     public MacroData(Source source) {
         this.source = source;
         this.args = null;
         this.variadic = false;
-        this.tokens = new ArrayList<Token>();
+        this.tokens = new ArrayList<>();
     }
 
+    @SuppressWarnings("unused")
     public MacroData() {
         this(null);
     }
@@ -120,9 +122,9 @@ public class MacroData {
      */
     public void addPaste(Token tok) throws LexerException {
         /*
-           * Given: tok0 * We generate: M_PASTE, tok0, tok1 This extends as per a
-           * stack language: tok0 * M_PASTE, tok0, M_PASTE, tok1, tok2
-           */
+         * Given: tok0 * We generate: M_PASTE, tok0, tok1 This extends as per a
+         * stack language: tok0 * M_PASTE, tok0, M_PASTE, tok1, tok2
+         */
         if (tokens.size() > 0)
             this.tokens.add(tokens.size() - 1, tok);
         else
@@ -134,18 +136,17 @@ public class MacroData {
     }
 
     /*
-      * Paste tokens are inserted before the first of the two pasted tokens, so
-      * it's a kind of bytecode notation. This method swaps them around again. We
-      * know that there will never be two sequential paste tokens, so a boolean
-      * is sufficient.
-      */
+     * Paste tokens are inserted before the first of the two pasted tokens, so
+     * it's a kind of bytecode notation. This method swaps them around again. We
+     * know that there will never be two sequential paste tokens, so a boolean
+     * is sufficient.
+     */
     public String getText() {
         StringBuilder buf = new StringBuilder();
         boolean paste = false;
-        for (int i = 0; i < tokens.size(); i++) {
-            Token tok = tokens.get(i);
+        for (Token tok : tokens) {
             if (tok.getType() == Token.M_PASTE) {
-                assert paste == false : "Two sequential pastes.";
+                assert !paste : "Two sequential pastes.";
                 paste = true;
                 continue;
             } else {

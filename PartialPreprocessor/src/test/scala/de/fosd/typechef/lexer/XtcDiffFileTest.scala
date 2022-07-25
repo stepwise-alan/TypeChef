@@ -1,19 +1,21 @@
 package de.fosd.typechef.lexer
 
+import org.scalatest.funsuite.AnyFunSuite
+
 import java.io.File
 
-import org.scalatest.FunSuite
+class XtcDiffFileTest extends AnyFunSuite with DifferentialTestingFramework {
+  override protected def useXtc(): Boolean = true
 
-class XtcDiffFileTest extends FunSuite with DifferentialTestingFramework {
-    override protected def useXtc(): Boolean = true
-    override protected def status(s: String) = info(s + " /xtc")
+  override protected def status(s: String): Unit = info(s + " /xtc")
 
-    val dir = new File(getClass.getResource("/tc_data").toURI)
-    private def testFile(s: String): Unit = analyzeFile(new File(dir, s), dir)
+  val dir = new File(getClass.getResource("/tc_data").toURI)
+
+  private def testFile(s: String): Unit = analyzeFile(new File(dir, s), dir)
 
 
-    val filesToTest =
-        """counter.c
+  val filesToTest: Array[String] =
+    """counter.c
            alternDiffArities1.c  ifdefnumeric.c          numbers.c
                alternDiffArities2.c  in1.c                   out1.c
                alternativedef.c      in2.c                   selfdef.c
@@ -42,29 +44,29 @@ class XtcDiffFileTest extends FunSuite with DifferentialTestingFramework {
                nesting/termination.c
                nesting/m.c
                ifenabled.c
-        """.split("\\ +").map(_.trim).filter(_.nonEmpty)
+        """.split(" +").map(_.trim).filter(_.nonEmpty)
 
-    val ignoredFiles =
-        """linebreaks.c, line breaks not implemented
-          |test_div_by_zero2.c, incorrect evaluation order
-          |linebreaks2.c, warning in cpp fails in xtc
-          |filebasefile.c, test compares file paths in different formats
-          |filebasefileheader.h, test compares file paths in different formats
-          |ifcondition.c, unclear problem, va-lexing works, but lexing single configuration produces incorrect result
+  val ignoredFiles: Array[(String, String)] =
+    """linebreaks.c, line breaks not implemented
+      |test_div_by_zero2.c, incorrect evaluation order
+      |linebreaks2.c, warning in cpp fails in xtc
+      |filebasefile.c, test compares file paths in different formats
+      |filebasefileheader.h, test compares file paths in different formats
+      |ifcondition.c, unclear problem, va-lexing works, but lexing single configuration produces incorrect result
         """.stripMargin.split("\\n").filter(_.trim.nonEmpty).map(l => {
-            val p = l.indexOf(",");
-            (l.take(p).trim, l.drop(p + 1).trim)
-        })
+      val p = l.indexOf(",")
+      (l.take(p).trim, l.drop(p + 1).trim)
+    })
 
 
-    for ((file, reason) <- ignoredFiles)
-        ignore(file.replace('.', '_') + " - ignored due to lexer bug: " + reason) {
-            testFile(file)
-        }
+  for ((file, reason) <- ignoredFiles)
+    ignore(file.replace('.', '_') + " - ignored due to lexer bug: " + reason) {
+      testFile(file)
+    }
 
-    for (file <- filesToTest)
-        test(file.replace('.', '_') + " - differential testing") {
-            testFile(file)
-        }
+  for (file <- filesToTest)
+    test(file.replace('.', '_') + " - differential testing") {
+      testFile(file)
+    }
 
 }

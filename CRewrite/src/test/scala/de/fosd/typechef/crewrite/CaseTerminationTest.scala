@@ -3,32 +3,32 @@ package de.fosd.typechef.crewrite
 import de.fosd.typechef.parser.c._
 import de.fosd.typechef.typesystem.{CDeclUse, CTypeCache, CTypeSystemFrontend}
 import org.junit.Test
-import org.scalatest.Matchers
+import org.scalatest.matchers.should.Matchers
 
 class CaseTerminationTest extends TestHelper with Matchers with CFGHelper with EnforceTreeHelper {
 
-    def caseTermination(code: String): Boolean = {
-        val tunit = prepareAST[TranslationUnit](parseTranslationUnit(code))
-        val ts = new CTypeSystemFrontend(tunit) with CTypeCache with CDeclUse
-        assert(ts.checkASTSilent, "typecheck fails!")
-        val df = new CIntraAnalysisFrontend(tunit, ts)
-        df.caseTermination()
-    }
+  def caseTermination(code: String): Boolean = {
+    val tunit = prepareAST[TranslationUnit](parseTranslationUnit(code))
+    val ts = new CTypeSystemFrontend(tunit) with CTypeCache with CDeclUse
+    assert(ts.checkASTSilent, "typecheck fails!")
+    val df = new CIntraAnalysisFrontend(tunit, ts)
+    df.caseTermination()
+  }
 
-    @Test def test_simple() {
-        caseTermination(
-            """
+  @Test def test_simple(): Unit = {
+    caseTermination(
+      """
             void foo(int a) {
               switch (a) {
                 case 0: a = 1; break;
               }
             }
             """.stripMargin) should be(true)
-    }
+  }
 
-    @Test def test_case_fallthrough() {
-        caseTermination(
-            """
+  @Test def test_case_fallthrough(): Unit = {
+    caseTermination(
+      """
             void foo(int a) {
               switch (a) {
                 case 1:
@@ -36,8 +36,8 @@ class CaseTerminationTest extends TestHelper with Matchers with CFGHelper with E
               }
             }
             """.stripMargin) should be(false)
-        caseTermination(
-            """
+    caseTermination(
+      """
             void foo(int a) {
               switch (a) {
                 case 1:
@@ -46,8 +46,8 @@ class CaseTerminationTest extends TestHelper with Matchers with CFGHelper with E
               }
             }
             """.stripMargin) should be(true)
-        caseTermination(
-            """
+    caseTermination(
+      """
             void foo(int a) {
               switch (a) {
                 case 1:
@@ -59,8 +59,8 @@ class CaseTerminationTest extends TestHelper with Matchers with CFGHelper with E
               }
             }
             """.stripMargin) should be(false)
-        caseTermination(
-            """
+    caseTermination(
+      """
             void foo(int a) {
               switch (a) {
                 case 1:
@@ -71,8 +71,8 @@ class CaseTerminationTest extends TestHelper with Matchers with CFGHelper with E
               }
             }
             """.stripMargin) should be(true)
-        caseTermination(
-            """
+    caseTermination(
+      """
             void foo(int a) {
               switch (a) {
                 case 1:
@@ -83,11 +83,11 @@ class CaseTerminationTest extends TestHelper with Matchers with CFGHelper with E
               }
             }
             """.stripMargin) should be(true)
-    }
+  }
 
-    @Test def test_nobreak() {
-        caseTermination(
-            """
+  @Test def test_nobreak(): Unit = {
+    caseTermination(
+      """
             void foo(int a) {
               switch (a) {
                 case 0: a = 1;
@@ -95,8 +95,8 @@ class CaseTerminationTest extends TestHelper with Matchers with CFGHelper with E
             }
             """.stripMargin) should be(false)
 
-        caseTermination(
-            """
+    caseTermination(
+      """
             void foo(int a) {
               switch (a) {
                 case 0: a = 1;
@@ -106,8 +106,8 @@ class CaseTerminationTest extends TestHelper with Matchers with CFGHelper with E
               }
             }
             """.stripMargin) should be(false)
-        caseTermination(
-            """
+    caseTermination(
+      """
             void foo(int a) {
             #ifdef A
               switch (a) {
@@ -120,5 +120,5 @@ class CaseTerminationTest extends TestHelper with Matchers with CFGHelper with E
             }
             """.stripMargin) should be(false)
 
-    }
+  }
 }

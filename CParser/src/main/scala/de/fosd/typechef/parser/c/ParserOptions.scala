@@ -1,7 +1,7 @@
 package de.fosd.typechef.parser.c
 
-import de.fosd.typechef.featureexpr.FeatureExpr
 import de.fosd.typechef.error.Position
+import de.fosd.typechef.featureexpr.FeatureExpr
 
 /**
  * Created by IntelliJ IDEA.
@@ -12,24 +12,30 @@ import de.fosd.typechef.error.Position
  */
 
 trait ParserOptions {
-    def simplifyPresenceConditions : Boolean
-    def printParserResult: Boolean
-    def printParserStatistics: Boolean
+  def simplifyPresenceConditions: Boolean
 
-    //callback function to render parser errors, for example to an XML file
-    //returns an object (always null) instead of Unit just for better compatibility to Java code
-    def renderParserError: (FeatureExpr, String, Position) => Object = null
+  def printParserResult: Boolean
+
+  def printParserStatistics: Boolean
+
+  //callback function to render parser errors, for example to an XML file
+  //returns an object (always null) instead of Unit just for better compatibility to Java code
+  def renderParserError: (FeatureExpr, String, Position) => Object = null
 }
 
 object DefaultParserOptions extends ParserOptions {
-    def printParserResult = true
-    def printParserStatistics = true
-    def simplifyPresenceConditions = false
+  def printParserResult = true
+
+  def printParserStatistics = true
+
+  def simplifyPresenceConditions = false
 }
 
 
 object SilentParserOptions extends ParserOptions {
-    def printParserResult = false
-    def printParserStatistics = false
-    def simplifyPresenceConditions = false
+  def printParserResult = false
+
+  def printParserStatistics = false
+
+  def simplifyPresenceConditions = false
 }

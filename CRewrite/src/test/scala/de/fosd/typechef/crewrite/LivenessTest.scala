@@ -5,56 +5,58 @@ import de.fosd.typechef.featureexpr.FeatureExprFactory
 import de.fosd.typechef.parser.c._
 import de.fosd.typechef.typesystem.{CDeclUse, CTypeSystemFrontend}
 import org.junit.{Ignore, Test}
-import org.scalatest.Matchers
+import org.scalatest.matchers.should.Matchers
 
 class LivenessTest extends EnforceTreeHelper with TestHelper with Matchers with IntraCFG with CFGHelper {
 
-    private def runExample(code: String) {
-        val a = prepareAST[FunctionDef](parseFunctionDef(code))
+  private def runExample(code: String): Unit = {
+    val a = prepareAST[FunctionDef](parseFunctionDef(code))
 
-        val env = CASTEnv.createASTEnv(a)
-        val ss = getAllSucc(a.stmt.innerStatements.head.entry, env).map(_._1).filterNot(_.isInstanceOf[FunctionDef])
+    val env = CASTEnv.createASTEnv(a)
+    val ss = getAllSucc(a.stmt.innerStatements.head.entry, env).map(_._1).filterNot(_.isInstanceOf[FunctionDef])
 
-        val ts = new CTypeSystemFrontend(TranslationUnit(List(Opt(FeatureExprFactory.True, a)))) with CDeclUse
-        assert(ts.checkASTSilent, "typecheck fails!")
-        val udm = ts.getUseDeclMap
-        val lv = new Liveness(env, udm, FeatureExprFactory.empty)
+    val ts = new CTypeSystemFrontend(TranslationUnit(List(Opt(FeatureExprFactory.True, a)))) with CDeclUse
+    assert(ts.checkASTSilent, "typecheck fails!")
+    val udm = ts.getUseDeclMap
+    val lv = new Liveness(env, udm, FeatureExprFactory.empty)
 
-        for (s <- ss) {
-            println(PrettyPrinter.print(s) + "  uses: " + lv.gen(s) + "   defines: " + lv.kill(s) +
-                    "  in: " + lv.in(s) + "   out: " + lv.out(s))
-        }
-
+    for (s <- ss) {
+      println(PrettyPrinter.print(s) + "  uses: " + lv.gen(s) + "   defines: " + lv.kill(s) +
+        "  in: " + lv.in(s) + "   out: " + lv.out(s))
     }
 
-    private def runDefinesExample(code: String) = {
-        val a = parseStmt(code)
-        val lv = new Liveness(CASTEnv.createASTEnv(a), null, null)
-        lv.kill(a).map {case (x, f) => (x, f)}
-    }
+  }
 
-    private def runUsesExample(code: String) = {
-        val a = parseStmt(code)
-        val lv = new Liveness(CASTEnv.createASTEnv(a), null, null)
-        lv.gen(a).map {case (x, f) => (x, f)}
-    }
+  private def runDefinesExample(code: String) = {
+    val a = parseStmt(code)
+    val lv = new Liveness(CASTEnv.createASTEnv(a), null, null)
+    lv.kill(a).map { case (x, f) => (x, f) }
+  }
 
-    private def runDeclaresExample(code: String) = {
-        val a = parseDecl(code)
-        val lv = new Liveness(CASTEnv.createASTEnv(a), null, null)
-        lv.declaresVar(a).map {case (x, f) => (x, f)}
-    }
+  private def runUsesExample(code: String) = {
+    val a = parseStmt(code)
+    val lv = new Liveness(CASTEnv.createASTEnv(a), null, null)
+    lv.gen(a).map { case (x, f) => (x, f) }
+  }
 
-    @Test def test_return_function() {
-        runExample( """
+  private def runDeclaresExample(code: String) = {
+    val a = parseDecl(code)
+    val lv = new Liveness(CASTEnv.createASTEnv(a), null, null)
+    lv.declaresVar(a).map { case (x, f) => (x, f) }
+  }
+
+  @Test def test_return_function(): Unit = {
+    runExample(
+      """
       void foo() {
         return foo();
     }
                     """)
-    }
+  }
 
-    @Test def test_standard_liveness_example() {
-        runExample( """
+  @Test def test_standard_liveness_example(): Unit = {
+    runExample(
+      """
       int foo(int a, int b, int c) {
         a = 0;
         l1: b = a + 1;
@@ -64,10 +66,11 @@ class LivenessTest extends EnforceTreeHelper with TestHelper with Matchers with 
         return c;
     }
                     """)
-    }
+  }
 
-    @Test def test_standard_liveness_variability_f() {
-        runExample( """
+  @Test def test_standard_liveness_variability_f(): Unit = {
+    runExample(
+      """
       int foo(int a, int b, int c) {
         a = 0;
         l1: b = a + 1;
@@ -78,10 +81,11 @@ class LivenessTest extends EnforceTreeHelper with TestHelper with Matchers with 
         return c;
     }
                     """)
-    }
+  }
 
-    @Test def test_standard_liveness_variability_notf() {
-        runExample( """
+  @Test def test_standard_liveness_variability_notf(): Unit = {
+    runExample(
+      """
       int foo(int a, int b, int c) {
         a = 0;
         l1: b = a + 1;
@@ -90,10 +94,11 @@ class LivenessTest extends EnforceTreeHelper with TestHelper with Matchers with 
         return c;
     }
                     """)
-    }
+  }
 
-    @Test def test_standard_liveness_variability() {
-        runExample( """
+  @Test def test_standard_liveness_variability(): Unit = {
+    runExample(
+      """
       int foo(int a, int b, int c) {
         a = 0;
         l1: b = a + 1;
@@ -106,10 +111,11 @@ class LivenessTest extends EnforceTreeHelper with TestHelper with Matchers with 
         return c;
     }
                     """)
-    }
+  }
 
-    @Test def test_jens() {
-        runExample( """
+  @Test def test_jens(): Unit = {
+    runExample(
+      """
       int foo(int a, int b) {
         int c = a;
         if (c) {
@@ -123,20 +129,22 @@ class LivenessTest extends EnforceTreeHelper with TestHelper with Matchers with 
         return c;
     }
                     """)
-    }
+  }
 
-    @Test def test_jens_NANB() {
-        runExample( """
+  @Test def test_jens_NANB(): Unit = {
+    runExample(
+      """
       int foo(int a, int b) {
         int c = a;
         if (c) {
         }
     }
                     """)
-    }
+  }
 
-    @Test def test_jens_AB() {
-        runExample( """
+  @Test def test_jens_AB(): Unit = {
+    runExample(
+      """
       int foo(int a, int b) {
         int c = a;
         if (c) {
@@ -146,10 +154,11 @@ class LivenessTest extends EnforceTreeHelper with TestHelper with Matchers with 
         return c;
     }
                     """)
-    }
+  }
 
-    @Test def test_jens_NAB() {
-        runExample( """
+  @Test def test_jens_NAB(): Unit = {
+    runExample(
+      """
       int foo(int a, int b) {
         int c = a;
         if (c) {
@@ -158,10 +167,11 @@ class LivenessTest extends EnforceTreeHelper with TestHelper with Matchers with 
         return c;
     }
                     """)
-    }
+  }
 
-    @Test def test_simple() {
-        runExample( """
+  @Test def test_simple(): Unit = {
+    runExample(
+      """
       int foo(int a, int b) {
         int c = a;
         if (c) {
@@ -173,10 +183,11 @@ class LivenessTest extends EnforceTreeHelper with TestHelper with Matchers with 
         return c;
     }
                     """)
-    }
+  }
 
-    @Test def test_simple_A() {
-        runExample( """
+  @Test def test_simple_A(): Unit = {
+    runExample(
+      """
       int foo(int a, int b) {
         int c = a;
         if (c) {
@@ -186,10 +197,11 @@ class LivenessTest extends EnforceTreeHelper with TestHelper with Matchers with 
         return c;
     }
                     """)
-    }
+  }
 
-    @Test def test_simple_NA() {
-        runExample( """
+  @Test def test_simple_NA(): Unit = {
+    runExample(
+      """
       int foo(int a, int b) {
         int c = a;
         if (c) {
@@ -198,10 +210,11 @@ class LivenessTest extends EnforceTreeHelper with TestHelper with Matchers with 
         return c;
     }
                     """)
-    }
+  }
 
-    @Test def test_simle2() {
-        runExample( """
+  @Test def test_simle2(): Unit = {
+    runExample(
+      """
       int foo() {
         int a;
         int b;
@@ -211,10 +224,11 @@ class LivenessTest extends EnforceTreeHelper with TestHelper with Matchers with 
         #endif
     }
                     """)
-    }
+  }
 
-    @Test def test_simle3() {
-        runExample( """
+  @Test def test_simle3(): Unit = {
+    runExample(
+      """
       int foo() {
         int a;
         #if definedEx(A)
@@ -224,10 +238,11 @@ class LivenessTest extends EnforceTreeHelper with TestHelper with Matchers with 
         #endif
     }
                     """)
-    }
+  }
 
-    @Test def test_simle4() {
-        runExample( """
+  @Test def test_simle4(): Unit = {
+    runExample(
+      """
       int foo(int a, int b, int c, int d, int e) {
         int f = a;
         #if definedEx(A)
@@ -240,10 +255,11 @@ class LivenessTest extends EnforceTreeHelper with TestHelper with Matchers with 
         f = e;
     }
                     """)
-    }
+  }
 
-    @Test def test_sign() {
-        runExample( """
+  @Test def test_sign(): Unit = {
+    runExample(
+      """
       int foo() {
         int x = 0;
         #if definedEx(A)
@@ -254,11 +270,11 @@ class LivenessTest extends EnforceTreeHelper with TestHelper with Matchers with 
         x = 0;
     }
                     """)
-    }
+  }
 
-    @Test def test_simple_alternative() {
-        runExample(
-            """
+  @Test def test_simple_alternative(): Unit = {
+    runExample(
+      """
               int foo() {
                 int x = 0;
                 #ifdef A
@@ -267,10 +283,11 @@ class LivenessTest extends EnforceTreeHelper with TestHelper with Matchers with 
                 int y = x;
               }
             """.stripMargin)
-    }
+  }
 
-    @Test def test_alternative() {
-        runExample( """
+  @Test def test_alternative(): Unit = {
+    runExample(
+      """
       int foo() {
         int x = 0;
         #if definedEx(A)
@@ -281,20 +298,22 @@ class LivenessTest extends EnforceTreeHelper with TestHelper with Matchers with 
         x = 0;
     }
                     """)
-    }
+  }
 
-    @Test def test_kill() {
-        runExample( """
+  @Test def test_kill(): Unit = {
+    runExample(
+      """
       int foo(int a, int b, int c) {
         c = b;
         b = c;
         c = a;
     }
                     """)
-    }
+  }
 
-    @Test def test_kill2() {
-        runExample( """
+  @Test def test_kill2(): Unit = {
+    runExample(
+      """
       int foo(int a, int b, int c) {
         c = b;
         b = c;
@@ -302,10 +321,11 @@ class LivenessTest extends EnforceTreeHelper with TestHelper with Matchers with 
         c = c;
     }
                     """)
-    }
+  }
 
-    @Test def test_shadowing() {
-        runExample( """
+  @Test def test_shadowing(): Unit = {
+    runExample(
+      """
       int foo() {
         int a = 0;
         int b = a;
@@ -317,10 +337,11 @@ class LivenessTest extends EnforceTreeHelper with TestHelper with Matchers with 
         a;
       }
                     """)
-    }
+  }
 
-    @Test def test_shadowing_variable() {
-        runExample( """
+  @Test def test_shadowing_variable(): Unit = {
+    runExample(
+      """
       int foo() {
         int a = 0;
         int b = a;
@@ -333,10 +354,11 @@ class LivenessTest extends EnforceTreeHelper with TestHelper with Matchers with 
         b;
         return a;
       }""")
-    }
+  }
 
-    @Test def test_shadowing2() {
-        runExample( """
+  @Test def test_shadowing2(): Unit = {
+    runExample(
+      """
       int foo() {
         int a = 0;
         int b = a;
@@ -349,20 +371,22 @@ class LivenessTest extends EnforceTreeHelper with TestHelper with Matchers with 
         b;
         return a;
       }""")
-    }
+  }
 
-    @Test def test_nameconflict() {
-        runExample( """
+  @Test def test_nameconflict(): Unit = {
+    runExample(
+      """
       int foo() {
         int a = 0;
         int a1 = 0;
         int a2 = 0;
         int b = a + a1 + a2;
       }""")
-    }
+  }
 
-    @Test def test_DefAUseNotA() {
-        runExample( """
+  @Test def test_DefAUseNotA(): Unit = {
+    runExample(
+      """
       int foo() {
         int a = 0;
         int b = 0;
@@ -379,10 +403,11 @@ class LivenessTest extends EnforceTreeHelper with TestHelper with Matchers with 
         d += 2;
         #endif
       }""")
-    }
+  }
 
-    @Test def test_make_hash() {
-        runExample( """
+  @Test def test_make_hash(): Unit = {
+    runExample(
+      """
       static void make_hash(const char *key, unsigned *start, unsigned *decrement, const int hash_prime) {
       unsigned long hash_num = key[0];
       int len = 1;
@@ -395,11 +420,11 @@ class LivenessTest extends EnforceTreeHelper with TestHelper with Matchers with 
       *decrement = (unsigned) 1 + (hash_num % (hash_prime - 1));
     }
                     """)
-    }
+  }
 
-    @Test def test_simple_for() {
-        runExample(
-            """
+  @Test def test_simple_for(): Unit = {
+    runExample(
+      """
               void foo(int min, int max, int alpha, int* key) {
                 int i, n;
                 for (n = min; n <= max; n++) {
@@ -409,10 +434,11 @@ class LivenessTest extends EnforceTreeHelper with TestHelper with Matchers with 
                 }
               }
             """.stripMargin)
-    }
+  }
 
-    @Test def test_sven() {
-        runExample( """
+  @Test def test_sven(): Unit = {
+    runExample(
+      """
       void foo() {
         int a = 1;
         int b = 0;
@@ -430,10 +456,11 @@ class LivenessTest extends EnforceTreeHelper with TestHelper with Matchers with 
         }
       }
                     """)
-    }
+  }
 
-    @Test def test_rigorosum() {
-        runExample( """
+  @Test def test_rigorosum(): Unit = {
+    runExample(
+      """
       void foo(int a, int b) {
         int c = 1;
         if (a) {
@@ -444,11 +471,11 @@ class LivenessTest extends EnforceTreeHelper with TestHelper with Matchers with 
         }
       }
                     """)
-    }
+  }
 
-    @Test def test_paper() {
-        runExample(
-            """
+  @Test def test_paper(): Unit = {
+    runExample(
+      """
             int foo(int a
             #ifdef B
             , int b
@@ -467,11 +494,11 @@ class LivenessTest extends EnforceTreeHelper with TestHelper with Matchers with 
             return c;
             }
             """.stripMargin)
-    }
+  }
 
-    @Test def test_NNH() {
-        runExample(
-            """
+  @Test def test_NNH(): Unit = {
+    runExample(
+      """
       void foo(int x, int y, int z) {
         x = 2;  // dead code
         y = 4;
@@ -484,11 +511,11 @@ class LivenessTest extends EnforceTreeHelper with TestHelper with Matchers with 
         x = z;
       }
             """)
-    }
+  }
 
-    @Test def test_NNH_var() {
-        runExample(
-            """
+  @Test def test_NNH_var(): Unit = {
+    runExample(
+      """
       void foo(int x, int y, int z) {
         x = 2;   // not dead since x = 1 is variable
         y = 4;
@@ -503,11 +530,11 @@ class LivenessTest extends EnforceTreeHelper with TestHelper with Matchers with 
         x = z;
       }
             """)
-    }
+  }
 
-    @Test def test_nested_loops() {
-        runExample(
-            """
+  @Test def test_nested_loops(): Unit = {
+    runExample(
+      """
 static
 void test1(int *code,
         int *length,
@@ -528,12 +555,12 @@ void test1(int *code,
     }
 }
             """.stripMargin)
-    }
+  }
 
-    // !!! does not terminate !!!
-    @Ignore def test_longsatformulas() {
-        runExample(
-            """
+  // !!! does not terminate !!!
+  @Ignore def test_longsatformulas(): Unit = {
+    runExample(
+      """
               void foo() {
                 int a;
               #ifdef Z
@@ -556,11 +583,11 @@ void test1(int *code,
                  a = 3;
               }
             """.stripMargin)
-    }
+  }
 
-    @Ignore def test_longsatformulas2() {
-        runExample(
-            """
+  @Ignore def test_longsatformulas2(): Unit = {
+    runExample(
+      """
               void foo() {
                 int a;
                 #if defined(Z)
@@ -596,11 +623,11 @@ void test1(int *code,
                  a = 3;
               }
             """.stripMargin)
-    }
+  }
 
-    @Ignore("requires bdd (sat is default) for efficient computation.") def test_longsatformulas3() {
-        runExample(
-            """
+  @Ignore("requires bdd (sat is default) for efficient computation.") def test_longsatformulas3(): Unit = {
+    runExample(
+      """
               void foo() {
                 int a, b, c, d, e, f, g, h;
                 again:;
@@ -626,11 +653,11 @@ void test1(int *code,
                 h = a + b + c + d + e + f + g;
               }
             """.stripMargin)
-    }
+  }
 
-    @Test def test_alex() {
-        runExample(
-            """
+  @Test def test_alex(): Unit = {
+    runExample(
+      """
               void foo() {
                 int a, b, c;
                 again:
@@ -640,580 +667,587 @@ void test1(int *code,
                 else a = b;
               }
             """.stripMargin)
-    }
+  }
 
-    @Test def test_ifcascade() {
-        runExample(
-            """
+  @Test def test_ifcascade(): Unit = {
+    runExample(
+      """
             void foo() {
               int a = 0;
               if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |if (a == 1) a = 2;
-              |while (a == 1)
-              |  continue;
-              |
-              |while (a == 2) {
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |}
-              |while (a == 2) {
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |}
-              |while (a == 2) {
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |}
-              |while (a == 2) {
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |}
-              |while (a == 2) {
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |}
-              |while (a == 2) {
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |}
-              |while (a == 2) {
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |}
-              |while (a == 2) {
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |}
-              |while (a == 2) {
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |}
-              |while (a == 2) {
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |}
-              |while (a == 2) {
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |}
-              |while (a == 2) {
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |}while (a == 2) {
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |}while (a == 2) {
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |}
-              |while (a == 2) {
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |}
-              |while (a == 2) {
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |}while (a == 2) {
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |}while (a == 2) {
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |}while (a == 2) {
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |}while (a == 2) {
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |}
-              |while (a == 2) {
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |}
-              |while (a == 2) {
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |}while (a == 2) {
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |}while (a == 2) {
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |}while (a == 2) {
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |}while (a == 2) {
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |}
-              |while (a == 2) {
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |}
-              |while (a == 2) {
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |}
-              |while (a == 2) {
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |  if (a > 1) a = 3;
-              |}
-              |
-              |
-              |
-              |
-              |
-              |
-              |
-              |
-              |
-              |
-              |
-              |
-              |
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |if (a == 1) a = 2;
+        |while (a == 1)
+        |  continue;
+        |
+        |while (a == 2) {
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |}
+        |while (a == 2) {
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |}
+        |while (a == 2) {
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |}
+        |while (a == 2) {
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |}
+        |while (a == 2) {
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |}
+        |while (a == 2) {
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |}
+        |while (a == 2) {
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |}
+        |while (a == 2) {
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |}
+        |while (a == 2) {
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |}
+        |while (a == 2) {
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |}
+        |while (a == 2) {
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |}
+        |while (a == 2) {
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |}while (a == 2) {
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |}while (a == 2) {
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |}
+        |while (a == 2) {
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |}
+        |while (a == 2) {
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |}while (a == 2) {
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |}while (a == 2) {
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |}while (a == 2) {
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |}while (a == 2) {
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |}
+        |while (a == 2) {
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |}
+        |while (a == 2) {
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |}while (a == 2) {
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |}while (a == 2) {
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |}while (a == 2) {
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |}while (a == 2) {
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |}
+        |while (a == 2) {
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |}
+        |while (a == 2) {
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |}
+        |while (a == 2) {
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |  if (a > 1) a = 3;
+        |}
+        |
+        |
+        |
+        |
+        |
+        |
+        |
+        |
+        |
+        |
+        |
+        |
+        |
             }
             """.stripMargin
-        )
-    }
+    )
+  }
 
 
-    // http://www.exforsys.com/tutorials/c-language/c-expressions.html
-    @Test def test_uses() {
-        runUsesExample("!a;") should be(toMap(Id("a"), FeatureExprFactory.True))
-        runUsesExample("a;") should be(toMap(Id("a"), FeatureExprFactory.True))
-        runUsesExample("a++;") should be(toMap(Id("a"), FeatureExprFactory.True))
-        runUsesExample("++a;") should be(toMap(Id("a"), FeatureExprFactory.True))
-        runUsesExample("a--;") should be(toMap(Id("a"), FeatureExprFactory.True))
-        runUsesExample("--a;") should be(toMap(Id("a"), FeatureExprFactory.True))
-        runUsesExample("a[b];") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
-        runUsesExample("f(a, b, c);") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True), (Id("c"), FeatureExprFactory.True)))
-        runUsesExample("a.b;") should be(toMap(Id("a"), FeatureExprFactory.True))
-        runUsesExample("a->b;") should be(toMap(Id("a"), FeatureExprFactory.True))
-        runUsesExample("return f(a,b,c);") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True), (Id("c"), FeatureExprFactory.True)))
-        runUsesExample( """return f(a,
+  // http://www.exforsys.com/tutorials/c-language/c-expressions.html
+  @Test def test_uses(): Unit = {
+    runUsesExample("!a;") should be(toMap(Id("a"), FeatureExprFactory.True))
+    runUsesExample("a;") should be(toMap(Id("a"), FeatureExprFactory.True))
+    runUsesExample("a++;") should be(toMap(Id("a"), FeatureExprFactory.True))
+    runUsesExample("++a;") should be(toMap(Id("a"), FeatureExprFactory.True))
+    runUsesExample("a--;") should be(toMap(Id("a"), FeatureExprFactory.True))
+    runUsesExample("--a;") should be(toMap(Id("a"), FeatureExprFactory.True))
+    runUsesExample("a[b];") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
+    runUsesExample("f(a, b, c);") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True), (Id("c"), FeatureExprFactory.True)))
+    runUsesExample("a.b;") should be(toMap(Id("a"), FeatureExprFactory.True))
+    runUsesExample("a->b;") should be(toMap(Id("a"), FeatureExprFactory.True))
+    runUsesExample("return f(a,b,c);") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True), (Id("c"), FeatureExprFactory.True)))
+    runUsesExample(
+      """return f(a,
                        #if definedEx(B)
                          b,
                        #endif
                        c);
                         """) should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), fb), (Id("c"), FeatureExprFactory.True)))
-        runUsesExample( """a = (b < 2) ? c : d;
+    runUsesExample(
+      """a = (b < 2) ? c : d;
 
                         """) should be(toMap(Id("b"), FeatureExprFactory.True)) // TODO conditional expressions.
 
-        runUsesExample("&a;") should be(toMap(Id("a"), FeatureExprFactory.True))
-        runUsesExample("*a;") should be(toMap(Id("a"), FeatureExprFactory.True))
-        runUsesExample("!a;") should be(toMap(Id("a"), FeatureExprFactory.True))
-        runUsesExample("~a;") should be(toMap(Id("a"), FeatureExprFactory.True))
-        runUsesExample("-a;") should be(toMap(Id("a"), FeatureExprFactory.True))
-        runUsesExample("+a;") should be(toMap(Id("a"), FeatureExprFactory.True))
+    runUsesExample("&a;") should be(toMap(Id("a"), FeatureExprFactory.True))
+    runUsesExample("*a;") should be(toMap(Id("a"), FeatureExprFactory.True))
+    runUsesExample("!a;") should be(toMap(Id("a"), FeatureExprFactory.True))
+    runUsesExample("~a;") should be(toMap(Id("a"), FeatureExprFactory.True))
+    runUsesExample("-a;") should be(toMap(Id("a"), FeatureExprFactory.True))
+    runUsesExample("+a;") should be(toMap(Id("a"), FeatureExprFactory.True))
 
-        runUsesExample("a * b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
-        runUsesExample("a - b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
-        runUsesExample("a / b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
-        runUsesExample("a % b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
-        runUsesExample("a & b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
-        runUsesExample("a ^ b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
+    runUsesExample("a * b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
+    runUsesExample("a - b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
+    runUsesExample("a / b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
+    runUsesExample("a % b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
+    runUsesExample("a & b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
+    runUsesExample("a ^ b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
 
-        runUsesExample("a && b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
-        runUsesExample("a || b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
-        runUsesExample("a | b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
-        runUsesExample("a << b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
-        runUsesExample("a >> b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
+    runUsesExample("a && b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
+    runUsesExample("a || b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
+    runUsesExample("a | b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
+    runUsesExample("a << b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
+    runUsesExample("a >> b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
 
-        runUsesExample("a = b;") should be(toMap(Id("b"), FeatureExprFactory.True))
-        runUsesExample("a = b++;") should be(toMap(Id("b"), FeatureExprFactory.True))
-        runUsesExample("a *= b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
-        runUsesExample("a += b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
-        runUsesExample("a -= b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
-        runUsesExample("a /= b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
-        runUsesExample("a %= b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
-        runUsesExample("a &= b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
-        runUsesExample("a ^= b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
-        runUsesExample("a |= b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
-        runUsesExample("a >>= b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
-        runUsesExample("a <<= b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
+    runUsesExample("a = b;") should be(toMap(Id("b"), FeatureExprFactory.True))
+    runUsesExample("a = b++;") should be(toMap(Id("b"), FeatureExprFactory.True))
+    runUsesExample("a *= b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
+    runUsesExample("a += b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
+    runUsesExample("a -= b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
+    runUsesExample("a /= b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
+    runUsesExample("a %= b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
+    runUsesExample("a &= b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
+    runUsesExample("a ^= b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
+    runUsesExample("a |= b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
+    runUsesExample("a >>= b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
+    runUsesExample("a <<= b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
 
-        runUsesExample("a == b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
-        runUsesExample("a != b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
-        runUsesExample("a < b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
-        runUsesExample("a > b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
-        runUsesExample("a <= b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
-        runUsesExample("a >= b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
-    }
+    runUsesExample("a == b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
+    runUsesExample("a != b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
+    runUsesExample("a < b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
+    runUsesExample("a > b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
+    runUsesExample("a <= b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
+    runUsesExample("a >= b;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
+  }
 
-    @Test def test_defines() {
-        runDefinesExample("a;") should be(Map())
-        runDefinesExample("a++;") should be(toMap(Id("a"), FeatureExprFactory.True))
-        runDefinesExample("++a;") should be(toMap(Id("a"), FeatureExprFactory.True))
-        runDefinesExample("a[b];") should be(Map())
-        runDefinesExample("f(a, b, c);") should be(Map())
-        runDefinesExample("a.b;") should be(Map())
-        runDefinesExample("a->b;") should be(Map())
+  @Test def test_defines(): Unit = {
+    runDefinesExample("a;") should be(Map())
+    runDefinesExample("a++;") should be(toMap(Id("a"), FeatureExprFactory.True))
+    runDefinesExample("++a;") should be(toMap(Id("a"), FeatureExprFactory.True))
+    runDefinesExample("a[b];") should be(Map())
+    runDefinesExample("f(a, b, c);") should be(Map())
+    runDefinesExample("a.b;") should be(Map())
+    runDefinesExample("a->b;") should be(Map())
 
-        runDefinesExample("&a;") should be(Map())
-        runDefinesExample("*a;") should be(Map())
-        runDefinesExample("!a;") should be(Map())
-        runDefinesExample("~a;") should be(Map())
-        runDefinesExample("-a;") should be(Map())
-        runDefinesExample("+a;") should be(Map())
+    runDefinesExample("&a;") should be(Map())
+    runDefinesExample("*a;") should be(Map())
+    runDefinesExample("!a;") should be(Map())
+    runDefinesExample("~a;") should be(Map())
+    runDefinesExample("-a;") should be(Map())
+    runDefinesExample("+a;") should be(Map())
 
-        runDefinesExample("a * b;") should be(Map())
-        runDefinesExample("a - b;") should be(Map())
-        runDefinesExample("a / b;") should be(Map())
-        runDefinesExample("a % b;") should be(Map())
-        runDefinesExample("a & b;") should be(Map())
-        runDefinesExample("a ^ b;") should be(Map())
+    runDefinesExample("a * b;") should be(Map())
+    runDefinesExample("a - b;") should be(Map())
+    runDefinesExample("a / b;") should be(Map())
+    runDefinesExample("a % b;") should be(Map())
+    runDefinesExample("a & b;") should be(Map())
+    runDefinesExample("a ^ b;") should be(Map())
 
-        runDefinesExample("a && b;") should be(Map())
-        runDefinesExample("a || b;") should be(Map())
-        runDefinesExample("a | b;") should be(Map())
-        runDefinesExample("a << b;") should be(Map())
-        runDefinesExample("a >> b;") should be(Map())
+    runDefinesExample("a && b;") should be(Map())
+    runDefinesExample("a || b;") should be(Map())
+    runDefinesExample("a | b;") should be(Map())
+    runDefinesExample("a << b;") should be(Map())
+    runDefinesExample("a >> b;") should be(Map())
 
-        runDefinesExample("a = b;") should be(toMap(Id("a"), FeatureExprFactory.True))
-        runDefinesExample("a = b++;") should be(toMap(Id("a"), FeatureExprFactory.True))
-        runDefinesExample("a *= b;") should be(toMap(Id("a"), FeatureExprFactory.True))
-        runDefinesExample("a += b;") should be(toMap(Id("a"), FeatureExprFactory.True))
-        runDefinesExample("a -= b;") should be(toMap(Id("a"), FeatureExprFactory.True))
-        runDefinesExample("a /= b;") should be(toMap(Id("a"), FeatureExprFactory.True))
-        runDefinesExample("a %= b;") should be(toMap(Id("a"), FeatureExprFactory.True))
-        runDefinesExample("a &= b;") should be(toMap(Id("a"), FeatureExprFactory.True))
-        runDefinesExample("a ^= b;") should be(toMap(Id("a"), FeatureExprFactory.True))
-        runDefinesExample("a |= b;") should be(toMap(Id("a"), FeatureExprFactory.True))
-        runDefinesExample("a >>= b;") should be(toMap(Id("a"), FeatureExprFactory.True))
-        runDefinesExample("a <<= b;") should be(toMap(Id("a"), FeatureExprFactory.True))
+    runDefinesExample("a = b;") should be(toMap(Id("a"), FeatureExprFactory.True))
+    runDefinesExample("a = b++;") should be(toMap(Id("a"), FeatureExprFactory.True))
+    runDefinesExample("a *= b;") should be(toMap(Id("a"), FeatureExprFactory.True))
+    runDefinesExample("a += b;") should be(toMap(Id("a"), FeatureExprFactory.True))
+    runDefinesExample("a -= b;") should be(toMap(Id("a"), FeatureExprFactory.True))
+    runDefinesExample("a /= b;") should be(toMap(Id("a"), FeatureExprFactory.True))
+    runDefinesExample("a %= b;") should be(toMap(Id("a"), FeatureExprFactory.True))
+    runDefinesExample("a &= b;") should be(toMap(Id("a"), FeatureExprFactory.True))
+    runDefinesExample("a ^= b;") should be(toMap(Id("a"), FeatureExprFactory.True))
+    runDefinesExample("a |= b;") should be(toMap(Id("a"), FeatureExprFactory.True))
+    runDefinesExample("a >>= b;") should be(toMap(Id("a"), FeatureExprFactory.True))
+    runDefinesExample("a <<= b;") should be(toMap(Id("a"), FeatureExprFactory.True))
 
-        runDefinesExample("a == b;") should be(Map())
-        runDefinesExample("a != b;") should be(Map())
-        runDefinesExample("a < b;") should be(Map())
-        runDefinesExample("a > b;") should be(Map())
-        runDefinesExample("a <= b;") should be(Map())
-        runDefinesExample("a >= b;") should be(Map())
-    }
+    runDefinesExample("a == b;") should be(Map())
+    runDefinesExample("a != b;") should be(Map())
+    runDefinesExample("a < b;") should be(Map())
+    runDefinesExample("a > b;") should be(Map())
+    runDefinesExample("a <= b;") should be(Map())
+    runDefinesExample("a >= b;") should be(Map())
+  }
 
-    // http://en.wikipedia.org/wiki/C_data_types
-    @Test def test_declares() {
-        runDeclaresExample("int a = 0;") should be(toMap(Id("a"), FeatureExprFactory.True))
-        runDeclaresExample("int a, b = 0;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
-        runDeclaresExample("int a[10];") should be(toMap(Id("a"), FeatureExprFactory.True))
-        runDeclaresExample("char *c;") should be(toMap(Id("c"), FeatureExprFactory.True))
-        runDeclaresExample("float f;") should be(toMap(Id("f"), FeatureExprFactory.True))
-        runDeclaresExample( """
+  // http://en.wikipedia.org/wiki/C_data_types
+  @Test def test_declares(): Unit = {
+    runDeclaresExample("int a = 0;") should be(toMap(Id("a"), FeatureExprFactory.True))
+    runDeclaresExample("int a, b = 0;") should be(Map((Id("a"), FeatureExprFactory.True), (Id("b"), FeatureExprFactory.True)))
+    runDeclaresExample("int a[10];") should be(toMap(Id("a"), FeatureExprFactory.True))
+    runDeclaresExample("char *c;") should be(toMap(Id("c"), FeatureExprFactory.True))
+    runDeclaresExample("float f;") should be(toMap(Id("f"), FeatureExprFactory.True))
+    runDeclaresExample(
+      """
       struct {
         int i;
       } s;""") should be(toMap(Id("s"), FeatureExprFactory.True))
-        runDeclaresExample( """
+    runDeclaresExample(
+      """
       struct k {
         int i;
       } s;""") should be(toMap(Id("s"), FeatureExprFactory.True))
-        runDeclaresExample( """
+    runDeclaresExample(
+      """
       struct k {
         int i;
       };""") should be(Map())
-        runDeclaresExample( """
+    runDeclaresExample(
+      """
       struct k s;""") should be(Map((Id("s"), FeatureExprFactory.True)))
-        runDeclaresExample( """
+    runDeclaresExample(
+      """
       union {
         int i;
       } u;""") should be(toMap(Id("u"), FeatureExprFactory.True))
-    }
+  }
 
-    private def toMap[A,B](a: A, b: B) = Map(a -> b)
+  private def toMap[A, B](a: A, b: B) = Map(a -> b)
 }

@@ -13,7 +13,6 @@ import xtc.LexerInterface;
 import xtc.XtcMacroFilter;
 import xtc.lang.cpp.CTag;
 import xtc.lang.cpp.PresenceConditionManager;
-import xtc.lang.cpp.Stream;
 import xtc.lang.cpp.Syntax;
 import xtc.tree.Locatable;
 
@@ -30,16 +29,16 @@ public class XtcPreprocessor implements VALexer {
 
     private File file = null;//file is just the name for the file reader. file and fileReader should be null or nonnull at the same time
     private Reader fileReader = null;
-    private List<String> sysIncludes = new ArrayList<String>();
-    private List<String> I = new ArrayList<String>();
-    private List<String> iquIncludes = new ArrayList<String>();
+    private final List<String> sysIncludes = new ArrayList<>();
+    private final List<String> I = new ArrayList<>();
+    private final List<String> iquIncludes = new ArrayList<>();
     private PreprocessorListener listener;
-    private StringBuilder commandLine = new StringBuilder();
+    private final StringBuilder commandLine = new StringBuilder();
     private final XtcMacroFilter macroFilter;
     private final FeatureModel featureModel;
 
 
-    private LexerInterface.ErrorHandler exceptionErrorHandler = new LexerInterface.ErrorHandler() {
+    private final LexerInterface.ErrorHandler exceptionErrorHandler = new LexerInterface.ErrorHandler() {
         final LexerInterface.ErrorHandler defaultErrorHandler = new LexerInterface.ExceptionErrorHandler();
 
         @Override
@@ -69,12 +68,7 @@ public class XtcPreprocessor implements VALexer {
 //    };
 
     public XtcPreprocessor(final MacroFilter tcMacroFilter, FeatureModel featureModel) {
-        this.macroFilter = new XtcMacroFilter() {
-            @Override
-            public boolean isVariable(String macroName) {
-                return tcMacroFilter.flagFilter(macroName);
-            }
-        };
+        this.macroFilter = tcMacroFilter::flagFilter;
         this.featureModel = featureModel;
 
         try {
@@ -89,7 +83,7 @@ public class XtcPreprocessor implements VALexer {
     @Override
     public void addInput(LexerInput source) throws IOException {
         if (source instanceof FileSource) {
-            commandLine.append("#include \"" + ((FileSource) source).file.getAbsolutePath() + "\"\n");
+            commandLine.append("#include \"").append(((FileSource) source).file.getAbsolutePath()).append("\"\n");
         } else if (source instanceof StreamSource) {
             assert file == null : "can support only one file at a time, previously set: " + file;
             file = new File(((StreamSource) source).filename);
@@ -134,7 +128,7 @@ public class XtcPreprocessor implements VALexer {
 
     private void wrapFExpr(String command, FeatureExpr fexpr) {
         if (!fexpr.isTautology())
-            commandLine.append("#if " + fexpr.toTextExpr().replace("definedEx(", "defined(") + "\n");
+            commandLine.append("#if ").append(fexpr.toTextExpr().replace("definedEx(", "defined(")).append("\n");
 
         commandLine.append(command);
 
@@ -170,10 +164,10 @@ public class XtcPreprocessor implements VALexer {
         if (lexers == null) {
             assert (file == null) == (fileReader == null) : "no file given";
 
-            if (file != null && file.getParentFile()!=null)
+            if (file != null && file.getParentFile() != null)
                 I.add(file.getParentFile().getAbsolutePath());
             lexers = LexerInterface.createLexer(commandLine.toString(), fileReader, file, exceptionErrorHandler, iquIncludes, I, sysIncludes, macroFilter);
-            stack = new Stack<FeatureExpr>();
+            stack = new Stack<>();
             stack.push(FeatureExprFactory.True());
         }
         return lexers;
@@ -203,7 +197,7 @@ public class XtcPreprocessor implements VALexer {
 
             if (s.kind() == Syntax.Kind.CONDITIONAL)
                 return new XtcToken(s, stack.peek());
-            Boolean visible = stack.peek().isSatisfiable();
+            boolean visible = stack.peek().isSatisfiable();
             if (visible) {
                 if (s.kind() == Syntax.Kind.LANGUAGE)
                     return new XtcToken(s, stack.peek());
@@ -240,33 +234,29 @@ public class XtcPreprocessor implements VALexer {
 
         BDD bdd = pc.getBDD();
 
-        List allsat;
-        boolean firstTerm;
+        List<?> allsat;
 
         if (bdd.isOne())
             return FeatureExprLib.True();
         if (bdd.isZero()) return FeatureExprLib.False();
 
-        allsat = (List) bdd.allsat();
+        allsat = bdd.allsat();
 
         FeatureExpr result = FeatureExprLib.False();
 
-        firstTerm = true;
         for (Object o : allsat) {
             byte[] sat;
-            boolean first;
 
             FeatureExpr innerResult = FeatureExprLib.True();
 
 
             sat = (byte[]) o;
-            first = true;
             for (int i = 0; i < sat.length; i++)
                 if (sat[i] == 0 || sat[i] == 1) {
                     String fname = pc.getPCManager().vars.getName(i);
 
                     FeatureExpr var;
-                    if (fname.length() > 10 && fname.substring(0, 9).equals("(defined ") && fname.substring(fname.length() - 1).equals(")"))
+                    if (fname.length() > 10 && fname.startsWith("(defined ") && fname.endsWith(")"))
                         var = FeatureExprLib.l().createDefinedExternal(fname.substring(9, fname.length() - 1));
                     else
                         var = new XtcFExprAnalyzer().resolveFExpr(fname);
@@ -283,6 +273,7 @@ public class XtcPreprocessor implements VALexer {
     }
 
 
+    @SuppressWarnings("CommentedOutCode")
     public static class XtcToken implements LexerToken {
 
         public XtcToken(Syntax t, FeatureExpr f) {
@@ -371,11 +362,11 @@ public class XtcPreprocessor implements VALexer {
         public boolean isKeywordOrIdentifier() {
             return isLanguageToken() && (xtcToken.toLanguage().tag() == CTag.IDENTIFIER ||
                     xtcToken.toLanguage().tag() == CTag.TYPEDEFname ||
-                    keywords.contains(xtcToken.toLanguage().tag()));
+                    keywords.contains((CTag) xtcToken.toLanguage().tag()));
 
         }
 
-        static Set<CTag> keywords = new HashSet<CTag>();
+        static Set<CTag> keywords = new HashSet<>();
 
         static {
             keywords.add(CTag.AUTO);

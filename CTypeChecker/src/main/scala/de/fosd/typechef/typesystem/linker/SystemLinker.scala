@@ -5,8 +5,9 @@ import de.fosd.typechef.featureexpr.FeatureExpr
 
 object SystemLinker {
 
-    //taken from http://www.acm.uiuc.edu/webmonkeys/book/c_guide/
-    lazy val stdLibFunctions: Array[String] = """
+  //taken from http://www.acm.uiuc.edu/webmonkeys/book/c_guide/
+  lazy val stdLibFunctions: Array[String] =
+    """
             assert
             errno
 
@@ -166,9 +167,9 @@ object SystemLinker {
     """.trim.split('\n').map(_.trim).filter(_ != "")
 
 
-    //symbols extracted from /usr/lib/libc.so and /lib/ld-linux.so.2 (probably neither accurate not complete)
-    lazy val libcSymbols: Array[String] =
-        """
+  //symbols extracted from /usr/lib/libc.so and /lib/ld-linux.so.2 (probably neither accurate not complete)
+  lazy val libcSymbols: Array[String] =
+    """
     GCC_3.0
     GLIBC_2.0
     GLIBC_2.1
@@ -2517,8 +2518,9 @@ object SystemLinker {
     realloc
         """.trim.split('\n').map(_.trim)
 
-    //from other libraries, ignored for now (sys/String.h, sys/stat.h)
-    lazy val otherLibFunctions: Array[String] = """
+  //from other libraries, ignored for now (sys/String.h, sys/stat.h)
+  lazy val otherLibFunctions: Array[String] =
+    """
             strcasestr
 
             chmod
@@ -2536,17 +2538,18 @@ object SystemLinker {
             swab
         """.trim.split('\n').map(_.trim)
 
-    lazy val allLibs = (libcSymbols ++ stdLibFunctions ++ otherLibFunctions).toSet
+  lazy val allLibs: Set[String] = (libcSymbols ++ stdLibFunctions ++ otherLibFunctions).toSet
 
-    def linkStdLib(interface: CInterface): CInterface =
-        CInterface(
-            interface.featureModel, interface.importedFeatures, interface.declaredFeatures,
-            interface.imports.filter(x => !(allLibs contains x.name)).filter(!_.name.startsWith("__builtin_")),
-            interface.exports
-        )
+  def linkStdLib(interface: CInterface): CInterface =
+    CInterface(
+      interface.featureModel, interface.importedFeatures, interface.declaredFeatures,
+      interface.imports.filter(x => !(allLibs contains x.name)).filter(!_.name.startsWith("__builtin_")),
+      interface.exports
+    )
 
 
-    lazy val selinuxLibFunctions: Array[String] = """
+  lazy val selinuxLibFunctions: Array[String] =
+    """
             __bss_start
             _edata
             _end
@@ -2765,7 +2768,8 @@ object SystemLinker {
             unmap_perm
         """.trim.split('\n').map(_.trim)
 
-    lazy val pamLibFunctions: Array[String] = """
+  lazy val pamLibFunctions: Array[String] =
+    """
 pam_acct_mgmt
 pam_authenticate
 pam_setcred
@@ -2820,13 +2824,15 @@ pam_misc_conv_die_time
 pam_misc_conv_warn_tim
      """.trim.split('\n').map(_.trim)
 
-    def conditionalLinkSelinux(interface: CInterface, condition: FeatureExpr): CInterface = conditionalLinkSymbols(interface, selinuxLibFunctions, condition)
-    def conditionalLinkPam(interface: CInterface, condition: FeatureExpr): CInterface = conditionalLinkSymbols(interface, pamLibFunctions, condition)
-    def conditionalLinkSymbols(interface: CInterface, symbols: Array[String], condition: FeatureExpr): CInterface =
-        CInterface(
-            interface.featureModel, interface.importedFeatures, interface.declaredFeatures,
-            interface.imports.map(x =>
-                if (symbols contains x.name) x.and(condition.not) else x),
-            interface.exports
-        )
+  def conditionalLinkSelinux(interface: CInterface, condition: FeatureExpr): CInterface = conditionalLinkSymbols(interface, selinuxLibFunctions, condition)
+
+  def conditionalLinkPam(interface: CInterface, condition: FeatureExpr): CInterface = conditionalLinkSymbols(interface, pamLibFunctions, condition)
+
+  def conditionalLinkSymbols(interface: CInterface, symbols: Array[String], condition: FeatureExpr): CInterface =
+    CInterface(
+      interface.featureModel, interface.importedFeatures, interface.declaredFeatures,
+      interface.imports.map(x =>
+        if (symbols contains x.name) x.and(condition.not()) else x),
+      interface.exports
+    )
 }

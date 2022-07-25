@@ -104,13 +104,10 @@ public class LexerFrontend {
 
 
     public Conditional<LexerResult> run(final ILexerOptions options, boolean returnTokenList) throws LexerException, IOException {
-        return run(new VALexer.LexerFactory() {
-            @Override
-            public VALexer create(FeatureModel featureModel) {
-                if (options.useXtcLexer())
-                    return new XtcPreprocessor(options.getMacroFilter(), featureModel);
-                return new Preprocessor(options.getMacroFilter(), featureModel);
-            }
+        return run(featureModel -> {
+            if (options.useXtcLexer())
+                return new XtcPreprocessor(options.getMacroFilter(), featureModel);
+            return new Preprocessor(options.getMacroFilter(), featureModel);
         }, options, returnTokenList);
     }
 
@@ -170,7 +167,7 @@ public class LexerFrontend {
         }
 
         LexerError crash = null;
-        List<LexerToken> resultTokenList = new ArrayList<LexerToken>();
+        List<LexerToken> resultTokenList = new ArrayList<>();
         int outputLine = 1;
         try {
             // TokenFilter tokenFilter = new TokenFilter();
@@ -221,7 +218,7 @@ public class LexerFrontend {
         // creating conditional result by nesting the result with all the errors received so far
         Conditional<LexerResult> result = createResult(listener.getLexerErrorList(), resultTokenList, options.getFullFeatureModel());
         if (crash != null)
-            result = new One<LexerResult>(crash);
+            result = new One<>(crash);
 
         if (options.isPrintLexingSuccess())
             System.out.println(printLexingResult(result, FeatureExprFactory.True()));
@@ -230,13 +227,13 @@ public class LexerFrontend {
     }
 
     private Conditional<LexerResult> createResult(List<PreprocessorListener.Pair<FeatureExpr, LexerError>> lexerErrorList, List<LexerToken> resultTokenList, FeatureModel fm) {
-        Conditional<LexerResult> result = new One<LexerResult>(new LexerSuccess(resultTokenList));
+        Conditional<LexerResult> result = new One<>(new LexerSuccess(resultTokenList));
 
-        List<PreprocessorListener.Pair<FeatureExpr, LexerError>> errorList = new ArrayList<PreprocessorListener.Pair<FeatureExpr, LexerError>>(lexerErrorList);
+        List<PreprocessorListener.Pair<FeatureExpr, LexerError>> errorList = new ArrayList<>(lexerErrorList);
         Collections.reverse(errorList);
         for (PreprocessorListener.Pair<FeatureExpr, LexerError> error : errorList)
             if (error._1.isSatisfiable(fm)) {
-                result = new Choice<LexerResult>(error._1, new One<LexerResult>(error._2), result);
+                result = new Choice<>(error._1, new One<>(error._2), result);
             }
 
         return result;
@@ -286,7 +283,7 @@ public class LexerFrontend {
                 return Collections.emptyList();
             }
         } else if (result instanceof Choice) {
-            List<LexerToken> r = new ArrayList<LexerToken>();
+            List<LexerToken> r = new ArrayList<>();
             Choice<LexerResult> choice = (Choice<LexerResult>) result;
             r.addAll(conditionalResultToList(choice.thenBranch(), feature.and(choice.condition())));
             r.addAll(conditionalResultToList(choice.elseBranch(), feature.andNot(choice.condition())));
@@ -323,7 +320,7 @@ public class LexerFrontend {
      */
     public List<LexerToken> parse(String code) throws LexerException,
             IOException {
-        return parse(code, Collections.<String>emptyList(), FeatureExprFactory.empty());
+        return parse(code, Collections.emptyList(), FeatureExprFactory.empty());
     }
 
     public List<LexerToken> parse(String code, List<String> systemIncludePath, FeatureModel featureModel) throws LexerException,
@@ -520,7 +517,7 @@ public class LexerFrontend {
         private final VALexer.LexerInput source;
         private final List<String> systemIncludePath;
         private final FeatureModel featureModel;
-        private final Set<Feature> features = new HashSet<Feature>();
+        private final Set<Feature> features = new HashSet<>();
 
         {
             features.add(Feature.DIGRAPHS);
@@ -574,7 +571,7 @@ public class LexerFrontend {
 
         @Override
         public Set<Warning> getWarnings() {
-            return new HashSet<Warning>(Warning.allWarnings());
+            return new HashSet<>(Warning.allWarnings());
         }
 
         @Override

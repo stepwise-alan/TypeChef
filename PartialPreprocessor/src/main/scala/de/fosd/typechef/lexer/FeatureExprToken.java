@@ -15,7 +15,7 @@ import java.io.PrintWriter;
  * @author kaestner
  */
 public class FeatureExprToken extends SimpleToken {
-    private FeatureExpr expr;
+    private final FeatureExpr expr;
 
     FeatureExprToken(FeatureExpr expr, Source source) {
         super(P_FEATUREEXPR, null/* initial text */, source);
@@ -40,6 +40,7 @@ public class FeatureExprToken extends SimpleToken {
         expr.print(writer);
     }
 
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     public Token clone() {
         return new FeatureExprToken(expr, source);
     }

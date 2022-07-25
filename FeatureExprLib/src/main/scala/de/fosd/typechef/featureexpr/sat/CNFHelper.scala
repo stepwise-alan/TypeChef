@@ -8,50 +8,55 @@ package de.fosd.typechef.featureexpr.sat
 object CNFHelper {
 
 
-    //for testing
-    def isCNF(expr: SATFeatureExpr) = isTrueFalse(expr) || isClause(expr) || (expr match {
-        case And(clauses) => clauses.forall(isClause(_))
-        case e => false
-    })
-    def isClauseOrTF(expr: SATFeatureExpr) = isTrueFalse(expr) || isClause(expr)
-    def isClause(expr: SATFeatureExpr) = isLiteral(expr) || (expr match {
-        case Or(literals) => literals.forall(isLiteral(_))
-        case _ => false
-    })
-    def isLiteral(expr: SATFeatureExpr) = expr match {
-        case x: DefinedExpr => true
-        case Not(DefinedExpr(_)) => true
-        case _ => false
-    }
-    def isLiteralExternal(expr: SATFeatureExpr) = expr match {
-        case x: DefinedExternal => true
-        case Not(x: DefinedExternal) => true
-        case _ => false
-    }
-    def isTrueFalse(expr: SATFeatureExpr) = expr match {
-        case True => true
-        case False => true
-        case _ => false
-    }
+  //for testing
+  def isCNF(expr: SATFeatureExpr): Boolean = isTrueFalse(expr) || isClause(expr) || (expr match {
+    case And(clauses) => clauses.forall(isClause)
+    case _ => false
+  })
 
-    def getCNFClauses(cnfExpr: SATFeatureExpr): Traversable[SATFeatureExpr /*Clause*/ ] = cnfExpr match {
-        case And(clauses) => clauses
-        case e => Set(e)
-    }
+  def isClauseOrTF(expr: SATFeatureExpr): Boolean = isTrueFalse(expr) || isClause(expr)
 
-    def getLiterals(orClause: SATFeatureExpr): Traversable[SATFeatureExpr /*Literal*/ ] = orClause match {
-        case Or(literals) => literals
-        case e => Set(e)
-    }
+  def isClause(expr: SATFeatureExpr): Boolean = isLiteral(expr) || (expr match {
+    case Or(literals) => literals.forall(isLiteral)
+    case _ => false
+  })
 
-    def getDefinedExprs(orClause: SATFeatureExpr): Set[DefinedExpr] = orClause match {
-        case Or(literals) => literals.map(getDefinedExpr(_)).foldLeft[Set[DefinedExpr]](Set())(_ + _)
-        case e => Set(getDefinedExpr(e))
-    }
+  def isLiteral(expr: SATFeatureExpr): Boolean = expr match {
+    case _: DefinedExpr => true
+    case Not(DefinedExpr(_)) => true
+    case _ => false
+  }
 
-    def getDefinedExpr(literal: SATFeatureExpr): DefinedExpr = literal match {
-        case x: DefinedExpr => x
-        case Not(x: DefinedExpr) => x
-        case _ => throw new NoLiteralException(literal)
-    }
+  def isLiteralExternal(expr: SATFeatureExpr): Boolean = expr match {
+    case _: DefinedExternal => true
+    case Not(_: DefinedExternal) => true
+    case _ => false
+  }
+
+  def isTrueFalse(expr: SATFeatureExpr): Boolean = expr match {
+    case True => true
+    case False => true
+    case _ => false
+  }
+
+  def getCNFClauses(cnfExpr: SATFeatureExpr): Iterable[SATFeatureExpr /*Clause*/ ] = cnfExpr match {
+    case And(clauses) => clauses
+    case e => Set(e)
+  }
+
+  def getLiterals(orClause: SATFeatureExpr): Iterable[SATFeatureExpr /*Literal*/ ] = orClause match {
+    case Or(literals) => literals
+    case e => Set(e)
+  }
+
+  def getDefinedExprs(orClause: SATFeatureExpr): Set[DefinedExpr] = orClause match {
+    case Or(literals) => literals.map(getDefinedExpr).foldLeft[Set[DefinedExpr]](Set())(_ + _)
+    case e => Set(getDefinedExpr(e))
+  }
+
+  def getDefinedExpr(literal: SATFeatureExpr): DefinedExpr = literal match {
+    case x: DefinedExpr => x
+    case Not(x: DefinedExpr) => x
+    case _ => throw new NoLiteralException(literal)
+  }
 }

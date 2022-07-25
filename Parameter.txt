@@ -2,7 +2,7 @@ Parameters:
 
   System configuration
     --systemRoot=dir (-r)          Path to system root. Default: '/'.
-    --platfromHeader=file (-h)     Header files with platform macros (create with 'cpp -dM -std=gnu99 -'). Default: 'platform.h'.
+    --platformHeader=file (-h)     Header files with platform macros (create with 'cpp -dM -std=gnu99 -'). Default: 'platform.h'.
     --systemIncludes=dir           System include directory. Default: '$systemRoot/usr/include'.
     --settingsFile=dir (-c)        Property file specifying system root, platform headers, and system include directories.
 
@@ -14,9 +14,9 @@ Parameters:
     --dumpcfg                      Lex, parse, and dump control flow graph
     --output=file (-o)             Path to output files (no extension, creates .pi, .macrodbg etc files).
     --writePI                      Write lexer output into .pi file
-    --debugInterface               Write interface in human readable format (requires --interface)
+    --debugInterface               Write interface in human-readable format (requires --interface)
     --serializeAST                 Write ast to .ast file after parsing.
-    --reuseAST                     Reuse serialized .ast instead of parsing, if availabe.
+    --reuseAST                     Reuse serialized .ast instead of parsing, if available.
     --recordTiming                 Report times for all phases.
     --filePC=file                  Presence condition for the file (format like --featureModelFExpr). Default 'file.pc'.
     --bdd                          Use BDD engine instead of SAT engine (provide as first parameter).

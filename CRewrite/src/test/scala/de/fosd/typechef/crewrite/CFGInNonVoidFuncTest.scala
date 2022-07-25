@@ -3,22 +3,21 @@ package de.fosd.typechef.crewrite
 import de.fosd.typechef.parser.c._
 import de.fosd.typechef.typesystem.{CDeclUse, CTypeCache, CTypeSystemFrontend}
 import org.junit.Test
-import org.scalatest.Matchers
-
-import scala.Predef._
+import org.scalatest.matchers.should.Matchers
 
 class CFGInNonVoidFuncTest extends TestHelper with Matchers with CFGHelper with EnforceTreeHelper {
 
-    def cfgInNonVoidFunc(code: String): Boolean = {
-        val tunit = prepareAST[TranslationUnit](parseTranslationUnit(code))
-        val ts = new CTypeSystemFrontend(tunit) with CTypeCache with CDeclUse
-        assert(ts.checkASTSilent, "typecheck fails!")
-        val cf = new CIntraAnalysisFrontend(tunit, ts)
-        cf.cfgInNonVoidFunc()
-    }
+  def cfgInNonVoidFunc(code: String): Boolean = {
+    val tunit = prepareAST[TranslationUnit](parseTranslationUnit(code))
+    val ts = new CTypeSystemFrontend(tunit) with CTypeCache with CDeclUse
+    assert(ts.checkASTSilent, "typecheck fails!")
+    val cf = new CIntraAnalysisFrontend(tunit, ts)
+    cf.cfgInNonVoidFunc()
+  }
 
-    @Test def test_cfgInNonVoidFunc() {
-        cfgInNonVoidFunc( """
+  @Test def test_cfgInNonVoidFunc(): Unit = {
+    cfgInNonVoidFunc(
+      """
                int f(void) {
                   int a;
                   switch (a) {
@@ -29,7 +28,8 @@ class CFGInNonVoidFuncTest extends TestHelper with Matchers with CFGHelper with 
                }
         """.stripMargin) should be(false)
 
-        cfgInNonVoidFunc( """
+    cfgInNonVoidFunc(
+      """
                    void f(void) {
                       int a;
                       switch (a) {
@@ -39,7 +39,8 @@ class CFGInNonVoidFuncTest extends TestHelper with Matchers with CFGHelper with 
                    }
         """.stripMargin) should be(true)
 
-        cfgInNonVoidFunc( """
+    cfgInNonVoidFunc(
+      """
                    #ifdef A
                    void
                    #else
@@ -52,6 +53,6 @@ class CFGInNonVoidFuncTest extends TestHelper with Matchers with CFGHelper with 
                       #endif
                    }
                             """.stripMargin) should be(true)
-    }
+  }
 }
 

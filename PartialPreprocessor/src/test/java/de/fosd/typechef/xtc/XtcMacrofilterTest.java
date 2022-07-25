@@ -1,7 +1,6 @@
 package de.fosd.typechef.xtc;
 
 import de.fosd.typechef.jcpp.AbstractCheckTests;
-import de.fosd.typechef.lexer.LexerException;
 import de.fosd.typechef.lexer.macrotable.MacroFilter;
 import org.junit.Test;
 
@@ -25,13 +24,14 @@ public class XtcMacrofilterTest extends AbstractCheckTests {
     }
 
     @Test
-    public void testMacrofilterXtc() throws LexerException, IOException {
-        isXtc=true;
+    public void testMacrofilterXtc() throws IOException {
+        isXtc = true;
         testFile("macrofilter/test.c");
     }
+
     @Test
-    public void testMacrofilterJcpp() throws LexerException, IOException {
-        isXtc=false;
+    public void testMacrofilterJcpp() throws IOException {
+        isXtc = false;
         testFile("macrofilter/test.c");
     }
 }

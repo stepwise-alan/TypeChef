@@ -1,24 +1,23 @@
 package de.fosd.typechef.parser.c
 
-import junit.framework._;
-import junit.framework.Assert._
+import de.fosd.typechef.conditional._
+import de.fosd.typechef.featureexpr.FeatureExprFactory._
 import de.fosd.typechef.featureexpr._
 import de.fosd.typechef.parser._
-import org.junit.Test
-import FeatureExprFactory._
-import de.fosd.typechef.conditional._
+import junit.framework._
+import org.junit.Assert._
+import org.junit.{Assert, Test}
 
 class RepOptTest extends TestCase with TestHelper {
   val p = new CParser()
 
-  def assertParseable(code: String, mainProduction: (TokenReader[AbstractToken, CTypeContext], FeatureExpr) => p.MultiParseResult[Any]) {
+  def assertParseable(code: String, mainProduction: (TokenReader[AbstractToken, CTypeContext], FeatureExpr) => p.MultiParseResult[Any]): Unit = {
     val actual = p.parseAny(lex(code.stripMargin), mainProduction)
     System.out.println(actual)
     (actual: @unchecked) match {
-      case p.Success(ast, unparsed) => {
+      case p.Success(_, unparsed) =>
         assertTrue("parser did not reach end of token stream: " + unparsed, unparsed.atEnd)
-        //succeed
-      }
+      //succeed
       case p.NoSuccess(msg, unparsed, inner) =>
         fail(msg + " at " + unparsed + " " + inner)
     }
@@ -27,51 +26,48 @@ class RepOptTest extends TestCase with TestHelper {
   def parseExtList(code: String): (List[Opt[ExternalDef]], TokenReader[AbstractToken, CTypeContext]) = {
     val actual = p.parseAny(lex(code.stripMargin), p.externalList)
     (actual: @unchecked) match {
-      case p.Success(ast, unparsed) => {
+      case p.Success(ast, unparsed) =>
         (ast.asInstanceOf[List[Opt[ExternalDef]]], unparsed);
-        //succeed
-      }
-      case p.NoSuccess(msg, unparsed, inner) => {
+      //succeed
+      case p.NoSuccess(msg, unparsed, inner) =>
         fail(msg + " at " + unparsed + " " + inner)
         (null, unparsed)
-      }
     }
   }
 
-  def assertParseAnyResult(expected: Any, code: String, mainProduction: (TokenReader[AbstractToken, CTypeContext], FeatureExpr) => p.MultiParseResult[Any]) {
+  def assertParseAnyResult(expected: Any, code: String, mainProduction: (TokenReader[AbstractToken, CTypeContext], FeatureExpr) => p.MultiParseResult[Any]): Unit = {
     val actual = p.parseAny(lex(code.stripMargin), mainProduction)
     System.out.println(actual)
     (actual: @unchecked) match {
-      case p.Success(ast, unparsed) => {
+      case p.Success(ast, unparsed) =>
         assertTrue("parser did not reach end of token stream: " + unparsed, unparsed.atEnd)
         assertEquals("incorrect parse result", expected, ast)
-      }
       case p.NoSuccess(msg, unparsed, inner) =>
         fail(msg + " at " + unparsed + " " + inner)
     }
   }
 
-  def assertParseError(code: String, mainProduction: (TokenReader[AbstractToken, CTypeContext], FeatureExpr) => p.MultiParseResult[Any], expectErrorMsg: Boolean = false) {
+  def assertParseError(code: String, mainProduction: (TokenReader[AbstractToken, CTypeContext], FeatureExpr) => p.MultiParseResult[Any], expectErrorMsg: Boolean = false): Unit = {
     val actual = p.parseAny(lex(code.stripMargin), mainProduction)
     System.out.println(actual)
     (actual: @unchecked) match {
-      case p.Success(ast, unparsed) => {
+      case p.Success(ast, unparsed) =>
         if (expectErrorMsg || unparsed.atEnd)
           Assert.fail("parsing succeeded unexpectedly with " + ast + " - " + unparsed)
-      }
-      case p.NoSuccess(msg, unparsed, inner) =>;
+      case p.NoSuccess(_, _, _) =>
     }
   }
 
-  def assertParseError(code: String, productions: List[(TokenReader[AbstractToken, CTypeContext], FeatureExpr) => p.MultiParseResult[Any]]) {
+  def assertParseError(code: String, productions: List[(TokenReader[AbstractToken, CTypeContext], FeatureExpr) => p.MultiParseResult[Any]]): Unit = {
     for (production <- productions)
       assertParseError(code, production)
   }
 
 
   @Test
-  def testRepOptCommonEnd() {
-    var (ast, next) = parseExtList( """
+  def testRepOptCommonEnd(): Unit = {
+    val (ast, next) = parseExtList(
+      """
 #ifdef X
 typedef char a
 #else
@@ -87,8 +83,9 @@ typedef int b;
     assert(next.context.knowsType("b", True))
   }
 
-  def testRepOptMultiFeatureOverlap2() {
-    var (ast, next) = parseExtList( """
+  def testRepOptMultiFeatureOverlap2(): Unit = {
+    val (ast, next) = parseExtList(
+      """
 #ifdef X
 #ifdef Y
 typedef char a
@@ -107,8 +104,9 @@ typedef int b;
     assert(next.context.knowsType("a", True))
   }
 
-  def testRepOptMultiFeatureOverlap7_linux() {
-    var (ast, next) = parseExtList( """
+  def testRepOptMultiFeatureOverlap7_linux(): Unit = {
+    val (ast, next) = parseExtList(
+      """
 #ifdef A
 #ifdef SMP
 
@@ -137,8 +135,9 @@ typedef long y;
     assertEquals(10, ast.size) //and one internal choice node
   }
 
-  def testRepOptMultiFeatureOverlap6_linux() {
-    var (ast, next) = parseExtList( """
+  def testRepOptMultiFeatureOverlap6_linux(): Unit = {
+    val (ast, next) = parseExtList(
+      """
 #ifdef A
 #ifdef CPU
 extern __attribute__((section(".discard"), unused)) char __pcpu_scope_orig_ist;
@@ -194,8 +193,9 @@ typedef long y;
     assert(ast.size == 11)
   }
 
-  def testRepOptMultiFeatureOverlap5_linux() {
-    var (ast, next) = parseExtList( """
+  def testRepOptMultiFeatureOverlap5_linux(): Unit = {
+    val (ast, next) = parseExtList(
+      """
 #ifdef A
 #ifdef CPU
 extern __attribute__((section(".discard"), unused)) char __pcpu_scope_orig_ist;
@@ -232,8 +232,9 @@ typedef long y;
     assert(ast.size == 8)
   }
 
-  def testRepOptMultiFeatureOverlap4() {
-    var (ast, next) = parseExtList( """
+  def testRepOptMultiFeatureOverlap4(): Unit = {
+    val (ast, next) = parseExtList(
+      """
 #ifdef A
 #ifdef B
 typedef char a
@@ -261,8 +262,9 @@ typedef long y;
     assert(ast.size == 8)
   }
 
-  def testRepOptMultiFeatureOverlap3() {
-    var (ast, next) = parseExtList( """
+  def testRepOptMultiFeatureOverlap3(): Unit = {
+    val (ast, next) = parseExtList(
+      """
 #ifdef X
 #ifdef Y
 typedef
@@ -286,8 +288,9 @@ typedef long a;
   }
 
 
-  def testRepOptMultiFeatureOverlap() {
-    var (ast, next) = parseExtList( """
+  def testRepOptMultiFeatureOverlap(): Unit = {
+    val (ast, next) = parseExtList(
+      """
 #ifdef X
 #ifdef Y
 typedef char a
@@ -305,8 +308,9 @@ typedef long a;
     assert(next.context.knowsType("a", True))
   }
 
-  def testRepOptMultiFeature() {
-    var (ast, next) = parseExtList( """
+  def testRepOptMultiFeature(): Unit = {
+    val (ast, next) = parseExtList(
+      """
 #ifdef X
 #ifdef Y
 typedef char a;
@@ -328,8 +332,9 @@ typedef long a;
    * is defined only conditionally XXX
    */
   @Test
-  def testRepOptPlain() {
-    val (ast, next) = parseExtList( """
+  def testRepOptPlain(): Unit = {
+    val (ast, next) = parseExtList(
+      """
 #ifdef X
 typedef char a;
 #else
@@ -339,15 +344,16 @@ typedef int b;
                                     """)
     println(ast)
     println(next)
-    val size = ast.asInstanceOf[List[Opt[ExternalDef]]].size
+    val size = ast.size
     assert(size == 2 || size == 3)
     assert(next.context.knowsType("a", True))
     assert(next.context.knowsType("b", True))
   }
 
   @Test
-  def testRepOptPlain2() {
-    val (ast, next) = parseExtList( """
+  def testRepOptPlain2(): Unit = {
+    val (ast, next) = parseExtList(
+      """
 #ifdef X
 typedef char a;
 typedef char c;
@@ -359,7 +365,7 @@ typedef int b;
                                     """)
     println(ast)
     println(next)
-    assert(ast.asInstanceOf[List[Opt[ExternalDef]]].size == 5)
+    assert(ast.size == 5)
     assert(next.context.knowsType("a", True))
     assert(next.context.knowsType("b", True))
     assert(next.context.knowsType("c", True))
@@ -389,7 +395,7 @@ typedef int b;
 
 
   @Test
-  def testPrintStatistics() {
+  def testPrintStatistics(): Unit = {
     println(p.featureSolverCache.statistics)
   }
 }

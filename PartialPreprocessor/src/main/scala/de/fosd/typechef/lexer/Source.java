@@ -50,16 +50,16 @@ public abstract class Source implements Iterable<Token>, Closeable {
     /* LineNumberReader */
 
     /*
-      * // We can't do this, since we would lose the LexerException private class
-      * Itr implements Iterator { private Token next = null; private void
-      * advance() { try { if (next != null) next = token(); } catch (IOException
-      * e) { throw new UnsupportedOperationException(
-      * "Failed to advance token iterator: " + e.getMessage() ); } } public
-      * boolean hasNext() { return next.getType() != EOF; } public Token next() {
-      * advance(); Token t = next; next = null; return t; } public void remove()
-      * { throw new UnsupportedOperationException(
-      * "Cannot remove tokens from a Source." ); } }
-      */
+     * // We can't do this, since we would lose the LexerException private class
+     * Itr implements Iterator { private Token next = null; private void
+     * advance() { try { if (next != null) next = token(); } catch (IOException
+     * e) { throw new UnsupportedOperationException(
+     * "Failed to advance token iterator: " + e.getMessage() ); } } public
+     * boolean hasNext() { return next.getType() != EOF; } public Token next() {
+     * advance(); Token t = next; next = null; return t; } public void remove()
+     * { throw new UnsupportedOperationException(
+     * "Cannot remove tokens from a Source." ); } }
+     */
 
     public Source() {
         this.parent = null;
@@ -184,14 +184,16 @@ public abstract class Source implements Iterable<Token>, Closeable {
     }
 
     /*
-      * This is an incredibly lazy way of disabling warnings when the source is
-      * not active.
-      */
+     * This is an incredibly lazy way of disabling warnings when the source is
+     * not active.
+     */
     /* pp */void setActive(boolean b) {
         this.active = b;
     }
 
-    /* pp */boolean isActive() {
+    /* pp */
+    @SuppressWarnings("unused")
+    boolean isActive() {
         return active;
     }
 
@@ -216,15 +218,16 @@ public abstract class Source implements Iterable<Token>, Closeable {
      *              line.
      * @return the NL token.
      */
+    @SuppressWarnings("CommentedOutCode")
     public Token skipline(boolean white) throws IOException, LexerException {
-        for (; ;) {
+        for (; ; ) {
             Token tok = token();
             switch (tok.getType()) {
                 case EOF:
                     /*
-                      * There ought to be a newline before EOF. At least, in any
-                      * skipline context.
-                      */
+                     * There ought to be a newline before EOF. At least, in any
+                     * skipline context.
+                     */
                     /* XXX Are we sure about this? */
                     // warning(tok.getLine(), tok.getColumn(),
                     // "No newline before end of file");

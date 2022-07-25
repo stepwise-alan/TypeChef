@@ -1,10 +1,11 @@
 package de.fosd.typechef.typesystem.linker
 
-import org.junit._
+import de.fosd.typechef.featureexpr.FeatureExpr
+import de.fosd.typechef.featureexpr.FeatureExprFactory._
 import de.fosd.typechef.parser.c.{TestHelper, TranslationUnit}
-import java.io.{File, InputStream, FileNotFoundException}
-import de.fosd.typechef.featureexpr.{FeatureExpr, FeatureExprFactory}
-import FeatureExprFactory._
+import org.junit._
+
+import java.io.{File, FileNotFoundException, InputStream}
 
 class InterfaceInferenceDeadCodeDetectionTest extends TestHelper {
 
@@ -13,7 +14,7 @@ class InterfaceInferenceDeadCodeDetectionTest extends TestHelper {
   private def parse(filename: String): TranslationUnit = {
     val start = System.currentTimeMillis
     println("parsing " + filename)
-    var inputStream: InputStream = getClass.getResourceAsStream("/" + folder + filename)
+    val inputStream: InputStream = getClass.getResourceAsStream("/" + folder + filename)
     if (inputStream == null) {
       throw new FileNotFoundException("Input file not found: " + filename)
     }
@@ -24,7 +25,7 @@ class InterfaceInferenceDeadCodeDetectionTest extends TestHelper {
   }
 
 
-  private def checkSerialization(i: CInterface) {
+  private def checkSerialization(i: CInterface): Unit = {
     val inf = new InterfaceWriter {}
     val f = new File("tmp.interface")
     inf.writeInterface(i, f)
@@ -40,45 +41,45 @@ class InterfaceInferenceDeadCodeDetectionTest extends TestHelper {
 
 
   @Test
-  def testDeadCodeDetection {
+  def testDeadCodeDetection(): Unit = {
     val ast = parse("deadcode.pi")
     val interface = new CInferInterface {}.inferInterface(ast)
-//    println(interface)
+    //    println(interface)
     checkSerialization(interface)
 
     def whenImported(s: String): FeatureExpr = interface.imports.filter(_.name == s).map(_.fexpr).fold(False)(_ or _)
 
-    def assertEquivalent(actual: FeatureExpr, expected: FeatureExpr) =
+    def assertEquivalent(actual: FeatureExpr, expected: FeatureExpr): Unit =
       assert(actual equivalentTo expected, "expected " + expected + ", but found " + actual)
 
     assertEquivalent(whenImported("activefunction"), True)
     assertEquivalent(whenImported("activefunction2"), True)
     assert(!interface.imports.exists(_.name == "deadfunction"))
     assertEquivalent(whenImported("sometimesdead"), fx)
-    assertEquivalent(whenImported("sometimesdead2"), fx.not)
+    assertEquivalent(whenImported("sometimesdead2"), fx.not())
     assertEquivalent(whenImported("sometimesdead3"), fx)
-    assertEquivalent(whenImported("sometimesdead4"), fx.not)
-    assertEquivalent(whenImported("sometimesdeadAB"), (fx and fy))
+    assertEquivalent(whenImported("sometimesdead4"), fx.not())
+    assertEquivalent(whenImported("sometimesdeadAB"), fx and fy)
 
 
     assertEquivalent(whenImported("i3"), True)
-    assertEquivalent(whenImported("i1"), fx.not)
-    assertEquivalent(whenImported("i2"), ((fx.not and fy).not))
+    assertEquivalent(whenImported("i1"), fx.not())
+    assertEquivalent(whenImported("i2"), (fx.not() and fy).not())
 
     assertEquivalent(whenImported("t1"), fx)
-    assertEquivalent(whenImported("t2"), (fx orNot fy).not)
-    assertEquivalent(whenImported("t3"), (fx or fy).not)
+    assertEquivalent(whenImported("t2"), (fx orNot fy).not())
+    assertEquivalent(whenImported("t3"), (fx or fy).not())
 
     assertEquivalent(whenImported("s1"), fx)
     assertEquivalent(whenImported("s2"), False)
-    assertEquivalent(whenImported("s3"), fx.not)
+    assertEquivalent(whenImported("s3"), fx.not())
 
     assertEquivalent(whenImported("ignoresizeof"), False)
     assertEquivalent(whenImported("ignoresizeofElse"), False)
     assertEquivalent(whenImported("BUG_bad_PRIO_PROCESS"), False)
 
     assertEquivalent(whenImported("c1"), fx)
-    assertEquivalent(whenImported("c2"), fx.not)
+    assertEquivalent(whenImported("c2"), fx.not())
 
     assertEquivalent(whenImported("deadsizeof1"), False)
     assertEquivalent(whenImported("deadsizeof2"), False)

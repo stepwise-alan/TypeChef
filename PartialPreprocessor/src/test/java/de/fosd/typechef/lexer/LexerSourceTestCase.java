@@ -13,14 +13,15 @@ public class LexerSourceTestCase {
             throws Exception {
         System.out.println("Testing '" + in + "' => " +
                 Arrays.toString(out));
-        StringLexerSource s = new StringLexerSource(in);
+        try (StringLexerSource s = new StringLexerSource(in)) {
 
-        for (int i = 0; i < out.length; i++) {
-            Token tok = s.token();
-            System.out.println("Token is " + tok);
-            assertEquals(out[i], tok.getType());
+            for (int j : out) {
+                Token tok = s.token();
+                System.out.println("Token is " + tok);
+                assertEquals(j, tok.getType());
+            }
+            assertEquals(EOF, s.token().getType());
         }
-        assertEquals(EOF, s.token().getType());
     }
 
     @Test

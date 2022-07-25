@@ -5,12 +5,12 @@ package de.fosd.typechef.typesystem.linker
 trait CFlag
 
 object WeakExport extends CFlag {
-    override def toString = "WeakExport"
+  override def toString = "WeakExport"
 }
 
 //object ExternInlined extends CFlag
 
 object CFlagOps {
-    def mergeOnImports(a: Set[CFlag], b: Set[CFlag]) = a ++ b
+  def mergeOnImports(a: Set[CFlag], b: Set[CFlag]): Set[CFlag] = a ++ b
 
 }

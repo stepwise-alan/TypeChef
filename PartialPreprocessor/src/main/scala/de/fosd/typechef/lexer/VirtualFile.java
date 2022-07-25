@@ -24,10 +24,15 @@ import java.io.IOException;
  */
 public interface VirtualFile {
     // public String getParent();
-    public boolean isFile();
-    public String getPath();
-    public String getName();
-    public VirtualFile getParentFile();
-    public VirtualFile getChildFile(String name);
-    public Source getSource() throws IOException;
+    boolean isFile();
+
+    String getPath();
+
+    String getName();
+
+    VirtualFile getParentFile();
+
+    VirtualFile getChildFile(String name);
+
+    Source getSource() throws IOException;
 }

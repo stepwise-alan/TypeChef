@@ -10,8 +10,8 @@ public class Java15ParserTokenManager implements Java15ParserConstants {
         debugStream = ds;
     }
 
-    private final int jjStopStringLiteralDfa_0(int pos, long active0,
-                                               long active1) {
+    private int jjStopStringLiteralDfa_0(int pos, long active0,
+                                         long active1) {
         switch (pos) {
             case 0:
                 if ((active0 & 0x140L) != 0L || (active1 & 0x2010000000000L) != 0L)
@@ -124,18 +124,18 @@ public class Java15ParserTokenManager implements Java15ParserConstants {
         }
     }
 
-    private final int jjStartNfa_0(int pos, long active0, long active1) {
+    private int jjStartNfa_0(int pos, long active0, long active1) {
         return jjMoveNfa_0(jjStopStringLiteralDfa_0(pos, active0, active1),
                 pos + 1);
     }
 
-    private final int jjStopAtPos(int pos, int kind) {
+    private int jjStopAtPos(int pos, int kind) {
         jjmatchedKind = kind;
         jjmatchedPos = pos;
         return pos + 1;
     }
 
-    private final int jjStartNfaWithStates_0(int pos, int kind, int state) {
+    private int jjStartNfaWithStates_0(int pos, int kind, int state) {
         jjmatchedKind = kind;
         jjmatchedPos = pos;
         try {
@@ -146,7 +146,7 @@ public class Java15ParserTokenManager implements Java15ParserConstants {
         return jjMoveNfa_0(state, pos + 1);
     }
 
-    private final int jjMoveStringLiteralDfa0_0() {
+    private int jjMoveStringLiteralDfa0_0() {
         switch (curChar) {
             case 33:
                 jjmatchedKind = 89;
@@ -248,7 +248,7 @@ public class Java15ParserTokenManager implements Java15ParserConstants {
         }
     }
 
-    private final int jjMoveStringLiteralDfa1_0(long active0, long active1) {
+    private int jjMoveStringLiteralDfa1_0(long active0, long active1) {
         try {
             curChar = input_stream.readChar();
         } catch (java.io.IOException e) {
@@ -376,8 +376,8 @@ public class Java15ParserTokenManager implements Java15ParserConstants {
         return jjStartNfa_0(0, active0, active1);
     }
 
-    private final int jjMoveStringLiteralDfa2_0(long old0, long active0,
-                                                long old1, long active1) {
+    private int jjMoveStringLiteralDfa2_0(long old0, long active0,
+                                          long old1, long active1) {
         if (((active0 &= old0) | (active1 &= old1)) == 0L)
             return jjStartNfa_0(0, old0, old1);
         try {
@@ -460,8 +460,8 @@ public class Java15ParserTokenManager implements Java15ParserConstants {
         return jjStartNfa_0(1, active0, active1);
     }
 
-    private final int jjMoveStringLiteralDfa3_0(long old0, long active0,
-                                                long old1, long active1) {
+    private int jjMoveStringLiteralDfa3_0(long old0, long active0,
+                                          long old1, long active1) {
         if (((active0 &= old0) | (active1 &= old1)) == 0L)
             return jjStartNfa_0(1, old0, old1);
         try {
@@ -549,8 +549,8 @@ public class Java15ParserTokenManager implements Java15ParserConstants {
         return jjStartNfa_0(2, active0, active1);
     }
 
-    private final int jjMoveStringLiteralDfa4_0(long old0, long active0,
-                                                long old1, long active1) {
+    private int jjMoveStringLiteralDfa4_0(long old0, long active0,
+                                          long old1, long active1) {
         if (((active0 &= old0) | (active1 &= old1)) == 0L)
             return jjStartNfa_0(2, old0, old1);
         try {
@@ -629,8 +629,8 @@ public class Java15ParserTokenManager implements Java15ParserConstants {
         return jjStartNfa_0(3, active0, active1);
     }
 
-    private final int jjMoveStringLiteralDfa5_0(long old0, long active0,
-                                                long old1, long active1) {
+    private int jjMoveStringLiteralDfa5_0(long old0, long active0,
+                                          long old1, long active1) {
         if (((active0 &= old0) | (active1 &= old1)) == 0L)
             return jjStartNfa_0(3, old0, old1);
         try {
@@ -700,8 +700,8 @@ public class Java15ParserTokenManager implements Java15ParserConstants {
         return jjStartNfa_0(4, active0, active1);
     }
 
-    private final int jjMoveStringLiteralDfa6_0(long old0, long active0,
-                                                long old1, long active1) {
+    private int jjMoveStringLiteralDfa6_0(long old0, long active0,
+                                          long old1, long active1) {
         if (((active0 &= old0) | (active1 &= old1)) == 0L)
             return jjStartNfa_0(4, old0, old1);
         try {
@@ -757,8 +757,8 @@ public class Java15ParserTokenManager implements Java15ParserConstants {
         return jjStartNfa_0(5, active0, active1);
     }
 
-    private final int jjMoveStringLiteralDfa7_0(long old0, long active0,
-                                                long old1, long active1) {
+    private int jjMoveStringLiteralDfa7_0(long old0, long active0,
+                                          long old1, long active1) {
         if (((active0 &= old0) | (active1 &= old1)) == 0L)
             return jjStartNfa_0(5, old0, old1);
         try {
@@ -795,9 +795,9 @@ public class Java15ParserTokenManager implements Java15ParserConstants {
         return jjStartNfa_0(6, active0, active1);
     }
 
-    private final int jjMoveStringLiteralDfa8_0(long old0, long active0,
-                                                long old1, long active1) {
-        if (((active0 &= old0) | (active1 &= old1)) == 0L)
+    private int jjMoveStringLiteralDfa8_0(long old0, long active0,
+                                          long old1, @SuppressWarnings("SameParameterValue") long active1) {
+        if (((active0 &= old0) | active1 & old1) == 0L)
             return jjStartNfa_0(6, old0, old1);
         try {
             curChar = input_stream.readChar();
@@ -828,7 +828,7 @@ public class Java15ParserTokenManager implements Java15ParserConstants {
         return jjStartNfa_0(7, active0, 0L);
     }
 
-    private final int jjMoveStringLiteralDfa9_0(long old0, long active0) {
+    private int jjMoveStringLiteralDfa9_0(long old0, long active0) {
         if (((active0 &= old0)) == 0L)
             return jjStartNfa_0(7, old0, 0L);
         try {
@@ -854,7 +854,7 @@ public class Java15ParserTokenManager implements Java15ParserConstants {
         return jjStartNfa_0(8, active0, 0L);
     }
 
-    private final int jjMoveStringLiteralDfa10_0(long old0, long active0) {
+    private int jjMoveStringLiteralDfa10_0(long old0, @SuppressWarnings("SameParameterValue") long active0) {
         if (((active0 &= old0)) == 0L)
             return jjStartNfa_0(8, old0, 0L);
         try {
@@ -863,16 +863,13 @@ public class Java15ParserTokenManager implements Java15ParserConstants {
             jjStopStringLiteralDfa_0(9, active0, 0L);
             return 10;
         }
-        switch (curChar) {
-            case 101:
-                return jjMoveStringLiteralDfa11_0(active0, 0x100000000000000L);
-            default:
-                break;
+        if (curChar == 101) {
+            return jjMoveStringLiteralDfa11_0(active0, 0x100000000000000L);
         }
         return jjStartNfa_0(9, active0, 0L);
     }
 
-    private final int jjMoveStringLiteralDfa11_0(long old0, long active0) {
+    private int jjMoveStringLiteralDfa11_0(long old0, @SuppressWarnings("SameParameterValue") long active0) {
         if (((active0 &= old0)) == 0L)
             return jjStartNfa_0(9, old0, 0L);
         try {
@@ -881,42 +878,38 @@ public class Java15ParserTokenManager implements Java15ParserConstants {
             jjStopStringLiteralDfa_0(10, active0, 0L);
             return 11;
         }
-        switch (curChar) {
-            case 100:
-                if ((active0 & 0x100000000000000L) != 0L)
-                    return jjStartNfaWithStates_0(11, 56, 32);
-                break;
-            default:
-                break;
+        if (curChar == 100) {
+            if ((active0 & 0x100000000000000L) != 0L)
+                return jjStartNfaWithStates_0(11, 56, 32);
         }
         return jjStartNfa_0(10, active0, 0L);
     }
 
-    private final void jjCheckNAdd(int state) {
+    private void jjCheckNAdd(int state) {
         if (jjrounds[state] != jjround) {
             jjstateSet[jjnewStateCnt++] = state;
             jjrounds[state] = jjround;
         }
     }
 
-    private final void jjAddStates(int start, int end) {
+    private void jjAddStates(int start, int end) {
         do {
             jjstateSet[jjnewStateCnt++] = jjnextStates[start];
         } while (start++ != end);
     }
 
-    private final void jjCheckNAddTwoStates(int state1, int state2) {
+    private void jjCheckNAddTwoStates(int state1, int state2) {
         jjCheckNAdd(state1);
         jjCheckNAdd(state2);
     }
 
-    private final void jjCheckNAddStates(int start, int end) {
+    private void jjCheckNAddStates(int start, int end) {
         do {
             jjCheckNAdd(jjnextStates[start]);
         } while (start++ != end);
     }
 
-    private final void jjCheckNAddStates(int start) {
+    private void jjCheckNAddStates(int start) {
         jjCheckNAdd(jjnextStates[start]);
         jjCheckNAdd(jjnextStates[start + 1]);
     }
@@ -936,19 +929,19 @@ public class Java15ParserTokenManager implements Java15ParserConstants {
             0x0L, 0x0L};
     static final long[] jjbitVec8 = {0x3fffffffffffL, 0x0L, 0x0L, 0x0L};
 
-    private final int jjMoveNfa_0(int startState, int curPos) {
+    @SuppressWarnings("DuplicatedCode")
+    private int jjMoveNfa_0(int startState, int curPos) {
         int[] nextStates;
         int startsAt = 0;
         jjnewStateCnt = 52;
         int i = 1;
         jjstateSet[0] = startState;
         int j, kind = 0x7fffffff;
-        for (; ;) {
+        for (; ; ) {
             if (++jjround == 0x7fffffff)
                 ReInitRounds();
             if (curChar < 64) {
                 long l = 1L << curChar;
-                MatchLoop:
                 do {
                     switch (jjstateSet[--i]) {
                         case 3:
@@ -1188,8 +1181,7 @@ public class Java15ParserTokenManager implements Java15ParserConstants {
                     }
                 } while (i != startsAt);
             } else if (curChar < 128) {
-                long l = 1L << (curChar & 077);
-                MatchLoop:
+                long l = 1L << (curChar & 0x3F);
                 do {
                     switch (jjstateSet[--i]) {
                         case 3:
@@ -1268,12 +1260,11 @@ public class Java15ParserTokenManager implements Java15ParserConstants {
                     }
                 } while (i != startsAt);
             } else {
-                int hiByte = (int) (curChar >> 8);
+                int hiByte = curChar >> 8;
                 int i1 = hiByte >> 6;
-                long l1 = 1L << (hiByte & 077);
+                long l1 = 1L << (hiByte & 0x3F);
                 int i2 = (curChar & 0xff) >> 6;
-                long l2 = 1L << (curChar & 077);
-                MatchLoop:
+                long l2 = 1L << (curChar & 0x3F);
                 do {
                     switch (jjstateSet[--i]) {
                         case 3:
@@ -1317,49 +1308,45 @@ public class Java15ParserTokenManager implements Java15ParserConstants {
         }
     }
 
-    private final int jjMoveStringLiteralDfa0_3() {
-        switch (curChar) {
-            case 42:
-                return jjMoveStringLiteralDfa1_3(0x800L);
-            default:
-                return 1;
+    private int jjMoveStringLiteralDfa0_3() {
+        if (curChar == 42) {
+            return jjMoveStringLiteralDfa1_3(0x800L);
         }
+        return 1;
     }
 
-    private final int jjMoveStringLiteralDfa1_3(long active0) {
+    private int jjMoveStringLiteralDfa1_3(@SuppressWarnings("SameParameterValue") long active0) {
         try {
             curChar = input_stream.readChar();
         } catch (java.io.IOException e) {
             return 1;
         }
-        switch (curChar) {
-            case 47:
-                if ((active0 & 0x800L) != 0L)
-                    return jjStopAtPos(1, 11);
-                break;
-            default:
-                return 2;
+        if (curChar == 47) {
+            if ((active0 & 0x800L) != 0L)
+                return jjStopAtPos(1, 11);
+        } else {
+            return 2;
         }
         return 2;
     }
 
-    private final int jjMoveStringLiteralDfa0_1() {
+    private int jjMoveStringLiteralDfa0_1() {
         return jjMoveNfa_1(0, 0);
     }
 
-    private final int jjMoveNfa_1(int startState, int curPos) {
+    @SuppressWarnings("DuplicatedCode")
+    private int jjMoveNfa_1(@SuppressWarnings("SameParameterValue") int startState, @SuppressWarnings("SameParameterValue") int curPos) {
         int[] nextStates;
         int startsAt = 0;
         jjnewStateCnt = 3;
         int i = 1;
         jjstateSet[0] = startState;
         int j, kind = 0x7fffffff;
-        for (; ;) {
+        for (; ; ) {
             if (++jjround == 0x7fffffff)
                 ReInitRounds();
             if (curChar < 64) {
                 long l = 1L << curChar;
-                MatchLoop:
                 do {
                     switch (jjstateSet[--i]) {
                         case 0:
@@ -1383,26 +1370,18 @@ public class Java15ParserTokenManager implements Java15ParserConstants {
                     }
                 } while (i != startsAt);
             } else if (curChar < 128) {
-                long l = 1L << (curChar & 077);
-                MatchLoop:
+                long l = 1L << (curChar & 0x3F);
                 do {
-                    switch (jjstateSet[--i]) {
-                        default:
-                            break;
-                    }
+                    --i;
                 } while (i != startsAt);
             } else {
-                int hiByte = (int) (curChar >> 8);
+                int hiByte = curChar >> 8;
                 int i1 = hiByte >> 6;
-                long l1 = 1L << (hiByte & 077);
+                long l1 = 1L << (hiByte & 0x3F);
                 int i2 = (curChar & 0xff) >> 6;
-                long l2 = 1L << (curChar & 077);
-                MatchLoop:
+                long l2 = 1L << (curChar & 0x3F);
                 do {
-                    switch (jjstateSet[--i]) {
-                        default:
-                            break;
-                    }
+                    --i;
                 } while (i != startsAt);
             }
             if (kind != 0x7fffffff) {
@@ -1421,28 +1400,24 @@ public class Java15ParserTokenManager implements Java15ParserConstants {
         }
     }
 
-    private final int jjMoveStringLiteralDfa0_2() {
-        switch (curChar) {
-            case 42:
-                return jjMoveStringLiteralDfa1_2(0x400L);
-            default:
-                return 1;
+    private int jjMoveStringLiteralDfa0_2() {
+        if (curChar == 42) {
+            return jjMoveStringLiteralDfa1_2(0x400L);
         }
+        return 1;
     }
 
-    private final int jjMoveStringLiteralDfa1_2(long active0) {
+    private int jjMoveStringLiteralDfa1_2(@SuppressWarnings("SameParameterValue") long active0) {
         try {
             curChar = input_stream.readChar();
         } catch (java.io.IOException e) {
             return 1;
         }
-        switch (curChar) {
-            case 47:
-                if ((active0 & 0x400L) != 0L)
-                    return jjStopAtPos(1, 10);
-                break;
-            default:
-                return 2;
+        if (curChar == 47) {
+            if ((active0 & 0x400L) != 0L)
+                return jjStopAtPos(1, 10);
+        } else {
+            return 2;
         }
         return 2;
     }
@@ -1451,20 +1426,16 @@ public class Java15ParserTokenManager implements Java15ParserConstants {
             14, 16, 49, 51, 6, 8, 9, 12, 23, 24, 28, 26, 36, 37, 12, 44, 45,
             12, 10, 11, 17, 18, 20, 25, 27, 29, 38, 39, 42, 43, 46, 47,};
 
-    private static final boolean jjCanMove_0(int hiByte, int i1, int i2,
-                                             long l1, long l2) {
-        switch (hiByte) {
-            case 0:
-                return ((jjbitVec2[i2] & l2) != 0L);
-            default:
-                if ((jjbitVec0[i1] & l1) != 0L)
-                    return true;
-                return false;
+    private static boolean jjCanMove_0(int hiByte, int i1, int i2,
+                                       long l1, long l2) {
+        if (hiByte == 0) {
+            return ((jjbitVec2[i2] & l2) != 0L);
         }
+        return (jjbitVec0[i1] & l1) != 0L;
     }
 
-    private static final boolean jjCanMove_1(int hiByte, int i1, int i2,
-                                             long l1, long l2) {
+    private static boolean jjCanMove_1(int hiByte, int i1, int i2,
+                                       long l1, long l2) {
         switch (hiByte) {
             case 0:
                 return ((jjbitVec4[i2] & l2) != 0L);
@@ -1477,9 +1448,7 @@ public class Java15ParserTokenManager implements Java15ParserConstants {
             case 61:
                 return ((jjbitVec8[i2] & l2) != 0L);
             default:
-                if ((jjbitVec3[i1] & l1) != 0L)
-                    return true;
-                return false;
+                return (jjbitVec3[i1] & l1) != 0L;
         }
     }
 
@@ -1557,10 +1526,10 @@ public class Java15ParserTokenManager implements Java15ParserConstants {
         ReInitRounds();
     }
 
-    private final void ReInitRounds() {
+    private void ReInitRounds() {
         int i;
         jjround = 0x80000001;
-        for (i = 52; i-- > 0;)
+        for (i = 52; i-- > 0; )
             jjrounds[i] = 0x80000000;
     }
 
@@ -1606,7 +1575,7 @@ public class Java15ParserTokenManager implements Java15ParserConstants {
         int curPos = 0;
 
         EOFLoop:
-        for (; ;) {
+        for (; ; ) {
             try {
                 curChar = input_stream.BeginToken();
             } catch (java.io.IOException e) {
@@ -1618,7 +1587,7 @@ public class Java15ParserTokenManager implements Java15ParserConstants {
             image = null;
             jjimageLen = 0;
 
-            for (; ;) {
+            for (; ; ) {
                 switch (curLexState) {
                     case 0:
                         try {
@@ -1661,14 +1630,14 @@ public class Java15ParserTokenManager implements Java15ParserConstants {
                 if (jjmatchedKind != 0x7fffffff) {
                     if (jjmatchedPos + 1 < curPos)
                         input_stream.backup(curPos - jjmatchedPos - 1);
-                    if ((jjtoToken[jjmatchedKind >> 6] & (1L << (jjmatchedKind & 077))) != 0L) {
+                    if ((jjtoToken[jjmatchedKind >> 6] & (1L << (jjmatchedKind & 0x3F))) != 0L) {
                         matchedToken = jjFillToken();
                         matchedToken.specialToken = specialToken;
                         if (jjnewLexState[jjmatchedKind] != -1)
                             curLexState = jjnewLexState[jjmatchedKind];
                         return matchedToken;
-                    } else if ((jjtoSkip[jjmatchedKind >> 6] & (1L << (jjmatchedKind & 077))) != 0L) {
-                        if ((jjtoSpecial[jjmatchedKind >> 6] & (1L << (jjmatchedKind & 077))) != 0L) {
+                    } else if ((jjtoSkip[jjmatchedKind >> 6] & (1L << (jjmatchedKind & 0x3F))) != 0L) {
+                        if ((jjtoSpecial[jjmatchedKind >> 6] & (1L << (jjmatchedKind & 0x3F))) != 0L) {
                             matchedToken = jjFillToken();
                             if (specialToken == null)
                                 specialToken = matchedToken;
@@ -1691,7 +1660,7 @@ public class Java15ParserTokenManager implements Java15ParserConstants {
                     try {
                         curChar = input_stream.readChar();
                         continue;
-                    } catch (java.io.IOException e1) {
+                    } catch (java.io.IOException ignored) {
                     }
                 }
                 int error_line = input_stream.getEndLine();
@@ -1722,24 +1691,16 @@ public class Java15ParserTokenManager implements Java15ParserConstants {
     }
 
     void SkipLexicalActions(Token matchedToken) {
-        switch (jjmatchedKind) {
-            default:
-                break;
-        }
     }
 
     void MoreLexicalActions() {
         jjimageLen += (lengthOfMatch = jjmatchedPos + 1);
-        switch (jjmatchedKind) {
-            case 7:
-                if (image == null)
-                    image = new StringBuffer();
-                image.append(input_stream.GetSuffix(jjimageLen));
-                jjimageLen = 0;
-                input_stream.backup(1);
-                break;
-            default:
-                break;
+        if (jjmatchedKind == 7) {
+            if (image == null)
+                image = new StringBuffer();
+            image.append(input_stream.GetSuffix(jjimageLen));
+            jjimageLen = 0;
+            input_stream.backup(1);
         }
     }
 }

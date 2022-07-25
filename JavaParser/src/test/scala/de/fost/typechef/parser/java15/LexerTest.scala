@@ -1,13 +1,14 @@
 package de.fost.typechef.parser.java15
 
 
-import org.junit.Test
-import org.junit.Assert._
-import de.fosd.typechef.parser.java15.lexer._
-import de.fosd.typechef.parser.java15._
-import de.fosd.typechef.parser._
-import java.io._
 import de.fosd.typechef.featureexpr.FeatureExprFactory
+import de.fosd.typechef.parser._
+import de.fosd.typechef.parser.java15._
+import de.fosd.typechef.parser.java15.lexer._
+import org.junit.Assert._
+import org.junit.Test
+
+import java.io._
 
 class LexerTest {
 
@@ -19,8 +20,9 @@ class LexerTest {
   }
 
   @Test
-  def testLexerBasic() {
-    val lexer = createLexer( """/* aa */
+  def testLexerBasic(): Unit = {
+    val lexer = createLexer(
+      """/* aa */
         	class
         	//#ifdef X
         	test {}
@@ -35,58 +37,64 @@ class LexerTest {
   }
 
   @Test
-  def testJavaLexer() {
+  def testJavaLexer(): Unit = {
     val result: TokenReader[TokenWrapper, Null] = JavaLexer.lex("class Test {}")
     assertEquals(4, result.tokens.size)
-    assertTrue(result.tokens.forall(_.getFeature().isTautology))
+    assertTrue(result.tokens.forall(_.getFeature.isTautology))
   }
 
   @Test
-  def testJavaLexerIfdef1() {
-    val result: TokenReader[TokenWrapper, Null] = JavaLexer.lex( """//#ifdef X
+  def testJavaLexerIfdef1(): Unit = {
+    val result: TokenReader[TokenWrapper, Null] = JavaLexer.lex(
+      """//#ifdef X
 class Test {}
 //#endif
                                                                  """)
     assertEquals(4, result.tokens.size)
-    assertTrue(result.tokens.forall(_.getFeature().equivalentTo(FeatureExprFactory.createDefinedExternal("X"))))
+    assertTrue(result.tokens.forall(_.getFeature.equivalentTo(FeatureExprFactory.createDefinedExternal("X"))))
   }
 
   @Test
-  def testJavaLexerIfdef2() {
-    val result: TokenReader[TokenWrapper, Null] = JavaLexer.lex( """//#ifdef X
+  def testJavaLexerIfdef2(): Unit = {
+    val result: TokenReader[TokenWrapper, Null] = JavaLexer.lex(
+      """//#ifdef X
 //docu
 class Test {}
 //#endif
                                                                  """)
     assertEquals(4, result.tokens.size)
-    assertTrue(result.tokens.forall(_.getFeature().equivalentTo(FeatureExprFactory.createDefinedExternal("X"))))
+    assertTrue(result.tokens.forall(_.getFeature.equivalentTo(FeatureExprFactory.createDefinedExternal("X"))))
   }
 
   @Test
-  def unsupportedPreprocessorDirective1 = expectUnsupported( """//#define x 1
+  def unsupportedPreprocessorDirective1(): Unit = expectUnsupported(
+    """//#define x 1
 x""")
 
   @Test
-  def unsupportedPreprocessorDirective2 = expectUnsupported( """//#if x==1" +
+  def unsupportedPreprocessorDirective2(): Unit = expectUnsupported(
+    """//#if x==1" +
     		x""")
 
   @Test
-  def errorOnIllformedNesting = expectUnsupported( """//#ifdef X
+  def errorOnIllformedNesting(): Unit = expectUnsupported(
+    """//#ifdef X
     		class x {}""")
 
   @Test
-  def errorOnIllformedNesting2 = expectUnsupported( """//#endif
+  def errorOnIllformedNesting2(): Unit = expectUnsupported(
+    """//#endif
     		class x{}""")
 
   @Test
-  def innerParserTest = {
+  def innerParserTest(): Unit = {
     val tokens = PreprocessorParser.lex("#ifdef X")
     println(PreprocessorParser.pifdef(tokens))
     assertEquals(FeatureExprFactory.createDefinedExternal("X"), PreprocessorParser.pifdef(tokens).get)
 
   }
 
-  private def expectUnsupported(code: String) {
+  private def expectUnsupported(code: String): Unit = {
     try {
       JavaLexer.lex(code)
       fail("succeeded without exception unexpectedly")

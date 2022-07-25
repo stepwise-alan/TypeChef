@@ -1,8 +1,8 @@
 package de.fosd.typechef.featureexpr
 
-import util.parsing.combinator._
 import java.io._
-import util.matching.Regex
+import scala.util.matching.Regex
+import scala.util.parsing.combinator._
 
 
 /**
@@ -10,7 +10,7 @@ import util.matching.Regex
  *
  * prefer parseFile() over inherited parse() methods for the following features:
  * * Multiple lines in the parsed file are interpreted as conjunction.
- * * verything after "//" is interpreted as comment
+ * * everything after "//" is interpreted as comment
  *
  *
  * does not support integer values yet
@@ -21,129 +21,129 @@ import util.matching.Regex
  * * featurenamePrefix allows to add a prefix to every read feature name, such as "CONFIG_". no prefix by default
  */
 class FeatureExprParser(
-                           featureFactory: AbstractFeatureExprFactory = FeatureExprFactory.default,
-                           featurenameParser: Regex = "[A-Za-z0-9_]*".r,
-                           featurenamePrefix: Option[String] = None) extends RegexParsers {
+                         featureFactory: AbstractFeatureExprFactory = FeatureExprFactory.default,
+                         featurenameParser: Regex = "\\w*".r,
+                         featurenamePrefix: Option[String] = None) extends RegexParsers {
 
 
-    def toFeature(name: String) = featureFactory.createDefinedExternal(featurenamePrefix.map(_ + name).getOrElse(name))
+  def toFeature(name: String): SingleFeatureExpr = featureFactory.createDefinedExternal(featurenamePrefix.map(_ + name).getOrElse(name))
 
 
-    //implications
-    def expr: Parser[FeatureExpr] =
-        "oneOf" ~ "(" ~> rep1sep(expr, ",") <~ ")" ^^ {
-            e => oneOf(e)
-        } | "atLeastOne" ~ "(" ~> rep1sep(expr, ",") <~ ")" ^^ {
-            e => atLeastOne(e)
-        } | "atMostOne" ~ "(" ~> rep1sep(expr, ",") <~ ")" ^^ {
-            e => atMostOne(e)
-        } | aterm
+  //implications
+  def expr: Parser[FeatureExpr] =
+    "oneOf" ~ "(" ~> rep1sep(expr, ",") <~ ")" ^^ {
+      e => oneOf(e)
+    } | "atLeastOne" ~ "(" ~> rep1sep(expr, ",") <~ ")" ^^ {
+      e => atLeastOne(e)
+    } | "atMostOne" ~ "(" ~> rep1sep(expr, ",") <~ ")" ^^ {
+      e => atMostOne(e)
+    } | aterm
 
-    def aterm: Parser[FeatureExpr] =
-        bterm ~ opt(("=>" | "implies") ~> aterm) ^^ {
-            case a ~ b => if (b.isDefined) a implies b.get else a
-        }
-
-    def bterm: Parser[FeatureExpr] =
-        cterm ~ opt(("<=>" | "equiv") ~> bterm) ^^ {
-            case a ~ b => if (b.isDefined) a equiv b.get else a
-        }
-
-    //mutually exclusion
-    def cterm: Parser[FeatureExpr] =
-        dterm ~ opt(("<!>" | "mex") ~> cterm) ^^ {
-            case a ~ b => if (b.isDefined) a mex b.get else a
-        }
-
-    //||
-    def dterm: Parser[FeatureExpr] =
-        term ~ rep(("||" | "|" | "or") ~> dterm) ^^ {
-            case a ~ bs => bs.foldLeft(a)(_ or _)
-        }
-
-    def term: Parser[FeatureExpr] =
-        bool ~ rep(("&&" | "&" | "and") ~> term) ^^ {
-            case a ~ bs => bs.foldLeft(a)(_ and _)
-        }
-
-    def bool: Parser[FeatureExpr] =
-        "!" ~> bool ^^ (_ not) |
-            ("(" ~> expr <~ ")") |
-            "InvalidExpression()" ^^ (_ => featureFactory.False) |
-            (("definedEx" | "defined" | "def") ~ "(" ~> ID <~ ")") ^^ {
-                toFeature(_)
-            } |
-            ("1" | "true" | "True" | "TRUE") ^^ {
-                x => featureFactory.True
-            } |
-            ("0" | "false" | "False" | "FALSE") ^^ {
-                x => featureFactory.False
-            } | ID ^^ {
-            toFeature(_)
-        }
-
-    def ID: Regex = featurenameParser
-
-    def parse(featureExpr: String): FeatureExpr = parseAll(expr, featureExpr) match {
-        case Success(r, _) => r
-        case NoSuccess(msg, _) => throw new Exception("error parsing " + featureExpr + " " + msg)
+  def aterm: Parser[FeatureExpr] =
+    bterm ~ opt(("=>" | "implies") ~> aterm) ^^ {
+      case a ~ b => if (b.isDefined) a implies b.get else a
     }
 
-    def parse(featureExpr: Reader): FeatureExpr = parseAll(expr, featureExpr) match {
-        case Success(r, _) => r
-        case NoSuccess(msg, _) => throw new Exception("error parsing " + msg)
+  def bterm: Parser[FeatureExpr] =
+    cterm ~ opt(("<=>" | "equiv") ~> bterm) ^^ {
+      case a ~ b => if (b.isDefined) a equiv b.get else a
     }
 
-    private def trimComment(l: String): String = {
-        if (l.indexOf("//") >= 0)
-            l.take(l.indexOf("//"))
-        else l
+  //mutually exclusion
+  def cterm: Parser[FeatureExpr] =
+    dterm ~ opt(("<!>" | "mex") ~> cterm) ^^ {
+      case a ~ b => if (b.isDefined) a mex b.get else a
     }
 
-    /**
-     * parse files with multiple lines considered as one big conjunction and "//" interpreted as comments
-     **/
-    def parseFile(reader: BufferedReader): FeatureExpr = {
-        var line = reader.readLine()
-        var result = featureFactory.True
-        while (line != null) {
-            line = trimComment(line)
-            val lineExpr = if (line.trim.isEmpty) featureFactory.True else parse(line)
-            result = result and lineExpr
-            line = reader.readLine()
-        }
-        result
+  //||
+  def dterm: Parser[FeatureExpr] =
+    term ~ rep(("||" | "|" | "or") ~> dterm) ^^ {
+      case a ~ bs => bs.foldLeft(a)(_ or _)
     }
 
+  def term: Parser[FeatureExpr] =
+    bool ~ rep(("&&" | "&" | "and") ~> term) ^^ {
+      case a ~ bs => bs.foldLeft(a)(_ and _)
+    }
 
-    /**
-     * parse files with multiple lines considered as one big conjunction and "//" interpreted as comments
-     **/
-    def parseFile(cfilename: String): FeatureExpr = parseFile(new BufferedReader(new FileReader(cfilename)))
+  def bool: Parser[FeatureExpr] =
+    "!" ~> bool ^^ (_.not()) |
+      ("(" ~> expr <~ ")") |
+      "InvalidExpression()" ^^ (_ => featureFactory.False) |
+      (("definedEx" | "defined" | "def") ~ "(" ~> ID <~ ")") ^^ {
+        toFeature
+      } |
+      ("1" | "true" | "True" | "TRUE") ^^ {
+        _ => featureFactory.True
+      } |
+      ("0" | "false" | "False" | "FALSE") ^^ {
+        _ => featureFactory.False
+      } | ID ^^ {
+      toFeature
+    }
 
-    /**
-     * parse files with multiple lines considered as one big conjunction and "//" interpreted as comments
-     **/
-    def parseFile(stream: InputStream): FeatureExpr = parseFile(new BufferedReader(new InputStreamReader(stream)))
+  def ID: Regex = featurenameParser
 
-    /**
-     * parse files with multiple lines considered as one big conjunction and "//" interpreted as comments
-     **/
-    def parseFile(file: File): FeatureExpr = parseFile(new BufferedReader(new FileReader(file)))
+  def parse(featureExpr: String): FeatureExpr = parseAll(expr, featureExpr) match {
+    case Success(r, _) => r
+    case noSuccess: NoSuccess => throw new Exception("error parsing " + featureExpr + " " + noSuccess.msg)
+  }
+
+  def parse(featureExpr: Reader): FeatureExpr = parseAll(expr, featureExpr) match {
+    case Success(r, _) => r
+    case noSuccess: NoSuccess => throw new Exception("error parsing " + noSuccess.msg)
+  }
+
+  private def trimComment(l: String): String = {
+    if (l.indexOf("//") >= 0)
+      l.take(l.indexOf("//"))
+    else l
+  }
+
+  /**
+   * parse files with multiple lines considered as one big conjunction and "//" interpreted as comments
+   * */
+  def parseFile(reader: BufferedReader): FeatureExpr = {
+    var line = reader.readLine()
+    var result = featureFactory.True
+    while (line != null) {
+      line = trimComment(line)
+      val lineExpr = if (line.trim.isEmpty) featureFactory.True else parse(line)
+      result = result and lineExpr
+      line = reader.readLine()
+    }
+    result
+  }
 
 
-    def oneOf(features: List[FeatureExpr]): FeatureExpr =
-        atLeastOne(features) and atMostOne(features)
+  /**
+   * parse files with multiple lines considered as one big conjunction and "//" interpreted as comments
+   * */
+  def parseFile(cfilename: String): FeatureExpr = parseFile(new BufferedReader(new FileReader(cfilename)))
 
-    def atLeastOne(featuresNames: List[FeatureExpr]): FeatureExpr =
-        featuresNames.foldLeft(featureFactory.False)(_ or _)
+  /**
+   * parse files with multiple lines considered as one big conjunction and "//" interpreted as comments
+   * */
+  def parseFile(stream: InputStream): FeatureExpr = parseFile(new BufferedReader(new InputStreamReader(stream)))
 
-    def atMostOne(features: List[FeatureExpr]): FeatureExpr =
-        (for ((a, b) <- pairs(features)) yield a mex b).
-            foldLeft(featureFactory.True)(_ and _)
+  /**
+   * parse files with multiple lines considered as one big conjunction and "//" interpreted as comments
+   * */
+  def parseFile(file: File): FeatureExpr = parseFile(new BufferedReader(new FileReader(file)))
 
-    def pairs[A](elem: List[A]): Iterator[(A, A)] =
-        for (a <- elem.tails.take(elem.size); b <- a.tail) yield (a.head, b)
+
+  def oneOf(features: List[FeatureExpr]): FeatureExpr =
+    atLeastOne(features) and atMostOne(features)
+
+  def atLeastOne(featuresNames: List[FeatureExpr]): FeatureExpr =
+    featuresNames.foldLeft(featureFactory.False)(_ or _)
+
+  def atMostOne(features: List[FeatureExpr]): FeatureExpr =
+    (for ((a, b) <- pairs(features)) yield a mex b).
+      foldLeft(featureFactory.True)(_ and _)
+
+  def pairs[A](elem: List[A]): Iterator[(A, A)] =
+    for (a <- elem.tails.take(elem.size); b <- a.tail) yield (a.head, b)
 
 
 }

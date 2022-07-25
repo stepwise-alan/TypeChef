@@ -1,11 +1,9 @@
 package de.fosd.typechef.lexer;
 
-import java.io.IOException;
 import java.util.List;
 
 public class UnnumberedUnexpandingTokenStreamSource extends FixedTokenSource {
-    public UnnumberedUnexpandingTokenStreamSource(List<Token> tokens)
-            throws IOException {
+    public UnnumberedUnexpandingTokenStreamSource(List<Token> tokens) {
         super(tokens);
     }
 

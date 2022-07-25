@@ -24,8 +24,9 @@ import java.io.IOException;
  * A virtual filesystem implementation using java.io in a virtual
  * chroot.
  */
+@SuppressWarnings("unused")
 public class ChrootFileSystem implements VirtualFileSystem {
-    private File root;
+    private final File root;
 
     public ChrootFileSystem(File root) {
         this.root = root;
@@ -39,7 +40,6 @@ public class ChrootFileSystem implements VirtualFileSystem {
         return new ChrootFile(dir, name);
     }
 
-    @SuppressWarnings("all")
     private class ChrootFile extends File implements VirtualFile {
         private File rfile;
 

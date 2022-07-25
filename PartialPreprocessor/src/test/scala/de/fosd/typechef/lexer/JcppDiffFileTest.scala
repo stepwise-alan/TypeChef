@@ -1,19 +1,21 @@
 package de.fosd.typechef.lexer
 
+import org.scalatest.funsuite.AnyFunSuite
+
 import java.io.File
 
-import org.scalatest.FunSuite
+class JcppDiffFileTest extends AnyFunSuite with DifferentialTestingFramework {
+  override protected def useXtc(): Boolean = false
 
-class JcppDiffFileTest extends FunSuite with DifferentialTestingFramework {
-    override protected def useXtc(): Boolean = false
-    override protected def status(s: String) = info(s + " /jcpp")
+  override protected def status(s: String): Unit = info(s + " /jcpp")
 
-    val dir = new File(getClass.getResource("/tc_data").toURI)
-    private def testFile(s: String): Unit = analyzeFile(new File(dir, s), dir)
+  val dir = new File(getClass.getResource("/tc_data").toURI)
+
+  private def testFile(s: String): Unit = analyzeFile(new File(dir, s), dir)
 
 
-    val filesToTest =
-        """counter.c
+  val filesToTest: Array[String] =
+    """counter.c
            alternDiffArities1.c  ifdefnumeric.c          numbers.c
                 alternDiffArities2.c  in1.c                   out1.c
                 alternativedef.c      in2.c                   selfdef.c
@@ -47,34 +49,33 @@ class JcppDiffFileTest extends FunSuite with DifferentialTestingFramework {
            filebasefile.c
            filebasefileheader.h
            ifcondition.c
-        """.split("\\ +").map(_.trim).filter(_.nonEmpty)
+        """.split(" +").map(_.trim).filter(_.nonEmpty)
 
-    val ignoredFiles =
-        """bnx.c, unclear - incorrect macro expansion
-          |includemacroalt.c, include directives with alternative targets not supported
-          |multiinclude.c, include directives with alternative targets not supported
-          |stringify.c, concatenation with alternatives not supported
-          |incompatibleMacroExp.c, conditional invalid macro expansion throws exception in all configurations
-          |byteorder.h, unclear problem with macro expansion
-          |if.h, unclear problem with macro expansion
-          |test_div_by_zero4.c, conditional error message not handled correctly
-          |expandWithinExpand.c, throws conditional error where cpp works without complaints
-          |ifenabled.c, incorrect macro expansion
+  val ignoredFiles: Array[(String, String)] =
+    """bnx.c, unclear - incorrect macro expansion
+      |includemacroalt.c, include directives with alternative targets not supported
+      |multiinclude.c, include directives with alternative targets not supported
+      |stringify.c, concatenation with alternatives not supported
+      |incompatibleMacroExp.c, conditional invalid macro expansion throws exception in all configurations
+      |byteorder.h, unclear problem with macro expansion
+      |if.h, unclear problem with macro expansion
+      |test_div_by_zero4.c, conditional error message not handled correctly
+      |expandWithinExpand.c, throws conditional error where cpp works without complaints
+      |ifenabled.c, incorrect macro expansion
         """.stripMargin.split("\\n").filter(_.trim.nonEmpty).map(l => {
-            val p = l.indexOf(",");
-            (l.take(p).trim, l.drop(p + 1).trim)
-        })
+      val p = l.indexOf(",")
+      (l.take(p).trim, l.drop(p + 1).trim)
+    })
 
 
+  for ((file, reason) <- ignoredFiles)
+    ignore(file.replace('.', '_') + " - ignored due to lexer bug: " + reason) {
+      testFile(file)
+    }
 
-    for ((file, reason) <- ignoredFiles)
-        ignore(file.replace('.', '_') + " - ignored due to lexer bug: " + reason) {
-            testFile(file)
-        }
-
-    for (file <- filesToTest)
-        test(file.replace('.', '_') + " - differential testing") {
-            testFile(file)
-        }
+  for (file <- filesToTest)
+    test(file.replace('.', '_') + " - differential testing") {
+      testFile(file)
+    }
 
 }

@@ -5,67 +5,70 @@ import de.fosd.typechef.featureexpr.FeatureExprFactory
 import de.fosd.typechef.parser.c._
 import de.fosd.typechef.typesystem.{CDeclUse, CTypeCache, CTypeSystemFrontend}
 import org.junit.Test
-import org.scalatest.Matchers
+import org.scalatest.matchers.should.Matchers
 
 class UninitializedMemoryTest extends TestHelper with Matchers with CFGHelper with EnforceTreeHelper {
 
-    private def getKilledVariables(code: String) = {
-        val a = parseFunctionDef(code)
-        val ts = new CTypeSystemFrontend(TranslationUnit(List(Opt(FeatureExprFactory.True, a)))) with CDeclUse
-        assert(ts.checkASTSilent, "typecheck fails!")
-        val dum = ts.getDeclUseMap
-        val udm = ts.getUseDeclMap
-        val um = new UninitializedMemory(CASTEnv.createASTEnv(a), dum, udm, FeatureExprFactory.empty)
-        um.kill(a).map {case ((x, _), f) => (x, f)}
-    }
+  private def getKilledVariables(code: String) = {
+    val a = parseFunctionDef(code)
+    val ts = new CTypeSystemFrontend(TranslationUnit(List(Opt(FeatureExprFactory.True, a)))) with CDeclUse
+    assert(ts.checkASTSilent, "typecheck fails!")
+    val dum = ts.getDeclUseMap
+    val udm = ts.getUseDeclMap
+    val um = new UninitializedMemory(CASTEnv.createASTEnv(a), dum, udm, FeatureExprFactory.empty)
+    um.kill(a).map { case ((x, _), f) => (x, f) }
+  }
 
-    private def getGeneratedVariables(code: String) = {
-        val a = parseFunctionDef(code)
-        val ts = new CTypeSystemFrontend(TranslationUnit(List(Opt(FeatureExprFactory.True, a)))) with CDeclUse
-        assert(ts.checkASTSilent, "typecheck fails!")
-        val dum = ts.getDeclUseMap
-        val udm = ts.getUseDeclMap
-        val um = new UninitializedMemory(CASTEnv.createASTEnv(a), dum, udm, FeatureExprFactory.empty)
-        um.gen(a).map {case ((x, _), f) => (x, f)}
-    }
+  private def getGeneratedVariables(code: String) = {
+    val a = parseFunctionDef(code)
+    val ts = new CTypeSystemFrontend(TranslationUnit(List(Opt(FeatureExprFactory.True, a)))) with CDeclUse
+    assert(ts.checkASTSilent, "typecheck fails!")
+    val dum = ts.getDeclUseMap
+    val udm = ts.getUseDeclMap
+    val um = new UninitializedMemory(CASTEnv.createASTEnv(a), dum, udm, FeatureExprFactory.empty)
+    um.gen(a).map { case ((x, _), f) => (x, f) }
+  }
 
-    def uninitializedMemory(code: String): Boolean = {
-        val tunit = prepareAST[TranslationUnit](parseTranslationUnit(code))
-        val ts = new CTypeSystemFrontend(tunit) with CTypeCache with CDeclUse
-        assert(ts.checkASTSilent, "typecheck fails!")
-        val um = new CIntraAnalysisFrontend(tunit, ts)
-        um.uninitializedMemory()
-    }
+  def uninitializedMemory(code: String): Boolean = {
+    val tunit = prepareAST[TranslationUnit](parseTranslationUnit(code))
+    val ts = new CTypeSystemFrontend(tunit) with CTypeCache with CDeclUse
+    assert(ts.checkASTSilent, "typecheck fails!")
+    val um = new CIntraAnalysisFrontend(tunit, ts)
+    um.uninitializedMemory()
+  }
 
-    @Test def test_variables() {
-        getKilledVariables("void foo(){ int a; }") should be(Map())
-        getKilledVariables("void foo(){ int a = 2; }") should be(Map((Id("a"), FeatureExprFactory.True)))
-        getKilledVariables("void foo(){ int a, b = 1; }") should be(Map((Id("b"), FeatureExprFactory.True)))
-        getKilledVariables("void foo(){ int a = 1, b; }") should be(Map((Id("a"), FeatureExprFactory.True)))
-        getKilledVariables("void foo(){ int *a; }") should be(Map())
-        getKilledVariables("void foo(){ int a; a = 2; }") should be(Map((Id("a"), FeatureExprFactory.True)))
-        getKilledVariables("void foo(){ int a[5]; }") should be(Map())
-        getKilledVariables("""void foo(){
+  @Test def test_variables(): Unit = {
+    getKilledVariables("void foo(){ int a; }") should be(Map())
+    getKilledVariables("void foo(){ int a = 2; }") should be(Map((Id("a"), FeatureExprFactory.True)))
+    getKilledVariables("void foo(){ int a, b = 1; }") should be(Map((Id("b"), FeatureExprFactory.True)))
+    getKilledVariables("void foo(){ int a = 1, b; }") should be(Map((Id("a"), FeatureExprFactory.True)))
+    getKilledVariables("void foo(){ int *a; }") should be(Map())
+    getKilledVariables("void foo(){ int a; a = 2; }") should be(Map((Id("a"), FeatureExprFactory.True)))
+    getKilledVariables("void foo(){ int a[5]; }") should be(Map())
+    getKilledVariables(
+      """void foo(){
               #ifdef A
               int a;
               #endif
               }""".stripMargin) should be(Map())
-        getGeneratedVariables("void foo(){ int a; }") should be(Map((Id("a"), FeatureExprFactory.True)))
-        getGeneratedVariables("void foo(){ int a = 2; }") should be(Map())
-        getGeneratedVariables("void foo(){ int a, b = 1; }") should be(Map((Id("a"), FeatureExprFactory.True)))
-        getGeneratedVariables("void foo(){ int a = 1, b; }") should be(Map((Id("b"), FeatureExprFactory.True)))
-        getGeneratedVariables("void foo(){ int *a; }") should be(Map((Id("a"), FeatureExprFactory.True)))
-        getGeneratedVariables("void foo(int a){ a = 2; }") should be(Map())
-        getGeneratedVariables("void foo(){ int a[5]; }") should be(Map((Id("a"), FeatureExprFactory.True)))
-        getGeneratedVariables("""void foo(){
+    getGeneratedVariables("void foo(){ int a; }") should be(Map((Id("a"), FeatureExprFactory.True)))
+    getGeneratedVariables("void foo(){ int a = 2; }") should be(Map())
+    getGeneratedVariables("void foo(){ int a, b = 1; }") should be(Map((Id("a"), FeatureExprFactory.True)))
+    getGeneratedVariables("void foo(){ int a = 1, b; }") should be(Map((Id("b"), FeatureExprFactory.True)))
+    getGeneratedVariables("void foo(){ int *a; }") should be(Map((Id("a"), FeatureExprFactory.True)))
+    getGeneratedVariables("void foo(int a){ a = 2; }") should be(Map())
+    getGeneratedVariables("void foo(){ int a[5]; }") should be(Map((Id("a"), FeatureExprFactory.True)))
+    getGeneratedVariables(
+      """void foo(){
               #ifdef A
               int a;
               #endif
               }""".stripMargin) should be(Map((Id("a"), fa)))
-    }
+  }
 
-    @Test def test_uninitialized_memory_simple() {
-        uninitializedMemory( """
+  @Test def test_uninitialized_memory_simple(): Unit = {
+    uninitializedMemory(
+      """
         void get_sign(int number, int *sign) {
             if (sign == 0) {
                  /* ... */
@@ -82,7 +85,8 @@ class UninitializedMemoryTest extends TestHelper with Matchers with CFGHelper wi
             return (sign < 0); // diagnostic required
         }""".stripMargin) should be(true)
 
-        uninitializedMemory( """
+    uninitializedMemory(
+      """
         int do_auth() { return 0; }
         int printf(const char *format, ...);
         int sprintf(char *str, const char* format, ...) { return 0; }
@@ -99,14 +103,16 @@ class UninitializedMemoryTest extends TestHelper with Matchers with CFGHelper wi
             return 0;
         }""".stripMargin) should be(false)
 
-        uninitializedMemory( """
+    uninitializedMemory(
+      """
         void close(int i) { }
         void foo() {
             int fd;
             close(fd);
         }""".stripMargin) should be(false)
 
-        uninitializedMemory( """
+    uninitializedMemory(
+      """
         void close(int i) { }
         void foo() {
             int fd;
@@ -114,7 +120,8 @@ class UninitializedMemoryTest extends TestHelper with Matchers with CFGHelper wi
             close(fd);
         }""".stripMargin) should be(true)
 
-        uninitializedMemory( """
+    uninitializedMemory(
+      """
         void close(int i) { }
         void foo() {
             int fd;
@@ -124,7 +131,8 @@ class UninitializedMemoryTest extends TestHelper with Matchers with CFGHelper wi
             close(fd);
         }""".stripMargin) should be(false)
 
-        uninitializedMemory( """
+    uninitializedMemory(
+      """
         int foo() {
           int i;
             #if definedEx(A)
@@ -134,5 +142,5 @@ class UninitializedMemoryTest extends TestHelper with Matchers with CFGHelper wi
             for ((i = 5); 1; i++) {}
             #endif
         }""".stripMargin) should be(true)
-    }
+  }
 }

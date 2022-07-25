@@ -1,8 +1,9 @@
 package de.fosd.typechef.typesystem.linker
 
-import org.junit._
 import de.fosd.typechef.parser.c.{TestHelper, TranslationUnit}
-import java.io.{File, InputStream, FileNotFoundException}
+import org.junit._
+
+import java.io.{File, FileNotFoundException, InputStream}
 
 class InterfaceSerializationTest extends TestHelper {
 
@@ -11,7 +12,7 @@ class InterfaceSerializationTest extends TestHelper {
   private def parse(filename: String): TranslationUnit = {
     val start = System.currentTimeMillis
     println("parsing " + filename)
-    var inputStream: InputStream = getClass.getResourceAsStream("/" + folder + filename)
+    val inputStream: InputStream = getClass.getResourceAsStream("/" + folder + filename)
     if (inputStream == null) {
       throw new FileNotFoundException("Input file not found: " + filename)
     }
@@ -22,7 +23,7 @@ class InterfaceSerializationTest extends TestHelper {
   }
 
 
-  private def checkSerialization(i: CInterface) {
+  private def checkSerialization(i: CInterface): Unit = {
     val inf = new InterfaceWriter {}
     val f = new File("tmp.interface")
     inf.writeInterface(i, f)
@@ -37,35 +38,35 @@ class InterfaceSerializationTest extends TestHelper {
   }
 
   @Test
-  def testMini {
+  def testMini(): Unit = {
     val ast = parse("mini.pi")
     val interface = new CInferInterface {}.inferInterface(ast)
-//    println(interface)
+    //    println(interface)
     checkSerialization(interface)
   }
 
   @Test
-  def testBoa {
+  def testBoa(): Unit = {
     val ast = parse("boa.pi")
     val interface = new CInferInterface {}.inferInterface(ast)
-//    println(interface)
+    //    println(interface)
     checkSerialization(interface)
   }
 
   @Test
-  def testAr {
+  def testAr(): Unit = {
     val ast = parse("ar.pi")
     val interface = new CInferInterface {}.inferInterface(ast)
-//    println(interface)
+    //    println(interface)
     checkSerialization(interface)
   }
 
 
   @Test
-  def testDeadCodeDetection {
+  def testDeadCodeDetection(): Unit = {
     val ast = parse("deadcode.pi")
     val interface = new CInferInterface {}.inferInterface(ast)
-//    println(interface)
+    //    println(interface)
     checkSerialization(interface)
   }
 

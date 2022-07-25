@@ -1,8 +1,8 @@
 package de.fosd.typechef.typesystem.linker
 
-import de.fosd.typechef.typesystem.CType
-import de.fosd.typechef.featureexpr.FeatureExpr
 import de.fosd.typechef.error.Position
+import de.fosd.typechef.featureexpr.FeatureExpr
+import de.fosd.typechef.typesystem.CType
 
 
 /**
@@ -16,17 +16,17 @@ import de.fosd.typechef.error.Position
  * but resolved to anonymous structs, etc.)
  */
 case class CSignature(name: String, ctype: CType, fexpr: FeatureExpr, pos: Seq[Position], extraFlags: Set[CFlag] = Set()) {
-    override def toString =
-        name + ": " + ctype.toText + " " + extraFlags.mkString("+") + "\t\tif " + fexpr + "\t\tat " + pos.mkString(", ")
+  override def toString: String =
+    name + ": " + ctype.toText + " " + extraFlags.mkString("+") + "\t\tif " + fexpr + "\t\tat " + pos.mkString(", ")
 
-    override def hashCode = name.hashCode
-    override def equals(that: Any) = that match {
-        case CSignature(thatName, thatCType, thatFexpr, thatPos, thatExtraFlags) => name == thatName && CType.isLinkCompatible(ctype, thatCType) && fexpr.equivalentTo(thatFexpr) && pos == thatPos && extraFlags == thatExtraFlags
-        case _ => false
-    }
+  override def hashCode: Int = name.hashCode
 
-    def and(f: FeatureExpr) = CSignature(name, ctype, fexpr and f, pos, extraFlags)
+  override def equals(that: Any): Boolean = that match {
+    case CSignature(thatName, thatCType, thatFexpr, thatPos, thatExtraFlags) => name == thatName && CType.isLinkCompatible(ctype, thatCType) && fexpr.equivalentTo(thatFexpr) && pos == thatPos && extraFlags == thatExtraFlags
+    case _ => false
+  }
 
+  def and(f: FeatureExpr): CSignature = CSignature(name, ctype, fexpr and f, pos, extraFlags)
 
 
 }

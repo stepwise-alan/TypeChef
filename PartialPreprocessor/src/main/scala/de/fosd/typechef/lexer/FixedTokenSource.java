@@ -30,7 +30,7 @@ import java.util.List;
 /* pp */class FixedTokenSource extends Source {
     private static final Token EOF = new SimpleToken(Token.EOF, "<ts-eof>", null);
 
-    private List<Token> tokens;
+    private final List<Token> tokens;
     private int idx;
 
     /* pp */FixedTokenSource(Token... tokens) {
@@ -51,10 +51,10 @@ import java.util.List;
 
     public String toString() {
         StringBuilder buf = new StringBuilder();
-        buf.append("constant token stream " + tokens);
+        buf.append("constant token stream ").append(tokens);
         Source parent = getParent();
         if (parent != null)
-            buf.append(" in ").append(String.valueOf(parent));
+            buf.append(" in ").append(parent);
         return buf.toString();
     }
 
@@ -65,7 +65,7 @@ import java.util.List;
 }
 
 /* pp */class FixedUnexpandingTokenSource extends FixedTokenSource {
-    private String macroName;
+    private final String macroName;
 
     FixedUnexpandingTokenSource(List<Token> tokens, String macroName) {
         super(tokens);

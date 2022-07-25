@@ -56,6 +56,7 @@ public class CppReader extends Reader {
         idx = 0;
     }
 
+    @SuppressWarnings("unused")
     public CppReader(Preprocessor p) {
         cpp = p;
         token = "";
@@ -72,8 +73,9 @@ public class CppReader extends Reader {
     /**
      * Defines the given name as a macro.
      * <p/>
-     * This is a convnience method.
+     * This is a convenience method.
      */
+    @SuppressWarnings("unused")
     public void addMacro(String name) throws LexerException {
         cpp.addMacro(name, FeatureExprLib.True());
     }
@@ -83,6 +85,7 @@ public class CppReader extends Reader {
      * <p/>
      * This is a convnience method.
      */
+    @SuppressWarnings("unused")
     public void addMacro(String name, String value) throws LexerException {
         cpp.addMacro(name, FeatureExprLib.True(), value);
     }
@@ -113,12 +116,10 @@ public class CppReader extends Reader {
             return true;
         } catch (LexerException e) {
             /*
-                * Never happens. if (e.getCause() instanceof IOException) throw
-                * (IOException)e.getCause();
-                */
-            IOException ie = new IOException(String.valueOf(e));
-            ie.initCause(e);
-            throw ie;
+             * Never happens. if (e.getCause() instanceof IOException) throw
+             * (IOException)e.getCause();
+             */
+            throw new IOException(String.valueOf(e), e);
         }
     }
 
@@ -129,7 +130,7 @@ public class CppReader extends Reader {
     }
 
     /* XXX Very slow and inefficient. */
-    public int read(char cbuf[], int off, int len) throws IOException {
+    public int read(@SuppressWarnings("NullableProblems") char[] cbuf, int off, int len) throws IOException {
         if (token == null)
             return -1;
         for (int i = 0; i < len; i++) {

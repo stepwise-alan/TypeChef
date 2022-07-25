@@ -4,14 +4,12 @@ import de.fosd.typechef.LexerToken;
 import de.fosd.typechef.featureexpr.FeatureExpr;
 import de.fosd.typechef.featureexpr.FeatureExprFactory;
 import de.fosd.typechef.lexer.FeatureExprLib;
-import de.fosd.typechef.lexer.LexerException;
 import de.fosd.typechef.lexer.LexerFrontend;
 import de.fosd.typechef.xtclexer.XtcPreprocessor;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import xtc.LexerInterface;
-import xtc.lang.cpp.Stream;
 import xtc.lang.cpp.Syntax;
 
 import java.io.*;
@@ -27,33 +25,34 @@ import java.util.*;
  *
  * @author kaestner
  */
+@SuppressWarnings("CommentedOutCode")
 @Ignore
-public class TypeChefVsXtc {
+public class TypeChefVsXtcTest {
 
 
     @Test
-    public void testNestingDead() throws LexerException, IOException {
+    public void testNestingDead() {
         testFile("nestingdead.c");
     }
 
     @Test
-    public void testDeadElse() throws LexerException, IOException {
+    public void testDeadElse() {
         testFile("deadelse.h");
     }
 
     @Test
-    public void testIncludeGuard() throws LexerException, IOException {
+    public void testIncludeGuard() {
         testFile("in1.c");
     }
 
     @Test
-    public void testUnlikely() throws LexerException, IOException {
+    public void testUnlikely() {
         testFile("unlikely.h");
     }
 
     @Test
     @Ignore("intended solution inclear. probably both correct")
-    public void testByteOrder() throws LexerException, IOException {
+    public void testByteOrder() {
         testFile("byteorder.h");
     }
 
@@ -64,33 +63,33 @@ public class TypeChefVsXtc {
 //	}
 
     @Test
-    public void testAlternativeMacros() throws LexerException, IOException {
+    public void testAlternativeMacros() {
         testFile("macro2.c");
     }
 
     @Test
-    public void testIncludeGuards() throws LexerException, IOException {
+    public void testIncludeGuards() {
         testFile("includeguards.c");
     }
 
     @Test
-    public void testIncludeGuards2() throws LexerException, IOException {
+    public void testIncludeGuards2() {
         testFile("includeguards2.h");
     }
 
     @Test
     @Ignore("this test case is not valid c code")
-    public void testDefDefined() throws LexerException, IOException {
+    public void testDefDefined() {
         testFile("defdefined.c");
     }
 
     @Test
-    public void testAlternativeDef() throws LexerException, IOException {
+    public void testAlternativeDef() {
         testFile("alternativedef.c");
     }
 
     @Test
-    public void testHiddenBaseAndDead() throws LexerException, IOException {
+    public void testHiddenBaseAndDead() {
         testFile("hiddenDeadAndBase.c");
     }
 
@@ -104,188 +103,187 @@ public class TypeChefVsXtc {
 
     @Test
     @Ignore("apparently Xtc does not handle nonboolean expressions, at least it does not simplify them")
-    public void testIfCondition() throws LexerException, IOException {
+    public void testIfCondition() {
         testFile("ifcondition.c");
     }
 
     @Test
-    public void testBeispielJoerg() throws LexerException, IOException {
+    public void testBeispielJoerg() {
         testFile("beispielJoerg.c");
     }
 
     @Test
-    public void testNumericIfAlternative() throws LexerException, IOException {
+    public void testNumericIfAlternative() {
         testFile("ifdefnumeric.c");
     }
 
     @Test
-    public void testLinuxTestFLock() throws LexerException, IOException {
+    public void testLinuxTestFLock() {
         testFile("linuxtestflock.c");
     }
 
     @Test
-    public void testElIfChain() throws LexerException, IOException {
+    public void testElIfChain() {
         testFile("elifchain.c");
     }
 
     @Test
-    public void testSelfDef() throws LexerException, IOException {
+    public void testSelfDef() {
         testFile("selfdef.c");
     }
 
     @Test
-    public void testNonTautologicExpansions() throws LexerException,
-            IOException {
+    public void testNonTautologicExpansions() {
         testFile("non_tautologic.c");
     }
 
     @Test
-    public void testVariadic() throws LexerException, IOException {
+    public void testVariadic() {
         testFile("variadic.c");
     }
 
     @Test
     @Ignore("expects an error in either case")
-    public void testIncompMacroExp() throws LexerException, IOException {
+    public void testIncompMacroExp() {
         testFile("incompatibleMacroExp.c");
     }
 
     @Test
-    public void testRedef() throws LexerException, IOException {
+    public void testRedef() {
         testFile("redef.h");
     }
 
     //jiffies contains complex calculations; from the linux kernel headers
     @Test
-    public void testJiffies() throws LexerException, IOException {
+    public void testJiffies() {
         testFile("jiffiesTest.h");
     }
 
     @Test
-    public void testIncludeMacros() throws LexerException, IOException {
+    public void testIncludeMacros() {
         testFile("includemacro.c");
     }
 
     @Test
-    public void testRecursiveMacro() throws LexerException, IOException {
+    public void testRecursiveMacro() {
         testFile("recursivemacro.h");
     }
 
     @Test
-    public void testStringifyNl() throws LexerException, IOException {
+    public void testStringifyNl() {
         testFile("stringifyNl.c");
     }
 
     @Test
-    public void testUseCondDef() throws LexerException, IOException {
+    public void testUseCondDef() {
         testFile("useconddef.c");
     }
 
     @Test
-    public void testDivByZero() throws LexerException, IOException {
+    public void testDivByZero() {
         testFile("test_div_by_zero.c");
     }
 
     @Test
     @Ignore("noncritical bug in Xtc")
-    public void testDivByZero2() throws LexerException, IOException {
+    public void testDivByZero2() {
         testFile("test_div_by_zero2.c");
     }
 
     @Test
-    public void testMacroPNF() throws LexerException, IOException {
+    public void testMacroPNF() {
         testFile("macroPFN.c");
     }
 
     @Test
-    public void testParametricMacro() throws LexerException, IOException {
+    public void testParametricMacro() {
         testFile("parametricmacro.h");
     }
 
     @Test
-    public void testParametricMacro2() throws LexerException, IOException {
+    public void testParametricMacro2() {
         testFile("parametricmacro2.h");
     }
 
     @Test
-    public void testKBuildStr() throws LexerException, IOException {
+    public void testKBuildStr() {
         testFile("kbuildstr.c");
     }
 
     @Test
     @Ignore("bug in typechef")
-    public void testStringify() throws LexerException, IOException {
+    public void testStringify() {
         testFile("stringify.c");
     }
 
     @Test
     @Ignore("typechef problem?")
-    public void testAlternativeDifferentArities1() throws LexerException, IOException {
+    public void testAlternativeDifferentArities1() {
         testFile("alternDiffArities1.c");
     }
 
     @Test
-    public void testAlternativeDifferentArities2() throws LexerException, IOException {
+    public void testAlternativeDifferentArities2() {
         testFile("alternDiffArities2.c");
     }
 
     @Test
     @Ignore("Xtc does not seem to have buildins for __date__ and __time__. not important")
-    public void testDateTime() throws LexerException, IOException {
+    public void testDateTime() {
         testFile("dateTime.c");
     }
 
     @Test
-    public void testNumbers() throws LexerException, IOException {
+    public void testNumbers() {
         testFile("numbers.c");
     }
 
     @Test
-    public void testConcatVarargs() throws LexerException, IOException {
+    public void testConcatVarargs() {
         testFile("concatVarargs.c");
     }
 
     @Test
-    public void testDeadcomparison() throws LexerException, IOException {
+    public void testDeadcomparison() {
         testFile("deadcomparison.c");
     }
 
     @Test
-    public void testExpandWithinExpand() throws LexerException, IOException {
+    public void testExpandWithinExpand() {
         testFile("expandWithinExpand.c", false, true);
     }
 
     @Test
     @Ignore //TODO fix
-    public void testLinebreaks() throws LexerException, IOException {
+    public void testLinebreaks() {
         testFile("linebreaks.c", false, true);
     }
 
     @Test
     @Ignore("cpp warning. reported as error by Xtc. not so important I guess")
-    public void testLinebreaks2() throws LexerException, IOException {
+    public void testLinebreaks2() {
         testFile("linebreaks2.c", false, true);
     }
 
     @Test
     @Ignore("absolute vs relative path. does not matter")
-    public void testFileBaseFile() throws LexerException, IOException {
+    public void testFileBaseFile() {
         testFile("filebasefile.c", false, true);
     }
 
     @Test
-    public void testBnx2() throws LexerException, IOException {
+    public void testBnx2() {
         testFile("bnx2.c", false, true);
     }
 
     @Test
     @Ignore("bug in lexer, see issue #10")
-    public void testBnx() throws LexerException, IOException {
+    public void testBnx() {
         testFile("bnx.c", false, true);
     }
 
     @Test
-    public void testVarargs() throws LexerException, IOException {
+    public void testVarargs() {
         testFile("varargs.c", false, true);
     }
 
@@ -302,23 +300,19 @@ public class TypeChefVsXtc {
     /**
      * parses a file and checks the result against the results specified in the
      * filename.check file
-     *
-     * @param filename
-     * @throws LexerException
-     * @throws IOException
      */
-    protected void testFile(String filename) throws LexerException, IOException {
+    protected void testFile(String filename) {
         testFile(filename, false);
     }
 
 
-    protected void testFile(String filename, boolean debug) throws LexerException, IOException {
+    protected void testFile(String filename, @SuppressWarnings("SameParameterValue") boolean debug) {
         testFile(filename, debug, false);
     }
 
     String folder = "tc_data/";
 
-    protected void testFile(String filename, boolean debug, boolean ignoreWarning) throws LexerException, IOException {
+    protected void testFile(String filename, @SuppressWarnings("unused") boolean debug, boolean ignoreWarning) {
         File file = getFile(filename);
 
         List<LexerToken> xtcTokens = null, typechefTokens = null;
@@ -340,8 +334,8 @@ public class TypeChefVsXtc {
         }
 
         if (xtcException != null && typechefException != null) return;
-        Assert.assertTrue("either both succeed or both should fail " + xtcException + " vs " + typechefException, (xtcException == null) == (typechefException == null));
-        for (int i = 0; i < Math.min(xtcTokens.size(), typechefTokens.size()); i++) {
+        Assert.assertEquals("either both succeed or both should fail " + xtcException + " vs " + typechefException, (xtcException == null), (typechefException == null));
+        for (int i = 0; i < Math.min(Objects.requireNonNull(xtcTokens).size(), Objects.requireNonNull(typechefTokens).size()); i++) {
             try {
                 Assert.assertEquals(xtcTokens.get(i).getText(), typechefTokens.get(i).getText());
                 Assert.assertEquals("character", typechefTokens.get(i).isCharacterLiteral(), xtcTokens.get(i).isCharacterLiteral());
@@ -366,7 +360,7 @@ public class TypeChefVsXtc {
         URL fileURL = getClass().getResource("/" + folder + filename);
         File file = null;
         try {
-            file = new File(fileURL.toURI());
+            file = new File(Objects.requireNonNull(fileURL).toURI());
         } catch (URISyntaxException e) {
             e.printStackTrace();
             Assert.fail(e.getMessage());
@@ -387,9 +381,9 @@ public class TypeChefVsXtc {
                 Collections.EMPTY_LIST, Collections.singletonList(getFile(filename).getParent()), Collections.EMPTY_LIST, null);
 
         //create TypeChef style token stream
-        List<LexerToken> result = new ArrayList<LexerToken>();
+        List<LexerToken> result = new ArrayList<>();
 
-        Stack<FeatureExpr> stack = new Stack<FeatureExpr>();
+        Stack<FeatureExpr> stack = new Stack<>();
         stack.push(FeatureExprFactory.True());
         for (Iterator<Syntax> lexer : lexers) {
             Syntax s = lexer.next();

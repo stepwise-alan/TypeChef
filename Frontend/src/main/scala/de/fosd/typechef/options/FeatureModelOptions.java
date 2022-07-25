@@ -26,7 +26,7 @@ import java.util.List;
  * The key concern is performance since all SAT checks involving the feature model take
  * more time. There are generally three different ways to call the SAT solver then
  * <ul>
- * <li>f.isSatisfiable()</li>
+ * <li>f.isSatisfiable</li>
  * <li>f.isSatisfiable(smallFM)</li>
  * <li>f.isSatisfiable(fullFM)</li>
  * </ul>
@@ -34,7 +34,7 @@ import java.util.List;
  * it would not be satisfiable with the full feature model. The small feature model
  * is more precise but also slower. The full feature model provides the reference answer
  * but potentially at additional costs. (In Linux 2.6.3.33 a check with fullFM takes about 0.5 seconds
- * whereas the other two are essentially instantanious).
+ * whereas the other two are essentially instantaneous).
  * <p/>
  * A common strategy used throughout TypeChef is to use SAT checks without the
  * feature model as long as possible and only use the
@@ -153,7 +153,6 @@ public abstract class FeatureModelOptions extends LexerOptions implements ILexer
             if (partialConfig != null)
                 throw new OptionException("cannot load a second partial configuration");
             partialConfig = PartialConfigurationParser$.MODULE$.load(g.getOptarg());
-            FeatureExpr f = partialConfig.getFeatureExpr();
             if (fullFeatureModel == null)
                 fullFeatureModel = FeatureExprLib.featureModelFactory().empty();
 
@@ -165,7 +164,7 @@ public abstract class FeatureModelOptions extends LexerOptions implements ILexer
             String prefix = g.getOptarg();
 
             // if any dimacs model was already loaded, the prefix is useless
-            if ((fullFeatureModel != null || smallFeatureModel !=null) && dimacsModelLoaded)
+            if ((fullFeatureModel != null || smallFeatureModel != null) && dimacsModelLoaded)
                 throw new OptionException("--dimacsFeaturePrefix given after --featureModelDimacs! this way, the feature model is not loaded the right way.");
 
             if (prefix.startsWith("--"))
@@ -202,7 +201,7 @@ public abstract class FeatureModelOptions extends LexerOptions implements ILexer
     protected void afterParsing() throws OptionException {
         super.afterParsing();
 
-        if (smallFeatureModelExpr!=null && !smallFeatureModelExpr.isTautology(getFullFeatureModel())) {
+        if (smallFeatureModelExpr != null && !smallFeatureModelExpr.isTautology(getFullFeatureModel())) {
             System.err.println("WARNING: The small feature model is not a subset of the full feature model. This can have unintended side effects; see FeatureModelOptions.java.");
         }
 

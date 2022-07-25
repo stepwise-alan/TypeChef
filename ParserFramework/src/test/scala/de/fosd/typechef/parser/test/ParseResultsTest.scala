@@ -1,11 +1,11 @@
 package de.fosd.typechef.parser.test
 
-import org.junit.Test
-import org.junit.Assert._
-import parsers.CharDigitParser
 import de.fosd.typechef.featureexpr.FeatureExprFactory._
+import de.fosd.typechef.featureexpr.{FeatureExpr, SingleFeatureExpr}
+import de.fosd.typechef.parser.test.parsers.CharDigitParser
 import de.fosd.typechef.parser.~
-import de.fosd.typechef.featureexpr.FeatureExpr
+import org.junit.Assert._
+import org.junit.Test
 
 /**
  * Created with IntelliJ IDEA.
@@ -15,17 +15,17 @@ import de.fosd.typechef.featureexpr.FeatureExpr
  * To change this template use File | Settings | File Templates.
  */
 class ParseResultsTest {
-  val fa = createDefinedExternal("A")
-  val fb = createDefinedExternal("B")
+  val fa: SingleFeatureExpr = createDefinedExternal("A")
+  val fb: SingleFeatureExpr = createDefinedExternal("B")
   val p = new CharDigitParser()
   val s1 = new p.Success[Int](1, null)
   val s2 = new p.Success[Int](2, null)
   val s3 = new p.Success[Int](3, null)
   val s4 = new p.Success[Int](4, null)
-  val f = new p.Failure("e", null, Nil)
+  val f: p.Failure = p.Failure("e", null, Nil)
 
   @Test
-  def testParseResults() {
+  def testParseResults(): Unit = {
     val s12 = s1.seq(True, s2)
 
     println(s12)
@@ -33,8 +33,8 @@ class ParseResultsTest {
   }
 
   @Test
-  def testParseResultsSplit() {
-    val sp = new p.SplittedParseResult(fa, s1, f) // SPLIT(A, 1, ERR)
+  def testParseResultsSplit(): Unit = {
+    val sp = p.SplittedParseResult(fa, s1, f) // SPLIT(A, 1, ERR)
     assertEquals("SplittedParseResult(def(A),Success(1,null),Failure(e,null,List()))", sp.toString)
 
     val sp2 = s2.seq(True, sp) // expecting SPLIT(A, 1~2, ERR)
@@ -44,18 +44,18 @@ class ParseResultsTest {
 
 
   @Test
-  def testParseResultsSplit2() {
-    val sp = new p.SplittedParseResult(fa, s1, s2) // SPLIT(A, 1, 2)
+  def testParseResultsSplit2(): Unit = {
+    val sp = p.SplittedParseResult(fa, s1, s2) // SPLIT(A, 1, 2)
     val sp2 = s3.seq(True, sp) // expecting SPLIT(A, 3~1, 3~2)
 
     assertEquals("SplittedParseResult(def(A),Success((3~1),null),Success((3~2),null))", sp2.toString)
   }
 
   @Test
-  def testParseResultsSplit3() {
-    val sp12 = new p.SplittedParseResult(fa, s1, s2) // SPLIT(A, 1, 2)
+  def testParseResultsSplit3(): Unit = {
+    val sp12 = p.SplittedParseResult(fa, s1, s2) // SPLIT(A, 1, 2)
 
-    val r = sp12.seqAllSuccessful(True, (f: FeatureExpr, suc: p.Success[Int]) => new p.Success(new ~(suc.result, 0), null))
+    val r = sp12.seqAllSuccessful(True, (_: FeatureExpr, suc: p.Success[Int]) => p.Success(new ~(suc.result, 0), null))
 
     assertEquals("SplittedParseResult(def(A),Success((1~0),null),Success((2~0),null))", r.toString)
 
@@ -74,34 +74,34 @@ class ParseResultsTest {
   //    }
 
   @Test
-  def testParseResultsSeq2() {
-    val r1 = s1.seq2(True, (next: Any, f: FeatureExpr) => new p.SplittedParseResult(fb, s3, s4))
+  def testParseResultsSeq2(): Unit = {
+    val r1 = s1.seq2(True, (_: Any, _: FeatureExpr) => p.SplittedParseResult(fb, s3, s4))
 
     assertEquals("SplittedParseResult(def(B),Success((1~3),null),Success((1~4),null))", r1.toString)
 
-    val sp12 = new p.SplittedParseResult(fa, s1, s2) // SPLIT(A, 1, 2)
-    val r3 = sp12.seq2(True, (next: Any, f: FeatureExpr) => s3)
+    val sp12 = p.SplittedParseResult(fa, s1, s2) // SPLIT(A, 1, 2)
+    val r3 = sp12.seq2(True, (_: Any, _: FeatureExpr) => s3)
     assertEquals("SplittedParseResult(def(A),Success((1~3),null),Success((2~3),null))", r3.toString)
 
 
-    val r2 = sp12.seq2(True, (next: Any, f: FeatureExpr) => new p.SplittedParseResult(fb, s3, s4))
+    val r2 = sp12.seq2(True, (_: Any, _: FeatureExpr) => p.SplittedParseResult(fb, s3, s4))
     assertEquals("SplittedParseResult(def(A),SplittedParseResult(def(B),Success((1~3),null),Success((1~4),null)),SplittedParseResult(def(B),Success((2~3),null),Success((2~4),null)))", r2.toString)
   }
 
   @Test
-  def testParseResultsSeq2Fails() {
-    var r: p.MultiParseResult[Any] = f.seq2(True, (next: Any, f: FeatureExpr) => new p.SplittedParseResult(fb, s3, s4))
+  def testParseResultsSeq2Fails(): Unit = {
+    var r: p.MultiParseResult[Any] = f.seq2(True, (_: Any, _: FeatureExpr) => p.SplittedParseResult(fb, s3, s4))
 
     assertEquals("Failure(e,null,List())", r.toString)
 
-    val sp = new p.SplittedParseResult(fa, s1, f)
-    r = sp.seq2(True, (next: Any, f: FeatureExpr) => s3)
+    val sp = p.SplittedParseResult(fa, s1, f)
+    r = sp.seq2(True, (_: Any, _: FeatureExpr) => s3)
     assertEquals("SplittedParseResult(def(A),Success((1~3),null),Failure(e,null,List()))", r.toString)
 
-    r = sp.seq2(True, (next: Any, f: FeatureExpr) => new p.SplittedParseResult(fb, s3, s4))
+    r = sp.seq2(True, (_: Any, _: FeatureExpr) => p.SplittedParseResult(fb, s3, s4))
     assertEquals("SplittedParseResult(def(A),SplittedParseResult(def(B),Success((1~3),null),Success((1~4),null)),Failure(e,null,List()))", r.toString)
 
-    r = sp.seq2(True, (next: Any, _: FeatureExpr) => f)
+    r = sp.seq2(True, (_: Any, _: FeatureExpr) => f)
     assertEquals("SplittedParseResult(def(A),Failure(e,null,List()),Failure(e,null,List()))", r.toString)
 
     r = r.joinTree(True)

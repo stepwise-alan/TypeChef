@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@SuppressWarnings("unused")
 public interface ILexerOptions {
 
     Map<String, String> getDefinedMacros();
@@ -44,6 +45,7 @@ public interface ILexerOptions {
 
 
     FeatureModel getSmallFeatureModel();
+
     FeatureModel getFullFeatureModel();
 
     PartialConfiguration getLexerPartialConfiguration();
@@ -57,7 +59,7 @@ public interface ILexerOptions {
     /**
      * by default only language tokens (that is, no white space, no tokens
      * representing preprocessor instructions and so forth) are returned
-     *
+     * <p>
      * for debugging purposes this behavior can be overridden to return
      * also all other tokens
      *
@@ -67,7 +69,7 @@ public interface ILexerOptions {
 
     /**
      * debug facility to handle all warnings strictly as if they were errors
-     *
+     * <p>
      * used in testing; false by default
      */
     boolean isHandleWarningsAsErrors();

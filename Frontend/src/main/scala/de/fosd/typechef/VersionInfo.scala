@@ -9,5 +9,5 @@ package de.fosd.typechef
  */
 
 trait VersionInfo {
-    def getVersion: String
+  def getVersion: String
 }

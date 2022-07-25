@@ -35,10 +35,10 @@ public class SimpleToken extends Token {
 
     // public static final int EOF = -1;
 
-    private int type;
+    private final int type;
     private int line;
     private int column;
-    private Object value;
+    private final Object value;
     protected String text;
     protected Source source;// for debugging purposes only
     private FeatureExpr presenceCondition = FeatureExprLib.True();

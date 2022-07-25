@@ -1,12 +1,10 @@
 package de.fosd.typechef.featureexpr.sat
 
 import org.sat4j.core.VecInt
-import collection.mutable.WeakHashMap
-import org.sat4j.specs.{IConstr, ContradictionException}
-;
-import org.sat4j.minisat.SolverFactory;
-import scala.Predef._
-;
+import org.sat4j.minisat.SolverFactory
+import org.sat4j.specs.{ContradictionException, IConstr, ISolver}
+
+import scala.collection.mutable
 
 /**
  * connection to the SAT4j SAT solver
@@ -36,15 +34,15 @@ class SatSolver {
    */
   def getSatAssignment(featureModel: SATFeatureModel, exprCNF: SATFeatureExpr): Option[(List[String], List[String])] = {
     val solver =
-      (if (CACHING && (nfm(featureModel) != SATNoFeatureModel))
+      if (CACHING && (nfm(featureModel) != SATNoFeatureModel))
         SatSolverCache.get(nfm(featureModel))
       else
-        new SatSolverImpl(nfm(featureModel), false))
+        new SatSolverImpl(nfm(featureModel), false)
 
     if (solver.isSatisfiable(exprCNF, exprCNF != True)) {
-      return Some(solver.getLastModel())
+      Some(solver.getLastModel)
     } else {
-      return None
+      None
     }
   }
 
@@ -52,9 +50,9 @@ class SatSolver {
 }
 
 private object SatSolverCache {
-  val cache: WeakHashMap[SATFeatureModel, SatSolverImpl] = new WeakHashMap()
+  val cache: mutable.WeakHashMap[SATFeatureModel, SatSolverImpl] = new mutable.WeakHashMap()
 
-  def get(fm: SATFeatureModel) =
+  def get(fm: SATFeatureModel): SatSolverImpl =
   /*if (fm == NoFeatureModel) new SatSolverImpl(fm)
  else */ cache.getOrElseUpdate(fm, new SatSolverImpl(fm, true))
 }
@@ -63,7 +61,7 @@ private class SatSolverImpl(featureModel: SATFeatureModel, isReused: Boolean) {
 
   import SatSolver._
 
-  /**Type Aliases for Readability */
+  /** Type Aliases for Readability */
   type CNF = SATFeatureExpr
   type OrClause = SATFeatureExpr
   type Literal = SATFeatureExpr
@@ -71,10 +69,10 @@ private class SatSolverImpl(featureModel: SATFeatureModel, isReused: Boolean) {
 
   val PROFILING = false
 
-  /**init / constructor */
-  val solver = SolverFactory.newDefault();
-  solver.setTimeoutMs(10000);
-//  solver.setTimeoutOnConflicts(100000)
+  /** init / constructor */
+  val solver: ISolver = SolverFactory.newDefault()
+  solver.setTimeoutMs(10000)
+  //  solver.setTimeoutOnConflicts(100000)
 
   assert(featureModel != null)
   solver.addAllClauses(featureModel.clauses)
@@ -94,8 +92,8 @@ private class SatSolverImpl(featureModel: SATFeatureModel, isReused: Boolean) {
       if (exprCNF == True) {
         // if the expression is True, then the result is true, and we need a model. The model is cached lazily.
         if (this.trueModel == null) {
-          isSatisfiable(exprCNF, false)
-          this.trueModel = getLastModel()
+          isSatisfiable(exprCNF, optimizeSimpleExpression = false)
+          this.trueModel = getLastModel
         } else {
           lastModel = trueModel
         }
@@ -105,7 +103,7 @@ private class SatSolverImpl(featureModel: SATFeatureModel, isReused: Boolean) {
     }
     //as long as we do not consider feature models, expressions with a single variable
     //are always satisfiable
-    if ((featureModel == SATNoFeatureModel) && (CNFHelper.isLiteralExternal(exprCNF))) {
+    if ((featureModel == SATNoFeatureModel) && CNFHelper.isLiteralExternal(exprCNF)) {
       exprCNF match {
         //one of these cases has to match, because we have a literal expression
         case x: DefinedExternal => lastModel = (List(x.satName), List())
@@ -115,12 +113,10 @@ private class SatSolverImpl(featureModel: SATFeatureModel, isReused: Boolean) {
       return true
     }
 
-    val startTime = System.currentTimeMillis();
-
     if (PROFILING)
       print("<SAT " + countClauses(exprCNF) + " with " + countFlags(exprCNF) + " flags; ")
 
-    val startTimeSAT = System.currentTimeMillis();
+    val startTimeSAT = System.currentTimeMillis()
     try {
 
       //find used macros, combine them by common expansion
@@ -143,14 +139,14 @@ private class SatSolverImpl(featureModel: SATFeatureModel, isReused: Boolean) {
        * (adopted from Thomas Thuems solution in FeatureIDE):
        *
        * clauses with only a single literal are added to "assumptions" and can be
-       * checked as paramter to isSatisfiable
+       * checked as parameter to isSatisfiable
        * all other clauses are added to the Solver but remembered in "constraintGroup"
        * which is removed from the solver at the end
        */
 
       var constraintGroup: Set[IConstr] = Set()
       try {
-        val assumptions = new VecInt();
+        val assumptions = new VecInt()
         try {
           for (cnf <- cnfs; clause <- CNFHelper.getCNFClauses(cnf)) {
             if (CNFHelper.isLiteral(clause))
@@ -162,7 +158,7 @@ private class SatSolverImpl(featureModel: SATFeatureModel, isReused: Boolean) {
             }
           }
         } catch {
-          case e: ContradictionException => return false;
+          case _: ContradictionException => return false;
         }
 
         if (PROFILING)
@@ -182,9 +178,9 @@ private class SatSolverImpl(featureModel: SATFeatureModel, isReused: Boolean) {
             }
         }
         */
-        if (result == true) {
+        if (result) {
           // scanning the model (storing the satisfiable assignment for later retrieval)
-          val model = solver.model()
+          solver.model()
           var trueList: List[String] = List()
           var falseList: List[String] = List()
           for ((fName, modelID) <- uniqueFlagIds) {
@@ -196,8 +192,8 @@ private class SatSolverImpl(featureModel: SATFeatureModel, isReused: Boolean) {
           lastModel = (trueList, falseList)
         }
         if (PROFILING)
-          print(result + ";")
-        return result
+          print(result.toString + ";")
+        result
       } finally {
         if (isReused)
           for (constr <- constraintGroup)
@@ -218,20 +214,20 @@ private class SatSolverImpl(featureModel: SATFeatureModel, isReused: Boolean) {
   // this is cached after first creation
   var trueModel: (List[String], List[String]) = null
 
-  def getLastModel() = lastModel
+  def getLastModel: (List[String], List[String]) = lastModel
 }
 
 private object SatSolver {
-  /**Type Aliases for Readability */
+  /** Type Aliases for Readability */
   type CNF = SATFeatureExpr
   type OrClause = SATFeatureExpr
   type Literal = SATFeatureExpr
   type Flag = DefinedExpr
 
 
-  def countClauses(expr: CNF) = CNFHelper.getCNFClauses(expr).size
+  def countClauses(expr: CNF): Int = CNFHelper.getCNFClauses(expr).size
 
-  def countFlags(expr: CNF) = {
+  def countFlags(expr: CNF): Int = {
     var flags = Set[String]()
     for (clause <- CNFHelper.getCNFClauses(expr))
       for (literal <- CNFHelper.getDefinedExprs(clause))
@@ -239,7 +235,7 @@ private object SatSolver {
     flags.size
   }
 
-  def getClauseVec(uniqueFlagIds: Map[String, Int], orClause: OrClause) = {
+  def getClauseVec(uniqueFlagIds: Map[String, Int], orClause: OrClause): VecInt = {
     val literals = CNFHelper.getLiterals(orClause)
     val clauseArray: Array[Int] = new Array(literals.size)
     var i = 0
@@ -249,12 +245,12 @@ private object SatSolver {
         case Not(x: DefinedExpr) => clauseArray(i) = -uniqueFlagIds(x.satName)
         case _ => throw new NoLiteralException(literal)
       }
-      i = i + 1;
+      i = i + 1
     }
     new VecInt(clauseArray)
   }
 
-  def getAtomicId(uniqueFlagIds: Map[String, Int], literal: Literal) = literal match {
+  def getAtomicId(uniqueFlagIds: Map[String, Int], literal: Literal): Int = literal match {
     case x: DefinedExpr => uniqueFlagIds(x.satName)
     case Not(x: DefinedExpr) => -uniqueFlagIds(x.satName)
     case _ => throw new NoLiteralException(literal)
@@ -276,13 +272,12 @@ private object SatSolver {
    * We first collect all expansions and detect identical ones
    */
   def prepareFormula(expr: CNF, PROFILING: Boolean): List[CNF] = {
-    import scala.collection.mutable.Map
-    var macroExpansions: Map[String, SATFeatureExpr] = Map()
-    val cache: Map[SATFeatureExpr, SATFeatureExpr] = Map()
+    val macroExpansions: mutable.Map[String, SATFeatureExpr] = mutable.Map()
+    val cache: mutable.Map[SATFeatureExpr, SATFeatureExpr] = mutable.Map()
 
     def prepareLiteral(literal: DefinedExpr): DefinedExpr = {
       literal match {
-        case DefinedMacro(name, _, expansionName, expansionNF) => {
+        case DefinedMacro(_, _, expansionName, expansionNF) =>
           if (!macroExpansions.contains(expansionName)) {
             if (PROFILING)
               print(expansionName)
@@ -292,18 +287,18 @@ private object SatSolver {
             if (PROFILING)
               print(":")
             //recursively expand formula (dummy is necessary to avoid accidental recursion)
-            macroExpansions = macroExpansions + (expansionName -> False /*dummy*/)
+            macroExpansions += (expansionName -> False /*dummy*/)
             val preparedExpansion = prepareFormulaInner(e)
-            macroExpansions = macroExpansions + (expansionName -> preparedExpansion)
+            macroExpansions += (expansionName -> preparedExpansion)
 
             if (PROFILING)
               print(".")
           }
           FExprBuilder.definedExternal(expansionName)
-        }
         case e => e
       }
     }
+
     def prepareFormulaInner(formula: CNF): CNF = {
       formula.mapDefinedExpr(prepareLiteral, cache)
     }

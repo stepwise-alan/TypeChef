@@ -29,7 +29,7 @@ public class PreprocessorTestCase {
     }
 
     private static class I {
-        private String t;
+        private final String t;
 
         public I(String t) {
             this.t = t;
@@ -49,10 +49,10 @@ public class PreprocessorTestCase {
     }
 
     /*
-      * When writing tests in this file, remember the preprocessor stashes NLs,
-      * so you won't see an immediate NL at the end of any input line. You will
-      * see it right before the next nonblank on the following input line.
-      */
+     * When writing tests in this file, remember the preprocessor stashes NLs,
+     * so you won't see an immediate NL at the end of any input line. You will
+     * see it right before the next nonblank on the following input line.
+     */
     @Test
     public void testPreprocessor() throws Exception {
         /* Magic macros */
@@ -201,24 +201,23 @@ public class PreprocessorTestCase {
         System.out.print("Input: " + in);
         writer.write(in);
         writer.flush();
-        for (int i = 0; i < out.length; i++) {
+        for (Object o : out) {
             Token t = p.getNextToken();
             System.out.println(t);
-            Object v = out[i];
-            if (v instanceof String) {
+            if (o instanceof String) {
                 if (t.getType() != STRING)
                     fail("Expected STRING, but got " + t);
-                assertEquals((String) v, (String) t.getValue());
-            } else if (v instanceof I) {
+                assertEquals(o, t.getValue());
+            } else if (o instanceof I) {
                 if (t.getType() != IDENTIFIER)
-                    fail("Expected IDENTIFIER " + v + ", but got " + t);
-                assertEquals(((I) v).getText(), (String) t.getText());
-            } else if (v instanceof Character)
-                assertEquals((int) ((Character) v).charValue(), t.getType());
-            else if (v instanceof Integer)
-                assertEquals(((Integer) v).intValue(), t.getType());
+                    fail("Expected IDENTIFIER " + o + ", but got " + t);
+                assertEquals(((I) o).getText(), t.getText());
+            } else if (o instanceof Character)
+                assertEquals((int) (Character) o, t.getType());
+            else if (o instanceof Integer)
+                assertEquals(((Integer) o).intValue(), t.getType());
             else
-                fail("Bad object " + v.getClass());
+                fail("Bad object " + o.getClass());
         }
     }
 }

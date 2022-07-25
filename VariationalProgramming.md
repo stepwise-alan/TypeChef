@@ -8,7 +8,8 @@ variational result. TypeChef contains libraries for precisely this purpose.
 The term *variation programming* was coined *Martin Erwig* and *Eric Walkingshaw* in their GTTSE'11 tutorial.
 For a more thorough introduction see their papers "Variation Programming with the Choice Calculus"
 ([pdf](http://web.engr.oregonstate.edu/~erwig/papers/VPwithCC_GTTSE12.pdf))
-and "The Choice Calculus: A Representation for Software Variation" ([acm](http://dl.acm.org/citation.cfm?doid=2063239.2063245)).
+and "The Choice Calculus: A Representation for Software
+Variation" ([acm](http://dl.acm.org/citation.cfm?doid=2063239.2063245)).
 
 TypeChef is designed for parsing and type checking of code with #ifdef variability. In this process, we need to deal
 with variational data structures. For example, after parsing, the AST contains variability. During type checking, an
@@ -23,8 +24,8 @@ Feature Expressions
 -----
 
 The subproject FeatureExprLib of TypeChef provides facilities to reason about propositional formulas. You create a
- literal with `FeatureExprFactory.createDefinedExternal(name)`. `FeatureExprFactory.True` and `FeatureExprFactory.False`
- can be used as well.
+literal with `FeatureExprFactory.createDefinedExternal(name)`. `FeatureExprFactory.True` and `FeatureExprFactory.False`
+can be used as well.
 
 Feature expressions can be combined with the usual operators and, not, or, implies. For example:
 
@@ -35,22 +36,21 @@ val t  = FeatureExprFactory.True
 val fx = (fa or fb and t) implies fa
 ```    
 
-
 You can check whether expressions are satisfiable, contraditions or tautologies the obvious way:
 
 ```scala
-x.isSatisfiable()
+x.isSatisfiable
 ```
 
 There are two different implementations of FeatureExprLib, one using a SAT solver and one using BDDs (plus a SAT solver
-when large feature models are used). To the user the change is transparent. However both implementations should
+when large feature models are used). To the user the change is transparent. However, both implementations should
 not be mixed.
 
 Variational Data Structures
 -----
 
 The core utils for variational data structures are defined in subproject ConditionalLib. A data structure can support
- alternative values with `Conditional` or optional values with `Opt`.
+alternative values with `Conditional` or optional values with `Opt`.
 
 ```scala
 val x: Conditional[Int]
@@ -70,7 +70,7 @@ In this case, `x` has value 3 only if feature `a` is selected. Feature `y` has v
 Optional entries are especially common in lists:
 
 ```scala
-val l: List[Opt[Int]] = List(Opt(FeatureExpr.True, 1), Opt(fb, 2), Opt(fa, 3), Opt(fa.not, 5))
+val l: List[Opt[Int]] = List(Opt(FeatureExpr.True, 1), Opt(fb, 2), Opt(fa, 3), Opt(fa.not(), 5))
 ```
 
 Conditional data structures have a value in all configurations. They are constructed with `One` and `Choice`:
@@ -84,13 +84,13 @@ val e: Conditional[Int] = Choice(fa, Choice(fb, One(1), One(2)), One(3))
 In this example, `c` always has value 1; `d` has value 1 if "a" is selected and 2 otherwise; `e` has value 1
 if both "a" and "b" are selected, 2 if "a" and not "b", and 3 if not "a".
 
-Also more complex feature expressions can be used in `Choice` or `Opt` elements.
+Also, more complex feature expressions can be used in `Choice` or `Opt` elements.
 
 Computing with Variational Data Structures
 --------
 
 Computations are usually performed as map or fold over the data structure. For example, to add 1 to all values
- of d, we simply write
+of d, we simply write
 
 ```scala
 val dd = d.map(_ + 1)

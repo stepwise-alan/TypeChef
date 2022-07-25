@@ -26,8 +26,10 @@ package de.fosd.typechef.lexer;
 import java.io.IOException;
 import java.io.Reader;
 
-/* pp */ public class JoinReader /* extends Reader */ {
-    private Reader in;
+/* pp */
+@SuppressWarnings("CommentedOutCode")
+public class JoinReader /* extends Reader */ {
+    private final Reader in;
 
     @SuppressWarnings("all")
     private PreprocessorListener listener;
@@ -37,7 +39,7 @@ import java.io.Reader;
 
     private int newlines;
     private boolean flushnl;
-    private int[] unget;
+    private final int[] unget;
     private int uptr;
 
     public JoinReader(Reader in, boolean trigraphs) {
@@ -46,13 +48,13 @@ import java.io.Reader;
         this.newlines = 0;
         this.flushnl = false;
         /* The size used to be 2 to allow lookahead of trigraphs, but 3
-           * is needed to
-           * parse "\??." (without quotes), where ??. is _not_ a trigraph.
-           * The reason is that lookahead is caused by both read()
-           * (processing \-escapes) and _read() (processing trigraphs), so
-           * I had to increase this to 3, after verifying no other
-           * lookahedad is performed.
-           */
+         * is needed to
+         * parse "\??." (without quotes), where ??. is _not_ a trigraph.
+         * The reason is that lookahead is caused by both read()
+         * (processing \-escapes) and _read() (processing trigraphs), so
+         * I had to increase this to 3, after verifying no other
+         * lookahedad is performed.
+         */
         this.unget = new int[3];
         this.uptr = 0;
     }
@@ -94,7 +96,7 @@ import java.io.Reader;
     }
 
     private char trigraph(char raw, char repl)
-            throws IOException, LexerException {
+            throws LexerException {
         if (trigraphs) {
             if (warnings)
                 warning("trigraph ??" + raw + " converted to " + repl);
@@ -143,8 +145,8 @@ import java.io.Reader;
 
     public int read() throws IOException, LexerException {
         /* After a series of concatenated lines, output as many newlines
-           * as were ignored, so that the line count matches.
-           * Probably this code is even correct, which I never believed. */
+         * as were ignored, so that the line count matches.
+         * Probably this code is even correct, which I never believed. */
         if (flushnl) {
             if (newlines > 0) {
                 newlines--;
@@ -154,7 +156,7 @@ import java.io.Reader;
             }
         }
 
-        for (; ;) {
+        for (; ; ) {
             int c = _read();
             switch (c) {
                 case '\\':
@@ -193,7 +195,7 @@ import java.io.Reader;
         }
     }
 
-    public int read(char cbuf[], int off, int len)
+    public int read(char[] cbuf, int off, int len)
             throws IOException, LexerException {
         for (int i = 0; i < len; i++) {
             int ch = read();

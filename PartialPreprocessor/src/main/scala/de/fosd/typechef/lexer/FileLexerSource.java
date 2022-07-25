@@ -34,19 +34,20 @@ import java.io.*;
  */
 public class FileLexerSource extends LexerSource {
     // private File file;
-    private String path;
+    private final String path;
 
-    private FileLexerSource(Reader reader, String path) throws IOException {
+    private FileLexerSource(Reader reader, String path) {
         super(new BufferedReader(reader), true);
         this.path = path;
     }
+
     /**
      * Creates a new Source for lexing the given File
      * <p/>
      * Preprocessor directives are honoured within the file.
      *
      * @param file the file object
-     * @param the  path to use in error messages - it might be different when loading files from a ChRoot.
+     * @param path the path to use in error messages - it might be different when loading files from a ChRoot.
      */
     public FileLexerSource(File file, String path) throws IOException {
         this(new FileReader(file), path);
@@ -57,7 +58,7 @@ public class FileLexerSource extends LexerSource {
      * <p/>
      * Preprocessor directives are honoured within the file.
      */
-    public FileLexerSource(InputStream stream, String path) throws IOException {
+    public FileLexerSource(InputStream stream, String path) {
         this(new InputStreamReader(stream), path);
     }
 
@@ -65,6 +66,7 @@ public class FileLexerSource extends LexerSource {
         this(file, file.getPath());
     }
 
+    @SuppressWarnings("unused")
     public FileLexerSource(String path) throws IOException {
         this(new File(path));
     }

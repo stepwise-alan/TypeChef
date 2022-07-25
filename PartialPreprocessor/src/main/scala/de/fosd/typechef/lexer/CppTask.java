@@ -29,10 +29,12 @@ import org.apache.tools.ant.Task;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.util.Objects;
 
 /**
  * An ant task for jcpp.
  */
+@SuppressWarnings("unused")
 public class CppTask extends Task {
 
     private static class Macro {
@@ -60,7 +62,7 @@ public class CppTask extends Task {
 
     private File input;
     private File output;
-    private Preprocessor cpp;
+    private final Preprocessor cpp;
 
     public CppTask() {
         super();
@@ -97,7 +99,7 @@ public class CppTask extends Task {
                 Token tok = cpp.getNextToken();
                 if (tok != null && tok.getType() == Token.EOF)
                     break;
-                tok.lazyPrint(writer);
+                Objects.requireNonNull(tok).lazyPrint(writer);
             }
         } catch (Exception e) {
             throw new BuildException(e);

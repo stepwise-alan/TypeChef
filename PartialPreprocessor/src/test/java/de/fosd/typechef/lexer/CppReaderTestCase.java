@@ -6,17 +6,18 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.StringReader;
 import java.util.Collections;
+import java.util.Objects;
 
 public class CppReaderTestCase {
 
-    private void testCppReader(String in, String out)
+    private void testCppReader(@SuppressWarnings("SameParameterValue") String in, @SuppressWarnings("SameParameterValue") String out)
             throws Exception {
         System.out.println("Testing " + in + " => " + out);
         StringReader r = new StringReader(in);
         CppReader p = new CppReader(r);
         p.getPreprocessor().setSystemIncludePath(
                 Collections.singletonList(
-                        new File(this.getClass().getResource("/input").toURI()).getAbsolutePath())
+                        new File(Objects.requireNonNull(this.getClass().getResource("/input")).toURI()).getAbsolutePath())
         );
         p.getPreprocessor().getFeatures().add(Feature.LINEMARKERS);
         BufferedReader b = new BufferedReader(p);

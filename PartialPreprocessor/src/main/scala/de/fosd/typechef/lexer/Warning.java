@@ -34,8 +34,8 @@ public enum Warning {
     UNDEF, /*UNUSED_MACROS,*/ ENDIF_LABELS, ERROR;
 
     public static Collection<Warning> allWarnings() {
-        return Arrays.asList(new Warning[]{TRIGRAPHS, UNDEF,
-                /*UNUSED_MACROS,*/ ENDIF_LABELS});
+        return Arrays.asList(TRIGRAPHS, UNDEF,
+                /*UNUSED_MACROS,*/ ENDIF_LABELS);
 
     }
 }

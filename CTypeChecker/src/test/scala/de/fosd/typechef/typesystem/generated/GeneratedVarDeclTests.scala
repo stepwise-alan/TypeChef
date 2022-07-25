@@ -6,537 +6,660 @@ import org.junit._
 /** generated tests! do not modify! */
 class GeneratedVarDeclTests extends TestHelperTS {
 
-    @Test def test_conf0() {
-        correct("""
+  @Test def test_conf0(): Unit = {
+    correct(
+      """
               char x;
                 """)
-        correct("""
+    correct(
+      """
               void foo() { char x; }
                 """)
-        correct("""
+    correct(
+      """
               void foo(char x) {} 
                 """)
-        correct("""
+    correct(
+      """
               void foo(char x); 
                 """)
-        correct("""
+    correct(
+      """
               struct x { char x; };
                 """)
-   }
+  }
 
 
-   @Test def test_conf1() {
-        correct("""
+  @Test def test_conf1(): Unit = {
+    correct(
+      """
               signed char x;
                 """)
-        correct("""
+    correct(
+      """
               void foo() { signed char x; }
                 """)
-        correct("""
+    correct(
+      """
               void foo(signed char x) {} 
                 """)
-        correct("""
+    correct(
+      """
               void foo(signed char x); 
                 """)
-        correct("""
+    correct(
+      """
               struct x { signed char x; };
                 """)
-   }
+  }
 
 
-   @Test def test_conf2() {
-        correct("""
+  @Test def test_conf2(): Unit = {
+    correct(
+      """
               unsigned char x;
                 """)
-        correct("""
+    correct(
+      """
               void foo() { unsigned char x; }
                 """)
-        correct("""
+    correct(
+      """
               void foo(unsigned char x) {} 
                 """)
-        correct("""
+    correct(
+      """
               void foo(unsigned char x); 
                 """)
-        correct("""
+    correct(
+      """
               struct x { unsigned char x; };
                 """)
-   }
+  }
 
 
-   @Test def test_conf3() {
-        correct("""
+  @Test def test_conf3(): Unit = {
+    correct(
+      """
               unsigned int x;
                 """)
-        correct("""
+    correct(
+      """
               void foo() { unsigned int x; }
                 """)
-        correct("""
+    correct(
+      """
               void foo(unsigned int x) {} 
                 """)
-        correct("""
+    correct(
+      """
               void foo(unsigned int x); 
                 """)
-        correct("""
+    correct(
+      """
               struct x { unsigned int x; };
                 """)
-   }
+  }
 
 
-   @Test def test_conf4() {
-        correct("""
+  @Test def test_conf4(): Unit = {
+    correct(
+      """
               signed int x;
                 """)
-        correct("""
+    correct(
+      """
               void foo() { signed int x; }
                 """)
-        correct("""
+    correct(
+      """
               void foo(signed int x) {} 
                 """)
-        correct("""
+    correct(
+      """
               void foo(signed int x); 
                 """)
-        correct("""
+    correct(
+      """
               struct x { signed int x; };
                 """)
-   }
+  }
 
 
-   @Test def test_conf5() {
-        correct("""
+  @Test def test_conf5(): Unit = {
+    correct(
+      """
               long x;
                 """)
-        correct("""
+    correct(
+      """
               void foo() { long x; }
                 """)
-        correct("""
+    correct(
+      """
               void foo(long x) {} 
                 """)
-        correct("""
+    correct(
+      """
               void foo(long x); 
                 """)
-        correct("""
+    correct(
+      """
               struct x { long x; };
                 """)
-   }
+  }
 
 
-   @Test def test_conf6() {
-        correct("""
+  @Test def test_conf6(): Unit = {
+    correct(
+      """
               double x;
                 """)
-        correct("""
+    correct(
+      """
               void foo() { double x; }
                 """)
-        correct("""
+    correct(
+      """
               void foo(double x) {} 
                 """)
-        correct("""
+    correct(
+      """
               void foo(double x); 
                 """)
-        correct("""
+    correct(
+      """
               struct x { double x; };
                 """)
-   }
+  }
 
 
-   @Test def test_conf7() {
-        correct("""
+  @Test def test_conf7(): Unit = {
+    correct(
+      """
               int * x;
                 """)
-        correct("""
+    correct(
+      """
               void foo() { int * x; }
                 """)
-        correct("""
+    correct(
+      """
               void foo(int * x) {} 
                 """)
-        correct("""
+    correct(
+      """
               void foo(int * x); 
                 """)
-        correct("""
+    correct(
+      """
               struct x { int * x; };
                 """)
-   }
+  }
 
 
-   @Test def test_conf8() {
-        correct("""
+  @Test def test_conf8(): Unit = {
+    correct(
+      """
               char * x;
                 """)
-        correct("""
+    correct(
+      """
               void foo() { char * x; }
                 """)
-        correct("""
+    correct(
+      """
               void foo(char * x) {} 
                 """)
-        correct("""
+    correct(
+      """
               void foo(char * x); 
                 """)
-        correct("""
+    correct(
+      """
               struct x { char * x; };
                 """)
-   }
+  }
 
 
-   @Test def test_conf9() {
-        correct("""
+  @Test def test_conf9(): Unit = {
+    correct(
+      """
               signed char * x;
                 """)
-        correct("""
+    correct(
+      """
               void foo() { signed char * x; }
                 """)
-        correct("""
+    correct(
+      """
               void foo(signed char * x) {} 
                 """)
-        correct("""
+    correct(
+      """
               void foo(signed char * x); 
                 """)
-        correct("""
+    correct(
+      """
               struct x { signed char * x; };
                 """)
-   }
+  }
 
 
-   @Test def test_conf10() {
-        correct("""
+  @Test def test_conf10(): Unit = {
+    correct(
+      """
               unsigned char * x;
                 """)
-        correct("""
+    correct(
+      """
               void foo() { unsigned char * x; }
                 """)
-        correct("""
+    correct(
+      """
               void foo(unsigned char * x) {} 
                 """)
-        correct("""
+    correct(
+      """
               void foo(unsigned char * x); 
                 """)
-        correct("""
+    correct(
+      """
               struct x { unsigned char * x; };
                 """)
-   }
+  }
 
 
-   @Test def test_conf11() {
-        correct("""
+  @Test def test_conf11(): Unit = {
+    correct(
+      """
               char ** x;
                 """)
-        correct("""
+    correct(
+      """
               void foo() { char ** x; }
                 """)
-        correct("""
+    correct(
+      """
               void foo(char ** x) {} 
                 """)
-        correct("""
+    correct(
+      """
               void foo(char ** x); 
                 """)
-        correct("""
+    correct(
+      """
               struct x { char ** x; };
                 """)
-   }
+  }
 
 
-   @Test def test_conf12() {
-        correct("""
+  @Test def test_conf12(): Unit = {
+    correct(
+      """
               unsigned char ** x;
                 """)
-        correct("""
+    correct(
+      """
               void foo() { unsigned char ** x; }
                 """)
-        correct("""
+    correct(
+      """
               void foo(unsigned char ** x) {} 
                 """)
-        correct("""
+    correct(
+      """
               void foo(unsigned char ** x); 
                 """)
-        correct("""
+    correct(
+      """
               struct x { unsigned char ** x; };
                 """)
-   }
+  }
 
 
-   @Test def test_conf13() {
-        correct("""
+  @Test def test_conf13(): Unit = {
+    correct(
+      """
               signed char ** x;
                 """)
-        correct("""
+    correct(
+      """
               void foo() { signed char ** x; }
                 """)
-        correct("""
+    correct(
+      """
               void foo(signed char ** x) {} 
                 """)
-        correct("""
+    correct(
+      """
               void foo(signed char ** x); 
                 """)
-        correct("""
+    correct(
+      """
               struct x { signed char ** x; };
                 """)
-   }
+  }
 
 
-   @Test def test_conf14() {
-        correct("""
+  @Test def test_conf14(): Unit = {
+    correct(
+      """
               double * x;
                 """)
-        correct("""
+    correct(
+      """
               void foo() { double * x; }
                 """)
-        correct("""
+    correct(
+      """
               void foo(double * x) {} 
                 """)
-        correct("""
+    correct(
+      """
               void foo(double * x); 
                 """)
-        correct("""
+    correct(
+      """
               struct x { double * x; };
                 """)
-   }
+  }
 
 
-   @Test def test_conf15() {
-        correct("""
+  @Test def test_conf15(): Unit = {
+    correct(
+      """
               struct S { int x; int y; };
 
               struct S x;
                 """)
-        correct("""
+    correct(
+      """
               struct S { int x; int y; };
 
               void foo() { struct S x; }
                 """)
-        correct("""
+    correct(
+      """
               struct S { int x; int y; };
 
               void foo(struct S x) {} 
                 """)
-        correct("""
+    correct(
+      """
               struct S { int x; int y; };
 
               void foo(struct S x); 
                 """)
-        correct("""
+    correct(
+      """
               struct S { int x; int y; };
 
               struct x { struct S x; };
                 """)
-   }
+  }
 
 
-   @Ignore("cannot distinguish origin of anonymous struct type")
-   @Test def test_conf16() {
-        correct("""
+  @Ignore("cannot distinguish origin of anonymous struct type")
+  @Test def test_conf16(): Unit = {
+    correct(
+      """
               struct { float b; } x;
                 """)
-        correct("""
+    correct(
+      """
               void foo() { struct { float b; } x; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c:1:31: warning: anonymous struct declared inside parameter list
-               void foo(struct { float b; } x) {} 
-                               ^
+           void foo(struct { float b; } x) {}
+                           ^
 test.c:1:31: warning: its scope is only this definition or declaration, which is probably not what you want
 
-        */
-        warning("""
+    */
+    warning(
+      """
               void foo(struct { float b; } x) {} 
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c:1:31: warning: anonymous struct declared inside parameter list
-               void foo(struct { float b; } x); 
-                               ^
+           void foo(struct { float b; } x);
+                           ^
 test.c:1:31: warning: its scope is only this definition or declaration, which is probably not what you want
 
-        */
-        warning("""
+    */
+    warning(
+      """
               void foo(struct { float b; } x); 
                 """)
-        correct("""
+    correct(
+      """
               struct x { struct { float b; } x; };
                 """)
-   }
+  }
 
 
-   @Test def test_conf17() {
-        correct("""
+  @Test def test_conf17(): Unit = {
+    correct(
+      """
               volatile int x;
                 """)
-        correct("""
+    correct(
+      """
               void foo() { volatile int x; }
                 """)
-        correct("""
+    correct(
+      """
               void foo(volatile int x) {} 
                 """)
-        correct("""
+    correct(
+      """
               void foo(volatile int x); 
                 """)
-        correct("""
+    correct(
+      """
               struct x { volatile int x; };
                 """)
-   }
+  }
 
 
-   @Test def test_conf18() {
-        correct("""
+  @Test def test_conf18(): Unit = {
+    correct(
+      """
               const int x;
                 """)
-        correct("""
+    correct(
+      """
               void foo() { const int x; }
                 """)
-        correct("""
+    correct(
+      """
               void foo(const int x) {} 
                 """)
-        correct("""
+    correct(
+      """
               void foo(const int x); 
                 """)
-        correct("""
+    correct(
+      """
               struct x { const int x; };
                 """)
-   }
+  }
 
 
-   @Test def test_conf19() {
-        correct("""
+  @Test def test_conf19(): Unit = {
+    correct(
+      """
               const double x;
                 """)
-        correct("""
+    correct(
+      """
               void foo() { const double x; }
                 """)
-        correct("""
+    correct(
+      """
               void foo(const double x) {} 
                 """)
-        correct("""
+    correct(
+      """
               void foo(const double x); 
                 """)
-        correct("""
+    correct(
+      """
               struct x { const double x; };
                 """)
-   }
+  }
 
 
-   @Test def test_conf20() {
-        correct("""
+  @Test def test_conf20(): Unit = {
+    correct(
+      """
               volatile double x;
                 """)
-        correct("""
+    correct(
+      """
               void foo() { volatile double x; }
                 """)
-        correct("""
+    correct(
+      """
               void foo(volatile double x) {} 
                 """)
-        correct("""
+    correct(
+      """
               void foo(volatile double x); 
                 """)
-        correct("""
+    correct(
+      """
               struct x { volatile double x; };
                 """)
-   }
+  }
 
 
-   @Test def test_conf21() {
-        correct("""
+  @Test def test_conf21(): Unit = {
+    correct(
+      """
               int * x;
                 """)
-        correct("""
+    correct(
+      """
               void foo() { int * x; }
                 """)
-        correct("""
+    correct(
+      """
               void foo(int * x) {} 
                 """)
-        correct("""
+    correct(
+      """
               void foo(int * x); 
                 """)
-        correct("""
+    correct(
+      """
               struct x { int * x; };
                 """)
-   }
+  }
 
 
-   @Test def test_conf22() {
-        correct("""
+  @Test def test_conf22(): Unit = {
+    correct(
+      """
               const int * x;
                 """)
-        correct("""
+    correct(
+      """
               void foo() { const int * x; }
                 """)
-        correct("""
+    correct(
+      """
               void foo(const int * x) {} 
                 """)
-        correct("""
+    correct(
+      """
               void foo(const int * x); 
                 """)
-        correct("""
+    correct(
+      """
               struct x { const int * x; };
                 """)
-   }
+  }
 
 
-   @Test def test_conf23() {
-        correct("""
+  @Test def test_conf23(): Unit = {
+    correct(
+      """
               volatile int * x;
                 """)
-        correct("""
+    correct(
+      """
               void foo() { volatile int * x; }
                 """)
-        correct("""
+    correct(
+      """
               void foo(volatile int * x) {} 
                 """)
-        correct("""
+    correct(
+      """
               void foo(volatile int * x); 
                 """)
-        correct("""
+    correct(
+      """
               struct x { volatile int * x; };
                 """)
-   }
+  }
 
 
-   @Test def test_conf24() {
-        /* gcc reports:
+  @Test def test_conf24(): Unit = {
+    /* gcc reports:
 test.c:1:20: error: storage size of 'x' isn't known
-               void x;
-                    ^
+           void x;
+                ^
 
-        */
-        error("""
+    */
+    error(
+      """
               void x;
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c: In function 'foo':
 test.c:1:33: error: variable or field 'x' declared void
-               void foo() { void x; }
-                                 ^
+           void foo() { void x; }
+                             ^
 
-        */
-        error("""
+    */
+    error(
+      """
               void foo() { void x; }
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c:1:29: error: parameter 1 ('x') has incomplete type
-               void foo(void x) {} 
-                             ^
+           void foo(void x) {}
+                         ^
 
-        */
-        error("""
+    */
+    error(
+      """
               void foo(void x) {} 
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c:1:29: warning: parameter 1 ('x') has void type
-               void foo(void x); 
-                             ^
+           void foo(void x);
+                         ^
 
-        */
-        warning("""
+    */
+    warning(
+      """
               void foo(void x); 
                 """)
-        /* gcc reports:
+    /* gcc reports:
 test.c:1:31: error: variable or field 'x' declared void
-               struct x { void x; };
-                               ^
+           struct x { void x; };
+                           ^
 
-        */
-        error("""
+    */
+    error(
+      """
               struct x { void x; };
                 """)
-   }
-
-
+  }
 
 
 }

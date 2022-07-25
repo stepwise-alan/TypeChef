@@ -1,38 +1,37 @@
 package de.fosd.typechef.crewrite
 
 import de.fosd.typechef.featureexpr.FeatureExprFactory
-import de.fosd.typechef.parser.c.{Id, TranslationUnit, _}
+import de.fosd.typechef.parser.c._
 import de.fosd.typechef.typesystem.{CDeclUse, CTypeCache, CTypeSystemFrontend}
 import org.junit.Test
-import org.scalatest.Matchers
-
-import scala.Predef._
+import org.scalatest.matchers.should.Matchers
 
 class XFreeTest extends TestHelper with Matchers with CFGHelper with EnforceTreeHelper {
 
-    private def getUninitializedVariables(code: String) = {
-        val a = parseFunctionDef(code)
-        val xf = new XFree(CASTEnv.createASTEnv(a), null, null, null, "")
-        xf.gen(a).map {case ((x, _), f) => (x, f)}
-    }
+  private def getUninitializedVariables(code: String) = {
+    val a = parseFunctionDef(code)
+    val xf = new XFree(CASTEnv.createASTEnv(a), null, null, null, "")
+    xf.gen(a).map { case ((x, _), f) => (x, f) }
+  }
 
-    def xfree(code: String): Boolean = {
-        val tunit = prepareAST[TranslationUnit](parseTranslationUnit(code))
-        val ts = new CTypeSystemFrontend(tunit) with CTypeCache with CDeclUse
-        assert(ts.checkASTSilent, "typecheck fails!")
-        val xf = new CIntraAnalysisFrontend(tunit, ts)
-        xf.xfree()
-    }
+  def xfree(code: String): Boolean = {
+    val tunit = prepareAST[TranslationUnit](parseTranslationUnit(code))
+    val ts = new CTypeSystemFrontend(tunit) with CTypeCache with CDeclUse
+    assert(ts.checkASTSilent, "typecheck fails!")
+    val xf = new CIntraAnalysisFrontend(tunit, ts)
+    xf.xfree()
+  }
 
-    @Test def test_variables() {
-        getUninitializedVariables("void foo() { int a; }") should be(Map(Id("a") -> FeatureExprFactory.True))
-        getUninitializedVariables("void foo() { int a = 2; }") should be(Map(Id("a") -> FeatureExprFactory.True))
-        getUninitializedVariables("void foo() { int a, b = 1; }") should be(Map(Id("a") -> FeatureExprFactory.True, Id("b") -> FeatureExprFactory.True))
-        getUninitializedVariables("void foo() { int *a = (int*)malloc(2); }") should be(Map())
-    }
+  @Test def test_variables(): Unit = {
+    getUninitializedVariables("void foo() { int a; }") should be(Map(Id("a") -> FeatureExprFactory.True))
+    getUninitializedVariables("void foo() { int a = 2; }") should be(Map(Id("a") -> FeatureExprFactory.True))
+    getUninitializedVariables("void foo() { int a, b = 1; }") should be(Map(Id("a") -> FeatureExprFactory.True, Id("b") -> FeatureExprFactory.True))
+    getUninitializedVariables("void foo() { int *a = (int*)malloc(2); }") should be(Map())
+  }
 
-    @Test def test_xfree_simple() {
-        xfree( """
+  @Test def test_xfree_simple(): Unit = {
+    xfree(
+      """
                void* realloc(void* ptr, int size) { return ((void*)0); }
                void f(void) {
                  char buf[20];
@@ -41,7 +40,8 @@ class XFreeTest extends TestHelper with Matchers with CFGHelper with EnforceTree
                }
                """.stripMargin) should be(false)
 
-        xfree( """
+    xfree(
+      """
                void* malloc(int size) { return ((void*)0); }
                void* realloc(void* ptr, int size) { return ((void*)0); }
                void f(void) {
@@ -51,7 +51,8 @@ class XFreeTest extends TestHelper with Matchers with CFGHelper with EnforceTree
                }
                """.stripMargin) should be(true)
 
-        xfree( """
+    xfree(
+      """
                void* malloc(int size) { return ((void*)0); }
                void* realloc(void* ptr, int size) { return ((void*)0); }
                void free(void* ptr) { }
@@ -68,5 +69,5 @@ class XFreeTest extends TestHelper with Matchers with CFGHelper with EnforceTree
                return 0;
                }
                """.stripMargin) should be(false)
-    }
+  }
 }

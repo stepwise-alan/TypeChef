@@ -1,6 +1,6 @@
-//libraryDependencies += "com.github.scopt" %% "scopt" % "1.1.3"
-libraryDependencies += "gnu.getopt" % "java-getopt" % "1.0.13"
+libraryDependencies += "com.github.scopt" %% "scopt" % "latest.integration"
+libraryDependencies += "gnu.getopt" % "java-getopt" % "latest.integration"
 
-libraryDependencies += "org.apache.ant" % "ant" % "1.8.2"
+libraryDependencies += "org.apache.ant" % "ant" % "latest.integration"
 
 //mainClass := Some("de.fosd.typechef.lexer.LexerFrontend")

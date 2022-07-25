@@ -22,14 +22,13 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import static de.fosd.typechef.lexer.Token.EOF;
-import static java.lang.UnsupportedOperationException.*;
 
 /**
  * An Iterator for {@link Source Sources},
  * returning {@link Token Tokens}.
  */
 public class SourceIterator implements Iterator<Token> {
-    private Source source;
+    private final Source source;
     private Token tok;
 
     public SourceIterator(Source s) {
@@ -44,9 +43,7 @@ public class SourceIterator implements Iterator<Token> {
         try {
             if (tok == null)
                 tok = source.token();
-        } catch (LexerException e) {
-            throw new IllegalStateException(e);
-        } catch (IOException e) {
+        } catch (LexerException | IOException e) {
             throw new IllegalStateException(e);
         }
     }
@@ -55,9 +52,9 @@ public class SourceIterator implements Iterator<Token> {
      * Returns true if the enclosed Source has more tokens.
      * <p/>
      * The EOF token is never returned by the iterator.
-     *
+     * <p>
      * throws IllegalStateException if the Source
-     *                               throws a LexerException or IOException
+     * throws a LexerException or IOException
      */
     public boolean hasNext() {
         advance();
@@ -68,9 +65,9 @@ public class SourceIterator implements Iterator<Token> {
      * Returns the next token from the enclosed Source.
      * <p/>
      * The EOF token is never returned by the iterator.
-     *
+     * <p>
      * throws IllegalStateException if the Source
-     *                               throws a LexerException or IOException
+     * throws a LexerException or IOException
      */
     public Token next() {
         if (!hasNext())
@@ -82,7 +79,7 @@ public class SourceIterator implements Iterator<Token> {
 
     /**
      * Not supported.
-     *
+     * <p>
      * throws UnsupportedOperationException.
      */
     public void remove() {

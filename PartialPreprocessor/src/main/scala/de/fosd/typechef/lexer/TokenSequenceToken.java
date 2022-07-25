@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * A TokenSequenceToken is a token that internally is build from multiple tokens
  * <p/>
- * the rational for this token is to avoid creating new objects with potentially
+ * the rationale for this token is to avoid creating new objects with potentially
  * large strings (especially if FeatureExprTokens are involved)
  * <p/>
  * behaves like the first token in the list (except for getText and printLazy)
@@ -19,11 +19,11 @@ import java.util.List;
  */
 class TokenSequenceToken extends Token {
 
-    private List<Token> internalTokens;
-    private int type;
+    private final List<Token> internalTokens;
+    private final int type;
     private int line;
-    private int column;
-    private Source source;
+    private final int column;
+    private final Source source;
     private String sourceStr;
 
     public TokenSequenceToken(int type, int line, int column,
@@ -88,7 +88,7 @@ class TokenSequenceToken extends Token {
 
     @Override
     public Token clone() {
-        List<Token> tokenList = new ArrayList<Token>();
+        List<Token> tokenList = new ArrayList<>();
         for (Token t : internalTokens)
             tokenList.add(t.clone());
         return new TokenSequenceToken(type, line, column, tokenList, source);

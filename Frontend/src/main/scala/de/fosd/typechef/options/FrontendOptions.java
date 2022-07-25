@@ -1,6 +1,5 @@
 package de.fosd.typechef.options;
 
-import de.fosd.typechef.VALexer;
 import de.fosd.typechef.error.Position;
 import de.fosd.typechef.featureexpr.FeatureExpr;
 import de.fosd.typechef.featureexpr.FeatureExprFactory$;
@@ -11,11 +10,11 @@ import gnu.getopt.LongOpt;
 import scala.Function3;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 
 public class FrontendOptions extends CAnalysisOptions implements ParserOptions {
+    @SuppressWarnings("unused")
     public boolean parse = true,
             typecheck = false,
             ifdeftoif = false,
@@ -28,7 +27,7 @@ public class FrontendOptions extends CAnalysisOptions implements ParserOptions {
             recordTiming = false,
             parserStatistics = false,
             parserResults = true,
-            simplifyPresenceConditions = false,
+            _simplifyPresenceConditions = false,
             writePI = false,
             printInclude = false,
             printVersion = false;
@@ -81,12 +80,12 @@ public class FrontendOptions extends CAnalysisOptions implements ParserOptions {
                 new Option("writePI", LongOpt.NO_ARGUMENT, F_WRITEPI, null,
                         "Write lexer output into .pi file"),
                 new Option("debugInterface", LongOpt.NO_ARGUMENT, F_DEBUGINTERFACE, null,
-                        "Write interface in human readable format (requires --interface)"),
+                        "Write interface in human-readable format (requires --interface)"),
 
                 new Option("serializeAST", LongOpt.NO_ARGUMENT, F_SERIALIZEAST, null,
                         "Write ast to .ast file after parsing."),
                 new Option("reuseAST", LongOpt.NO_ARGUMENT, F_REUSEAST, null,
-                        "Reuse serialized .ast instead of parsing, if availabe."),
+                        "Reuse serialized .ast instead of parsing, if available."),
                 new Option("recordTiming", LongOpt.NO_ARGUMENT, F_RECORDTIMING, null,
                         "Report times for all phases."),
 
@@ -105,7 +104,7 @@ public class FrontendOptions extends CAnalysisOptions implements ParserOptions {
                 new Option("parserstatistics", LongOpt.NO_ARGUMENT, F_PARSERSTATS, null,
                         "Print parser statistics."),
                 new Option("simplifyPresenceConditions", LongOpt.NO_ARGUMENT, F_SIMPLIFYPRESENCECONDITIONS, null,
-                "Simplify presence conditions after parsing.")
+                        "Simplify presence conditions after parsing.")
         ));
         r.add(new OptionGroup("Misc", 1000,
                 new Option("printIncludes", LongOpt.NO_ARGUMENT, TY_DEBUG_INCLUDES, null,
@@ -153,7 +152,7 @@ public class FrontendOptions extends CAnalysisOptions implements ParserOptions {
         } else if (c == F_PARSERSTATS) {
             parserStatistics = true;
         } else if (c == F_SIMPLIFYPRESENCECONDITIONS) {
-            simplifyPresenceConditions = true;
+            _simplifyPresenceConditions = true;
         } else if (c == F_WRITEPI) {
             writePI = true;
         } else if (c == F_BDD) {
@@ -267,7 +266,7 @@ public class FrontendOptions extends CAnalysisOptions implements ParserOptions {
 
 
     public boolean simplifyPresenceConditions() {
-        return simplifyPresenceConditions;
+        return _simplifyPresenceConditions;
     }
 
     public boolean printParserResult() {
@@ -285,20 +284,22 @@ public class FrontendOptions extends CAnalysisOptions implements ParserOptions {
         return printVersion;
     }
 
-    public boolean isPrintIncludes() { return printInclude; }
+    public boolean isPrintIncludes() {
+        return printInclude;
+    }
 
     public void printInclude() {
         System.out.println("Included headers:");
-        for (String header: this.getIncludedHeaders()) {
-            System.out.println("  "+header);
+        for (String header : this.getIncludedHeaders()) {
+            System.out.println("  " + header);
         }
         System.out.println("System Include Paths:");
-        for (String dir: this.getIncludePaths()) {
-            System.out.println("  "+dir);
+        for (String dir : this.getIncludePaths()) {
+            System.out.println("  " + dir);
         }
         System.out.println("Quote Include Paths:");
-        for (String dir: this.getQuoteIncludePath()) {
-            System.out.println("  "+dir);
+        for (String dir : this.getQuoteIncludePath()) {
+            System.out.println("  " + dir);
         }
     }
 

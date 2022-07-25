@@ -1,6 +1,5 @@
 package de.fosd.typechef.options;
 
-import de.fosd.typechef.VALexer;
 import gnu.getopt.Getopt;
 import gnu.getopt.LongOpt;
 
@@ -19,10 +18,10 @@ public abstract class Options {
         return maxOptionId;
     }
 
-    public static class OptionGroup implements Comparable {
-        private int priority;
-        private String name;
-        private List<Option> options;
+    public static class OptionGroup implements Comparable<OptionGroup> {
+        private final int priority;
+        private final String name;
+        private final List<Option> options;
 
         public OptionGroup(String name, int priority, List<Option> options) {
             this.name = name;
@@ -35,17 +34,15 @@ public abstract class Options {
         }
 
         @Override
-        public int compareTo(Object o) {
-            if (o instanceof OptionGroup)
-                if (((OptionGroup) o).priority < this.priority) return 1;
-                else return -1;
-            return 0;
+        public int compareTo(OptionGroup o) {
+            if (o.priority < this.priority) return 1;
+            else return -1;
         }
     }
 
     public static class Option extends LongOpt {
-        private String eg;
-        private String help;
+        private final String eg;
+        private final String help;
 
         public Option(String word, int arg, int ch, String eg, String help) {
             super(word, arg, null, ch);
@@ -55,11 +52,11 @@ public abstract class Options {
     }
 
     protected List<OptionGroup> getOptionGroups() {
-        return new ArrayList<OptionGroup>();
+        return new ArrayList<>();
     }
 
     private Option[] getOptions(List<OptionGroup> og) {
-        ArrayList<Option> r = new ArrayList<Option>();
+        ArrayList<Option> r = new ArrayList<>();
         for (OptionGroup g : og)
             r.addAll(g.options);
         return r.toArray(new Option[0]);
@@ -95,15 +92,15 @@ public abstract class Options {
 
     private String getShortOpts(Option[] opts) throws OptionException {
         StringBuilder buf = new StringBuilder();
-        for (int i = 0; i < opts.length; i++) {
-            char c = (char) opts[i].getVal();
+        for (Option opt : opts) {
+            char c = (char) opt.getVal();
             if (!Character.isLetterOrDigit(c))
                 continue;
             for (int j = 0; j < buf.length(); j++)
                 if (buf.charAt(j) == c)
-                    throw new OptionException("Duplicate short option " + c + " with " + opts[i].getName());
+                    throw new OptionException("Duplicate short option " + c + " with " + opt.getName());
             buf.append(c);
-            switch (opts[i].getHasArg()) {
+            switch (opt.getHasArg()) {
                 case LongOpt.NO_ARGUMENT:
                     break;
                 case LongOpt.OPTIONAL_ARGUMENT:
@@ -119,8 +116,7 @@ public abstract class Options {
 
     int dfltIndent = 35;
 
-    @SuppressWarnings("unchecked")
-    void printUsage() {
+    protected void printUsage() {
         StringBuilder text = new StringBuilder("Parameters: \n");
         List<OptionGroup> og = getOptionGroups();
         Collections.sort(og);
@@ -161,7 +157,7 @@ public abstract class Options {
 
     private String indent(String s) {
         String[] substrs = s.split("\n");
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         for (String astr : substrs) {
             for (int i = 0; i < dfltIndent; i++) result.append(' ');
             result.append(astr);
@@ -172,7 +168,7 @@ public abstract class Options {
         return sresult;
     }
 
-    protected List<String> files = new ArrayList<String>();
+    protected List<String> files = new ArrayList<>();
 
     public List<String> getFiles() {
         return files;

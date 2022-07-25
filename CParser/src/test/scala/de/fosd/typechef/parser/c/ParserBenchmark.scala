@@ -1,11 +1,11 @@
 package de.fosd.typechef.parser.c
 
 
-import java.io._
-;
-import junit.framework.Assert._
 import de.fosd.typechef.featureexpr._
 import de.fosd.typechef.parser._
+import org.junit.Assert._
+
+import java.io._
 import java.util.Collections
 
 object ParserBenchmark extends App with TestHelper {
@@ -21,10 +21,9 @@ object ParserBenchmark extends App with TestHelper {
     println(in.tokens.size)
     val result = p.phrase(p.translationUnit)(in, FeatureExprFactory.True)
     (result: @unchecked) match {
-      case p.Success(ast, unparsed) => {
+      case p.Success(_, unparsed) =>
         assertTrue("parser did not reach end of token stream: " + unparsed, unparsed.atEnd)
-        //succeed
-      }
+      //succeed
       case p.NoSuccess(msg, unparsed, inner) =>
         println(msg + " at " + unparsed + " " + inner)
     }
@@ -42,7 +41,7 @@ object ParserBenchmark extends App with TestHelper {
   println("grep: " + ProfilingTokenHelper.totalConsumed(in) + ", backtracked " + ProfilingTokenHelper.totalBacktracked(in) + ", repeated " + ProfilingTokenHelper.totalRepeated(in) + " in " + (System.currentTimeMillis - start) + " ms")
 
 
-  def reportUnparsedTokens(in: TokenReader[CToken, CTypeContext]) {
+  def reportUnparsedTokens(in: TokenReader[CToken, CTypeContext]): Unit = {
     for (t <- in.tokens)
       if (t.profile_consumed == 0)
         println("not consumed: " + t)

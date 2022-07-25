@@ -109,25 +109,26 @@ public abstract class LexerOptions extends Options implements ILexerOptions {
         return buf;
     }
 
+    @SuppressWarnings("CommentedOutCode")
     private static Set<Feature> getDefaultFeatures() {
-        Set<Feature> r = new HashSet<Feature>();
+        Set<Feature> r = new HashSet<>();
         // No sane code uses TRIGRAPHS or DIGRAPHS - at least, no code
         // written with ASCII available!
-        //pp.addFeature(Feature.DIGRAPHS);
-        //pp.addFeature(Feature.TRIGRAPHS);
+        // pp.addFeature(Feature.DIGRAPHS);
+        // pp.addFeature(Feature.TRIGRAPHS);
         r.add(Feature.LINEMARKERS);
         r.add(Feature.INCLUDENEXT);
         r.add(Feature.GNUCEXTENSIONS);
         return r;
     }
 
-    protected Map<String, String> definedMacros = new HashMap<String, String>();
-    protected Set<String> undefMacros = new HashSet<String>();
-    protected List<String> systemIncludePath = new ArrayList<String>();
-    protected List<String> quoteIncludePath = new ArrayList<String>();
-    protected List<String> macroFilter = new ArrayList<String>();
-    protected List<String> includedHeaders = new ArrayList<String>();
-    protected Set<Warning> warnings = new HashSet<Warning>();
+    protected Map<String, String> definedMacros = new HashMap<>();
+    protected Set<String> undefMacros = new HashSet<>();
+    protected List<String> systemIncludePath = new ArrayList<>();
+    protected List<String> quoteIncludePath = new ArrayList<>();
+    protected List<String> macroFilter = new ArrayList<>();
+    protected List<String> includedHeaders = new ArrayList<>();
+    protected Set<Warning> warnings = new HashSet<>();
     protected Set<Feature> features = getDefaultFeatures();
     protected String lexOutputFile = "";
     protected boolean lexPrintToStdout = true;
@@ -237,7 +238,7 @@ public abstract class LexerOptions extends Options implements ILexerOptions {
 
     @Override
     public List<String> getIncludePaths() {
-        return new ArrayList<String>(systemIncludePath);
+        return new ArrayList<>(systemIncludePath);
     }
 
     @Override

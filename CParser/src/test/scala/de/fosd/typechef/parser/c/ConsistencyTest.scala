@@ -1,14 +1,15 @@
 package de.fosd.typechef.parser.c
 
-import junit.framework.Assert._
-import de.fosd.typechef.featureexpr._
-import org.junit.{Assert, Test}
 import de.fosd.typechef.conditional.Opt
+import de.fosd.typechef.featureexpr._
+import org.junit.Assert._
+import org.junit.{Assert, Test}
+
 import java.util
-import util.Collections
+import java.util.Collections
 
 class ConsistencyTest extends TestHelper {
-  def parseFile(fileName: String, featureModel: FeatureModel) {
+  def parseFile(fileName: String, featureModel: FeatureModel): Unit = {
     val inputStream = getClass.getResourceAsStream("/" + fileName)
     assertNotNull("file not found " + fileName, inputStream)
     val p = new CParser(featureModel)
@@ -18,11 +19,10 @@ class ConsistencyTest extends TestHelper {
     println("parsing done.")
 
     (result: @unchecked) match {
-      case p.Success(ast, unparsed) => {
+      case p.Success(ast, _) =>
         checkASTAssumptions(ast.asInstanceOf[TranslationUnit], featureModel)
 
-        //success
-      }
+      //success
       case p.NoSuccess(msg, unparsed, inner) =>
         println(unparsed.context)
         Assert.fail(msg + " at " + unparsed + " " + inner)
@@ -30,8 +30,8 @@ class ConsistencyTest extends TestHelper {
 
   }
 
-  def checkASTAssumptions(ast: TranslationUnit, featureModel: FeatureModel) {
-    val knownExternals = new util.IdentityHashMap[ExternalDef, FeatureExpr]();
+  def checkASTAssumptions(ast: TranslationUnit, featureModel: FeatureModel): Unit = {
+    val knownExternals = new util.IdentityHashMap[ExternalDef, FeatureExpr]()
 
     for (Opt(f, ext) <- ast.defs) {
 
@@ -39,7 +39,7 @@ class ConsistencyTest extends TestHelper {
 
       if (f.isSatisfiable(featureModel))
         if (!knownExternals.containsKey(ext)) {
-          knownExternals.put(ext, f);
+          knownExternals.put(ext, f)
         } else {
           val priorFexpr = knownExternals.get(ext)
 
@@ -54,7 +54,7 @@ class ConsistencyTest extends TestHelper {
 
 
   @Test
-  def testRz1000() {
+  def testRz1000(): Unit = {
     val oldDefault = FeatureExprFactory.dflt
     FeatureExprFactory.setDefault(FeatureExprFactory.bdd)
     try {

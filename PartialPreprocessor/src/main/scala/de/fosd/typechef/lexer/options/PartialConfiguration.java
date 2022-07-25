@@ -10,9 +10,9 @@ import de.fosd.typechef.featureexpr.FeatureExpr;
  * To change this template use File | Settings | File Templates.
  */
 public class PartialConfiguration {
-    private String[] def;
-    private String[] undef;
-    private FeatureExpr fexpr;
+    private final String[] def;
+    private final String[] undef;
+    private final FeatureExpr fexpr;
 
     public PartialConfiguration(
             String[] definedFeatures,

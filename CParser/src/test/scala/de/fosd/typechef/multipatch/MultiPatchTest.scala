@@ -2,9 +2,9 @@ package de.fosd.typechef.multipatch
 
 import org.junit.Test
 
-class TestA {
+class MultiPatchTest {
   @Test
-  def testEmpty {
+  def testEmpty(): Unit = {
     val mp = MultiPatch(List())
     val p = Patch(42, List())
 
@@ -14,7 +14,7 @@ class TestA {
   }
 
   @Test
-  def testComplex {
+  def testComplex(): Unit = {
     val mp = MultiPatch(List())
     val p1 = Patch(27, List(Insert(0, "Hello"), Insert(0, "World")))
     val p2 = Patch(42, List(Insert(1, "Wonderfull")))

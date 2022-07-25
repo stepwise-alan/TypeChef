@@ -11,6 +11,7 @@ import java.io.OutputStream;
  * Time: 2:25 PM
  * To change this template use File | Settings | File Templates.
  */
+@SuppressWarnings("unused")
 public class Help {
 
     public static void copyStream(InputStream is, OutputStream os) throws IOException {

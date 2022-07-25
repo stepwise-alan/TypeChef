@@ -1,10 +1,15 @@
-package de.fosd.typechef.featureexprUtil
+package de.fosd.typechef.featureexpr
 
-import org.sat4j.specs.{IVecInt, IVec}
+import org.sat4j.specs.{IVec, IVecInt}
+
+import scala.annotation.unused
 
 
 trait SATBasedFeatureModel {
-    val variables: Map[String, Int]
-    val clauses: IVec[IVecInt]
-    val lastVarId: Int
+  @unused
+  val variables: Map[String, Int]
+  @unused
+  val clauses: IVec[IVecInt]
+  @unused
+  val lastVarId: Int
 }

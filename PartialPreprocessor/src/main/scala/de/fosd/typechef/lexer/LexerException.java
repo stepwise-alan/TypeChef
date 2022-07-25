@@ -30,8 +30,8 @@ import de.fosd.typechef.featureexpr.FeatureExpr;
  * <p/>
  * Note to users: I don't really like the name of this class. S.
  */
-@SuppressWarnings("all")
 public class LexerException extends Exception {
+    @SuppressWarnings({"FieldCanBeLocal", "unused"})
     private FeatureExpr presenceCondition;
 
     public LexerException(String msg) {

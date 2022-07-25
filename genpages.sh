@@ -2,16 +2,16 @@
 
 #checkout fresh (if needed)
 mkdir pages
-cd pages
+cd pages || exit
 git clone -s -b gh-pages .. TypeChef
-cd TypeChef
+cd TypeChef || exit
 git checkout gh-pages -f
 git reset --hard
 
 #deploy
 cd ../..
 cp README.md pages/TypeChef/_includes/README.md
-if [ $1 = "--mkjar" ] 
+if [ "$1" = "--mkjar" ]
 then sbt assembly; cp TypeChef-*.jar pages/TypeChef/deploy
 else echo not updating .jar file. call with --mkjar parameter to generate .jar file
 fi
@@ -21,7 +21,7 @@ sbt mkrun
 ./typechef.sh --help > Parameter.txt
 git commit -m "update parameter list with genpages.sh" Parameter.txt
 
-cd pages/TypeChef
+cd pages/TypeChef || exit
 
 #commit
 git add *

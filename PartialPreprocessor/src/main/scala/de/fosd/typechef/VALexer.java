@@ -23,14 +23,14 @@ public interface VALexer {
     void addInput(LexerInput source) throws IOException;
 
 
-    public static interface LexerFactory {
-        public VALexer create(FeatureModel featureModel);
+    interface LexerFactory {
+        VALexer create(FeatureModel featureModel);
     }
 
-    public static interface LexerInput {
+    interface LexerInput {
     }
 
-    public static class TextSource implements LexerInput {
+    class TextSource implements LexerInput {
         public final String code;
 
         public TextSource(String code) {
@@ -39,7 +39,7 @@ public interface VALexer {
         }
     }
 
-    public static class FileSource implements LexerInput {
+    class FileSource implements LexerInput {
 
         final public File file;
 
@@ -48,13 +48,12 @@ public interface VALexer {
         }
     }
 
-    public static class StreamSource implements LexerInput {
+    class StreamSource implements LexerInput {
         final public String filename;
         final public InputStream inputStream;
 
         /**
-         * @param inputStream
-         * @param fileName    used to find headers in the same directory and for error reporting
+         * @param fileName used to find headers in the same directory and for error reporting
          */
         public StreamSource(InputStream inputStream, String fileName) {
             this.filename = fileName;
@@ -79,9 +78,9 @@ public interface VALexer {
 
     void addQuoteIncludePath(String folder);
 
-    public List<String> getSystemIncludePath();//readonly
+    List<String> getSystemIncludePath();//readonly
 
-    public List<String> getQuoteIncludePath();//readonly
+    List<String> getQuoteIncludePath();//readonly
 
     LexerToken getNextToken() throws IOException, LexerException;
 

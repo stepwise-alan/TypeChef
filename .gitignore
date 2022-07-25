@@ -23,7 +23,6 @@ tokenstream.txt
 *.err
 *.stats
 *.time
-*.dbg
 *.diffs
 *.macroDbg
 *.dbgSrc

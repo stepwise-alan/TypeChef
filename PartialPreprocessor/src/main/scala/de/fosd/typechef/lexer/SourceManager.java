@@ -21,7 +21,7 @@ import static de.fosd.typechef.lexer.Token.EOF;
  */
 public class SourceManager {
 
-    List<Source> inputs = new ArrayList<Source>();
+    List<Source> inputs = new ArrayList<>();
 
     private Source source = null;
 
@@ -78,12 +78,9 @@ public class SourceManager {
 
     /**
      * pushes a list of sources which are handled as siblings
-     *
-     * @param resultList
-     * @param b
      */
-    void push_sources(List<Source> resultList, boolean autopop) {
-        ArrayList<Source> list = new ArrayList<Source>(resultList);
+    void push_sources(List<Source> resultList, @SuppressWarnings("SameParameterValue") boolean autopop) {
+        ArrayList<Source> list = new ArrayList<>(resultList);
         Collections.reverse(list);
         boolean isFirst = true;//add all but first as sibling
         for (Source s : list) {
@@ -151,10 +148,10 @@ public class SourceManager {
                 if (pp.getFeature(Feature.LINEMARKERS) && s.isNumbered()
                         && t != null) {
                     /*
-                          * We actually want 'did the nested source contain a newline
-                          * token', which isNumbered() approximates. This is not
-                          * perfect, but works.
-                          */
+                     * We actually want 'did the nested source contain a newline
+                     * token', which isNumbered() approximates. This is not
+                     * perfect, but works.
+                     */
                     return Preprocessor.OutputHelper.line_token(t.getLine() + 1, t.getName(), " 2");
                 }
                 continue;
@@ -182,11 +179,12 @@ public class SourceManager {
         }
     }
 
+    @SuppressWarnings("unused")
     String debug_sourceDelta(Source debugOrigSource) {
-        String newSources = "";
+        StringBuilder newSources = new StringBuilder();
         Source _source = getSource();
         while (_source != debugOrigSource && _source != null) {
-            newSources = newSources + ", " + _source.debug_getContent();
+            newSources.append(", ").append(_source.debug_getContent());
             _source = _source.getSibling();
         }
 

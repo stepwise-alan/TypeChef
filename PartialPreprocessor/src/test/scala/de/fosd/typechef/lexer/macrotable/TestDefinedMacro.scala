@@ -1,11 +1,10 @@
 package de.fosd.typechef.lexer.macrotable
 
-import junit.framework._
-import junit.framework.Assert._
-import org.junit.Test
-
 import de.fosd.typechef.featureexpr.FeatureExpr
 import de.fosd.typechef.featureexpr.FeatureExprFactory.sat._
+import junit.framework._
+import org.junit.Assert._
+import org.junit.Test
 
 class TestDefinedMacro extends TestCase {
 
@@ -21,10 +20,10 @@ class TestDefinedMacro extends TestCase {
 
   def y = createDefinedExternal("Y")
 
-  def assertEquiv(a: FeatureExpr, b: FeatureExpr) = assertTrue("expected: " + a + " equivalentTo " + b, a equivalentTo b)
+  def assertEquiv(a: FeatureExpr, b: FeatureExpr): Unit = assertTrue("expected: " + a + " equivalentTo " + b, a equivalentTo b)
 
   @Test
-  def testMacroTable() {
+  def testMacroTable(): Unit = {
     var macroTable = new MacroContext[String]()
 
     macroTable = macroTable.define("X", b, "1")
@@ -34,7 +33,7 @@ class TestDefinedMacro extends TestCase {
     assertEquiv(b or c or x, macroTable.getMacroCondition("X"))
 
     macroTable = macroTable.undefine("X", d)
-    assertEquiv(b or c or x and (d.not), macroTable.getMacroCondition("X"))
+    assertEquiv(b or c or x and d.not(), macroTable.getMacroCondition("X"))
 
     macroTable = macroTable.undefine("X", True)
     assertEquiv(False, macroTable.getMacroCondition("X"))
@@ -50,7 +49,7 @@ class TestDefinedMacro extends TestCase {
   }
 
   @Test
-  def testMacroTable2() {
+  def testMacroTable2(): Unit = {
     var macroTable = new MacroContext[String](new MacroFilter().setPostfixFilter("_"))
 
     assertEquiv(x, macroTable.getMacroCondition("X"))
@@ -89,23 +88,23 @@ class TestDefinedMacro extends TestCase {
   //    }
 
   @Test
-  def testSatisfiability() {
-    val macroTable = (getMacroTable)
+  def testSatisfiability(): Unit = {
+    val macroTable = getMacroTable
 
     val x = createDefinedMacro("X", macroTable)
-    assertTrue(x.isSatisfiable())
-    assertFalse(x.isContradiction())
-    assertTrue(createDefinedMacro("Z", macroTable).isContradiction())
+    assertTrue(x.isSatisfiable)
+    assertFalse(x.isContradiction)
+    assertTrue(createDefinedMacro("Z", macroTable).isContradiction)
 
   }
 
   @Test
-  def testSatisfiability2() {
+  def testSatisfiability2(): Unit = {
     var macroTable = new MacroContext[String]()
     macroTable = macroTable.undefine("X", True)
     macroTable = macroTable.define("X", a, "1")
-    macroTable = macroTable.define("X", a.not and b, "2")
-    macroTable = macroTable.define("X", a.not and b.not and c, "3")
+    macroTable = macroTable.define("X", a.not() and b, "2")
+    macroTable = macroTable.define("X", a.not() and b.not() and c, "3")
     //        macroTable = macroTable.undefine("Y", True)
     //        macroTable = macroTable.define("Y", a, "1")
     macroTable = macroTable.define("GLOBAL", createDefinedMacro("X", macroTable), "")
@@ -113,37 +112,37 @@ class TestDefinedMacro extends TestCase {
 
     val u = macroTable.getMacroCondition("GLOBAL")
 
-    assertFalse(u.isTautology())
+    assertFalse(u.isTautology)
 
-    assertFalse(createDefinedMacro("GLOBAL", macroTable).isTautology())
-    assertFalse(createDefinedMacro("GLOBAL", macroTable).isTautology())
+    assertFalse(createDefinedMacro("GLOBAL", macroTable).isTautology)
+    assertFalse(createDefinedMacro("GLOBAL", macroTable).isTautology)
 
   }
 
   @Test
-  def testSatisfiability3() {
+  def testSatisfiability3(): Unit = {
     var macroTable = new MacroContext[String]()
     macroTable = macroTable.undefine("X", True)
 
-    assertFalse(createDefinedMacro("X", macroTable).isTautology())
-    assertTrue(createDefinedMacro("X", macroTable).isContradiction())
+    assertFalse(createDefinedMacro("X", macroTable).isTautology)
+    assertTrue(createDefinedMacro("X", macroTable).isContradiction)
 
-    assertTrue(createDefinedMacro("X", macroTable).not.isTautology())
-    assertFalse(createDefinedMacro("X", macroTable).not.isContradiction())
+    assertTrue(createDefinedMacro("X", macroTable).not().isTautology)
+    assertFalse(createDefinedMacro("X", macroTable).not().isContradiction)
 
-    assertTrue(createDefinedMacro("Y", macroTable).isSatisfiable())
-    assertFalse(createDefinedMacro("Y", macroTable).isContradiction())
-    assertFalse(createDefinedMacro("Y", macroTable).isTautology())
+    assertTrue(createDefinedMacro("Y", macroTable).isSatisfiable)
+    assertFalse(createDefinedMacro("Y", macroTable).isContradiction)
+    assertFalse(createDefinedMacro("Y", macroTable).isTautology)
 
-    assertFalse((createDefinedMacro("Y", macroTable) and createDefinedMacro("X", macroTable)).isSatisfiable())
+    assertFalse((createDefinedMacro("Y", macroTable) and createDefinedMacro("X", macroTable)).isSatisfiable)
 
     macroTable = macroTable.define("X", True, "")
-    assertTrue((createDefinedMacro("Y", macroTable) and createDefinedMacro("X", macroTable)).isSatisfiable())
-    assertFalse((createDefinedMacro("Y", macroTable) and createDefinedMacro("X", macroTable)).isTautology())
+    assertTrue((createDefinedMacro("Y", macroTable) and createDefinedMacro("X", macroTable)).isSatisfiable)
+    assertFalse((createDefinedMacro("Y", macroTable) and createDefinedMacro("X", macroTable)).isTautology)
   }
 
   @Test
-  def testOverTime() {
+  def testOverTime(): Unit = {
     var macroTable = new MacroContext[String]()
     macroTable = macroTable.undefine("X", True)
 
@@ -155,14 +154,14 @@ class TestDefinedMacro extends TestCase {
     assertTrue(firstX.isContradiction)
     assertTrue(secondX.isSatisfiable)
 
-    macroTable = macroTable.define("X", a.not, "")
+    macroTable = macroTable.define("X", a.not(), "")
     val thirdX = createDefinedMacro("X", macroTable) //true
     assertTrue(firstX.isContradiction)
     assertTrue(secondX.isSatisfiable)
     assertTrue(thirdX.isTautology)
 
     macroTable = macroTable.undefine("X", True)
-    macroTable = macroTable.define("X", a.not, "") //!A
+    macroTable = macroTable.define("X", a.not(), "") //!A
     val fourthX = createDefinedMacro("X", macroTable)
     assertTrue(firstX.isContradiction)
     assertTrue(secondX.isSatisfiable)
@@ -171,12 +170,12 @@ class TestDefinedMacro extends TestCase {
     assertTrue((fourthX or secondX).isTautology)
   }
 
-  def expectFail(f: => Unit) =
+  def expectFail(f: => Unit): Unit =
     try {
       f
       fail("should not succeed")
     } catch {
-      case e: AssertionError =>
+      case _: AssertionError =>
     }
 
   //(A||B) && (!B|| !A)

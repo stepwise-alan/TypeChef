@@ -1,19 +1,20 @@
 package de.fosd.typechef.typesystem.linker
 
-import java.io.{FileNotFoundException, InputStream}
-
 import de.fosd.typechef.featureexpr.FeatureExprFactory
 import de.fosd.typechef.parser.c.{TestHelper, TranslationUnit}
-import org.scalatest.{FunSuite, Matchers}
+import org.scalatest.funsuite.AnyFunSuite
+import org.scalatest.matchers.should.Matchers
 
-class InterfaceInferenceTest extends FunSuite with TestHelper with Matchers {
+import java.io.{FileNotFoundException, InputStream}
+
+class InterfaceInferenceTest extends AnyFunSuite with TestHelper with Matchers {
 
   val folder = "testfiles/"
 
   private def parse(filename: String): TranslationUnit = {
     val start = System.currentTimeMillis
     println("parsing " + filename)
-    var inputStream: InputStream = getClass.getResourceAsStream("/" + folder + filename)
+    val inputStream: InputStream = getClass.getResourceAsStream("/" + folder + filename)
     if (inputStream == null) {
       throw new FileNotFoundException("Input file not found: " + filename)
     }
@@ -26,9 +27,9 @@ class InterfaceInferenceTest extends FunSuite with TestHelper with Matchers {
 
   private def d(x: String) = FeatureExprFactory.createDefinedExternal(x)
 
-  val ast = parse("mini.pi")
-  val interface = new CInferInterface {}.inferInterface(ast)
-//  println(interface)
+  val ast: TranslationUnit = parse("mini.pi")
+  val interface: CInterface = new CInferInterface {}.inferInterface(ast)
+  //  println(interface)
 
 
   test("find imported function") {
@@ -69,7 +70,7 @@ class InterfaceInferenceTest extends FunSuite with TestHelper with Matchers {
     assert(!interface.imports.exists(_.name == "staticfun"))
     assert(!interface.exports.exists(_.name == "staticfunconditional"))
     assert(!interface.imports.exists(_.name == "staticfunconditional"))
-    assert(interface.exports.exists(x => x.name == "partialstatic" && (x.fexpr equivalentTo (d("STAT").not))))
+    assert(interface.exports.exists(x => x.name == "partialstatic" && (x.fexpr equivalentTo d("STAT").not())))
     assert(!interface.imports.exists(_.name == "partialstatic"))
   }
 
@@ -90,13 +91,13 @@ class InterfaceInferenceTest extends FunSuite with TestHelper with Matchers {
     assert(interface.imports.exists(_.name == "funpoint"))
   }
 
-    test("weak export annotations") {
-        val expectedWeakExports = interface.exports.filter(_.name == "weaklyExportedFunction")
-        assert(expectedWeakExports.size == 1)
+  test("weak export annotations") {
+    val expectedWeakExports = interface.exports.filter(_.name == "weaklyExportedFunction")
+    assert(expectedWeakExports.size == 1)
 
-        val weakExports = interface.exports.filter(_.extraFlags contains WeakExport)
-        assert(expectedWeakExports == weakExports)
-    }
+    val weakExports = interface.exports.filter(_.extraFlags contains WeakExport)
+    assert(expectedWeakExports == weakExports)
+  }
 
 
 }

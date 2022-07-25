@@ -18,9 +18,10 @@ public class MultiParserInputTest {
                 + "foo\n" + "#endif\n", 3);
     }
 
-    private void checkStr(String orig, int expectedNumber)
+    @SuppressWarnings("CommentedOutCode")
+    private void checkStr(@SuppressWarnings("SameParameterValue") String orig, @SuppressWarnings("SameParameterValue") int expectedNumber)
             throws LexerException, IOException {
-        List<LexerToken> tokens = new LexerFrontend().parse(orig, Collections.<String>emptyList(), null);
+        List<LexerToken> tokens = new LexerFrontend().parse(orig, Collections.emptyList(), null);
         for (LexerToken t : tokens)
             System.out.println(t);
         assert (tokens.size() == expectedNumber);

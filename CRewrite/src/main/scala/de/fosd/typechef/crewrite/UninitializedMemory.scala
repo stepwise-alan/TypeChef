@@ -1,10 +1,9 @@
 package de.fosd.typechef.crewrite
 
-import org.kiama.rewriting.Rewriter._
-
+import de.fosd.typechef.featureexpr.FeatureModel
 import de.fosd.typechef.parser.c._
 import de.fosd.typechef.typesystem.{DeclUseMap, UseDeclMap}
-import de.fosd.typechef.featureexpr.FeatureModel
+import org.bitbucket.inkytonik.kiama.rewriting.Rewriter._
 
 // implements a simple analysis of uninitialized memory
 // https://www.securecoding.cert.org/confluence/display/seccode/EXP33-C.+Do+not+reference+uninitialized+memory
@@ -28,63 +27,66 @@ import de.fosd.typechef.featureexpr.FeatureModel
 // F  = flow
 class UninitializedMemory(env: ASTEnv, dum: DeclUseMap, udm: UseDeclMap, fm: FeatureModel) extends MonotoneFWIdLab(env, dum, udm, fm) with IntraCFG with CFGHelper with ASTNavigation with UsedDefinedDeclaredVariables {
 
-    // returns all arguments (no references!) for a given AST (CFGStmt)
-    def getRelevantIdUsages(a: AST): L = {
-        var resid = uses(a)
-        var res = l
-        val funccalls = filterAllASTElems[PostfixExpr](a)
+  // returns all arguments (no references!) for a given AST (CFGStmt)
+  def getRelevantIdUsages(a: AST): L = {
+    var resid = uses(a)
+    var res = l
+    val funccalls = filterAllASTElems[PostfixExpr](a)
 
-        val filterids = manybu(query[AST] {
-            // omit ids passed as a pointer to a function call
-            case i: Id => if (findPriorASTElem[PointerCreationExpr](i, env).isDefined) resid = resid.filterNot(_.eq(i))
-            // omit function-call identifiers
-            case PostfixExpr(i: Id, _: FunctionCall) => resid = resid.filterNot(_.eq(i))
-        })
+    val filterids = manybu(query[AST] {
+      // omit ids passed as a pointer to a function call
+      case i: Id => if (findPriorASTElem[PointerCreationExpr](i, env).isDefined) resid = resid.filterNot(_.eq(i))
+      // omit function-call identifiers
+      case PostfixExpr(i: Id, _: FunctionCall) => resid = resid.filterNot(_.eq(i))
+    })
 
-        funccalls.map(filterids)
+    funccalls.map(filterids)
 
-        for (c <- resid)
-            res ++= fromCache(c)
+    for (c <- resid)
+      res ++= fromCache(c)
 
-        res
-    }
+    res
+  }
 
-    // get all uninitialized variables
-    def gen(a: AST): L = {
-        var res = l
-        val uninitializedVariables = manybu(query[AST] {
-            case InitDeclaratorI(AtomicNamedDeclarator(_, i: Id, _), _, None) => res ++= fromCache(i)
-        })
+  // get all uninitialized variables
+  def gen(a: AST): L = {
+    var res = l
+    val uninitializedVariables = manybu(query[AST] {
+      case InitDeclaratorI(AtomicNamedDeclarator(_, i: Id, _), _, None) => res ++= fromCache(i)
+    })
 
-        uninitializedVariables(a)
-        res
-    }
+    uninitializedVariables(a)
+    res
+  }
 
-    // get variables that get an assignment
-    def kill(a: AST): L = {
-        var res = l
+  // get variables that get an assignment
+  def kill(a: AST): L = {
+    var res = l
 
-        val assignments = manytd(query[AST] {
-            case InitDeclaratorI(AtomicNamedDeclarator(_, i: Id, _), _, Some(_)) => res ++= fromCache(i, true)
-            case AssignExpr(i: Id, "=", _) => res ++= fromCache(i, true)
-        })
+    val assignments = manytd(query[AST] {
+      case InitDeclaratorI(AtomicNamedDeclarator(_, i: Id, _), _, Some(_)) => res ++= fromCache(i, isKill = true)
+      case AssignExpr(i: Id, "=", _) => res ++= fromCache(i, isKill = true)
+    })
 
-        val pointerids = manytd(query[AST] {
-            case i: Id => if (findPriorASTElem[PointerCreationExpr](i, env).isDefined) res ++= fromCache(i, true)
-        })
+    val pointerids = manytd(query[AST] {
+      case i: Id => if (findPriorASTElem[PointerCreationExpr](i, env).isDefined) res ++= fromCache(i, isKill = true)
+    })
 
-        assignments(a)
-        pointerids(a)
+    assignments(a)
+    pointerids(a)
 
-        res
-    }
+    res
+  }
 
-    protected def F(e: AST) = flow(e)
+  protected def F(e: AST): CFG = flow(e)
 
-    protected val i = l
-    protected def b = l
-    protected def combinationOperator(l1: L, l2: L) = union(l1, l2)
+  protected val i: L = l
 
-    protected def infunction(a: AST): L = combinator(a)
-    protected def outfunction(a: AST): L = f_l(a)
+  protected def b: L = l
+
+  protected def combinationOperator(l1: L, l2: L): L = union(l1, l2)
+
+  protected def infunction(a: AST): L = combinator(a)
+
+  protected def outfunction(a: AST): L = f_l(a)
 }

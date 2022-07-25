@@ -26,6 +26,7 @@ package de.fosd.typechef.lexer;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static de.fosd.typechef.lexer.Token.*;
@@ -37,7 +38,7 @@ public class LexerSource extends Source {
     private static final boolean DEBUG = false;
 
     private JoinReader reader;
-    private boolean ppvalid;
+    private final boolean ppvalid;
     private boolean bol;
     private boolean include;
 
@@ -53,8 +54,8 @@ public class LexerSource extends Source {
     private boolean cr;
 
     /*
-      * ppvalid is: false in StringLexerSource, true in FileLexerSource
-      */
+     * ppvalid is: false in StringLexerSource, true in FileLexerSource
+     */
     public LexerSource(Reader r, boolean ppvalid) {
         this.reader = new JoinReader(r);
         this.ppvalid = ppvalid;
@@ -95,7 +96,7 @@ public class LexerSource extends Source {
 
     /* Error handling. */
 
-    private final void _error(String msg, boolean error) throws LexerException {
+    private void _error(String msg, boolean error) throws LexerException {
         int _l = line;
         int _c = column;
         if (_c == 0) {
@@ -112,6 +113,7 @@ public class LexerSource extends Source {
 
     /* Allow JoinReader to call this. */
     /* pp */
+    @SuppressWarnings("unused")
     final void error(String msg) throws LexerException {
         _error(msg, true);
     }
@@ -129,12 +131,12 @@ public class LexerSource extends Source {
     }
 
     /*
-      * private boolean _isLineSeparator(int c) { return Character.getType(c) ==
-      * Character.LINE_SEPARATOR || c == -1; }
-      */
+     * private boolean _isLineSeparator(int c) { return Character.getType(c) ==
+     * Character.LINE_SEPARATOR || c == -1; }
+     */
 
     /* XXX Move to JoinReader and canonicalise newlines. */
-    private static final boolean isLineSeparator(int c) {
+    private static boolean isLineSeparator(int c) {
         switch ((char) c) {
             case '\r':
             case '\n':
@@ -197,15 +199,15 @@ public class LexerSource extends Source {
         }
 
         /*
-           * if (isLineSeparator(c)) { line++; lastcolumn = column; column = 0; }
-           * else { column++; }
-           */
+         * if (isLineSeparator(c)) { line++; lastcolumn = column; column = 0; }
+         * else { column++; }
+         */
 
         return c;
     }
 
     /* You can unget AT MOST one newline. */
-    private void unread(int c) throws IOException {
+    private void unread(int c) {
         /* XXX Must unread newlines. */
         if (c != -1) {
             if (isLineSeparator(c)) {
@@ -233,7 +235,7 @@ public class LexerSource extends Source {
     }
 
     /* Consumes the rest of the current line into an invalid. */
-    private Token invalid(StringBuilder text, String reason)
+    private Token invalid(StringBuilder text, @SuppressWarnings("SameParameterValue") String reason)
             throws IOException, LexerException {
         int d = read();
         while (!isLineSeparator(d)) {
@@ -244,7 +246,7 @@ public class LexerSource extends Source {
         return new SimpleToken(INVALID, text.toString(), reason, this);
     }
 
-    private Token unterminated(int d, StringBuilder text) throws IOException {
+    private Token unterminated(int d, StringBuilder text) {
         unread(d);
         return new SimpleToken(INVALID, text.toString(),
                 "End of file in comment literal after " + text, this);
@@ -387,7 +389,7 @@ public class LexerSource extends Source {
         if (e != '\'') {
             // error("Illegal character constant");
             /* We consume up to the next ' or the rest of the line. */
-            for (; ;) {
+            for (; ; ) {
                 if (isLineSeparator(e)) {
                     unread(e);
                     break;
@@ -402,10 +404,10 @@ public class LexerSource extends Source {
         }
         text.append('\'');
         /* XXX It this a bad cast? */
-        return new SimpleToken(CHARACTER, text.toString(), Character
-                .valueOf((char) d), this);
+        return new SimpleToken(CHARACTER, text.toString(), (char) d, this);
     }
 
+    @SuppressWarnings("CommentedOutCode")
     private Token string(boolean isWide, char open, char close)
             throws IOException, LexerException {
         StringBuilder text = new StringBuilder();
@@ -415,7 +417,7 @@ public class LexerSource extends Source {
 
         StringBuilder buf = new StringBuilder();
 
-        for (; ;) {
+        for (; ; ) {
             int c = read();
             if (c == close) {
                 break;
@@ -447,10 +449,11 @@ public class LexerSource extends Source {
                 .toString(), this);
     }
 
+    @SuppressWarnings("StatementWithEmptyBody")
     private Token _number(StringBuilder text, long val, int d)
             throws IOException, LexerException {
         int bits = 0;
-        for (; ;) {
+        for (; ; ) {
             /* XXX Error check duplicate bits. */
             if (d == 'E' || d == 'e') {
                 text.append((char) d);
@@ -481,7 +484,7 @@ public class LexerSource extends Source {
                 text.append((char) d);
                 d = read();
             } else if (d == 'J' || d == 'j' || d == 'F' || d == 'f') {
-                // chk: dont care what these are doing, just add to the
+                // chk: don't care what these are doing, just add to the
                 // textresult
                 text.append((char) d);
                 d = read();
@@ -491,7 +494,7 @@ public class LexerSource extends Source {
                         + (char) d + "\" on numeric constant", this);
             } else {
                 unread(d);
-                return new SimpleToken(INTEGER, text.toString(), Long.valueOf(val),
+                return new SimpleToken(INTEGER, text.toString(), val,
                         this);
             }
         }
@@ -510,7 +513,7 @@ public class LexerSource extends Source {
         return _number(text, val, d);
     }
 
-    /* We do not know whether know the first digit is valid. */
+    /* We do not know whether the first digit is valid. */
     private Token number_hex(char x) throws IOException, LexerException {
         StringBuilder text = new StringBuilder("0");
         text.append(x);
@@ -532,13 +535,13 @@ public class LexerSource extends Source {
     }
 
     /*
-      * We know we have at least one valid digit, but empty is not fine.
-      *
-      * also float digits are parsed by this, but do not yield to correct value
-      * (do not depend on the value for floats!) this is a hack for tools using
-      * the tokens produced by this preprocessor, floats are not used inside the
-      * preprocessor itself
-      */
+     * We know we have at least one valid digit, but empty is not fine.
+     *
+     * also float digits are parsed by this, but do not yield to correct value
+     * (do not depend on the value for floats!) this is a hack for tools using
+     * the tokens produced by this preprocessor, floats are not used inside the
+     * preprocessor itself
+     */
     /* XXX This needs a complete rewrite. */
     private Token number_decimal(int c, boolean initialDot) throws IOException,
             LexerException {
@@ -573,11 +576,9 @@ public class LexerSource extends Source {
         StringBuilder text = new StringBuilder();
         int d;
         text.append((char) c);
-        for (; ;) {
+        for (; ; ) {
             d = read();
-            if (Character.isIdentifierIgnorable(d))
-                ;
-            else if (Character.isJavaIdentifierPart(d))
+            if (!Character.isIdentifierIgnorable(d) && Character.isJavaIdentifierPart(d))
                 text.append((char) d);
             else
                 break;
@@ -590,7 +591,7 @@ public class LexerSource extends Source {
         StringBuilder text = new StringBuilder();
         int d;
         text.append((char) c);
-        for (; ;) {
+        for (; ; ) {
             d = read();
             if (ppvalid && isLineSeparator(d)) /* XXX Ugly. */
                 break;
@@ -638,8 +639,7 @@ public class LexerSource extends Source {
                         } while (d == '\n');
                         unread(d);
                         char[] text = new char[nls];
-                        for (int i = 0; i < text.length; i++)
-                            text[i] = '\n';
+                        Arrays.fill(text, '\n');
                         // Skip the bol = false below.
                         tok = new SimpleToken(NL, _l, _c, new String(text), this);
                     }
@@ -867,7 +867,7 @@ public class LexerSource extends Source {
         return tok;
     }
 
-    List<Token> lastTokens = new ArrayList<Token>();
+    List<Token> lastTokens = new ArrayList<>();
 
     public void close() throws IOException {
         if (reader != null) {

@@ -1,7 +1,7 @@
 package de.fosd.typechef.featureexpr
 
-import bdd.BDDFeatureExprFactory
-import sat.SATFeatureExprFactory
+import de.fosd.typechef.featureexpr.bdd.BDDFeatureExprFactory
+import de.fosd.typechef.featureexpr.sat.SATFeatureExprFactory
 
 
 /**
@@ -14,36 +14,43 @@ import sat.SATFeatureExprFactory
  */
 object FeatureExprFactory {
 
-    var default: AbstractFeatureExprFactory = if (System.getProperty("FEATUREEXPR") == "BDD") bdd else sat
-    def dflt = default
+  var default: AbstractFeatureExprFactory = if (System.getProperty("FEATUREEXPR") == "BDD") bdd else sat
 
-    def setDefault(newFactory: AbstractFeatureExprFactory) {
-        default = newFactory
-    }
+  def dflt: AbstractFeatureExprFactory = default
 
-
-    lazy val bdd: AbstractFeatureExprFactory = BDDFeatureExprFactory
-    lazy val sat: AbstractFeatureExprFactory = SATFeatureExprFactory
+  def setDefault(newFactory: AbstractFeatureExprFactory): Unit = {
+    default = newFactory
+  }
 
 
-    //shorthands for convenience
-    def createDefinedExternal(featureName: String) = default.createDefinedExternal(featureName)
-    def createFeatureExprFast(enabledFeatures : Set[SingleFeatureExpr], disabledFeatures : Set[SingleFeatureExpr]) : FeatureExpr =
-        default.createFeatureExprFast(enabledFeatures, disabledFeatures)
-    def True: FeatureExpr = default.True
-    def False: FeatureExpr = default.False
-    def empty: FeatureModel = default.featureModelFactory.empty
+  lazy val bdd: AbstractFeatureExprFactory = BDDFeatureExprFactory
+  lazy val sat: AbstractFeatureExprFactory = SATFeatureExprFactory
+
+
+  //shorthands for convenience
+  def createDefinedExternal(featureName: String): SingleFeatureExpr = default.createDefinedExternal(featureName)
+
+  def createFeatureExprFast(enabledFeatures: Set[SingleFeatureExpr], disabledFeatures: Set[SingleFeatureExpr]): FeatureExpr =
+    default.createFeatureExprFast(enabledFeatures, disabledFeatures)
+
+  def True: FeatureExpr = default.True
+
+  def False: FeatureExpr = default.False
+
+  def empty: FeatureModel = default.featureModelFactory.empty
 
 }
 
 trait AbstractFeatureExprFactory extends FeatureExprTreeFactory {
-    def createDefinedExternal(v: String): SingleFeatureExpr
-    def createDefinedMacro(name: String, macroTable: FeatureProvider): FeatureExpr
+  def createDefinedExternal(v: String): SingleFeatureExpr
 
-    def createFeatureExprFast(enabledFeatures : Set[SingleFeatureExpr], disabledFeatures : Set[SingleFeatureExpr]) : FeatureExpr
+  def createDefinedMacro(name: String, macroTable: FeatureProvider): FeatureExpr
 
-    def True: FeatureExpr
-    def False: FeatureExpr
+  def createFeatureExprFast(enabledFeatures: Set[SingleFeatureExpr], disabledFeatures: Set[SingleFeatureExpr]): FeatureExpr
 
-    def featureModelFactory: FeatureModelFactory
+  def True: FeatureExpr
+
+  def False: FeatureExpr
+
+  def featureModelFactory: FeatureModelFactory
 }

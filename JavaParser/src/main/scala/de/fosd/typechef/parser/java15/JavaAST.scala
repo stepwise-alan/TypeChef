@@ -8,7 +8,7 @@ import de.fosd.typechef.error.WithPosition
  */
 
 trait AST extends Product with Cloneable with WithPosition {
-    override def clone(): AST.this.type = super.clone().asInstanceOf[AST.this.type]
+  override def clone(): AST.this.type = super.clone().asInstanceOf[AST.this.type]
 }
 
 
@@ -28,13 +28,13 @@ trait JTypeDecl extends AST
 case class JEmptyTypeDecl() extends JTypeDecl
 
 case class JClassOrInterfaceDecl(
-                                    mod: List[Opt[JModifier]],
-                                    isInterface: Boolean,
-                                    name: JId,
-                                    typeParameter: Any,
-                                    extendsList: List[Opt[JClassOrInterfaceType]],
-                                    implementsList: List[Opt[JClassOrInterfaceType]],
-                                    members: List[Opt[JBodyDeclaration]]) extends JTypeDecl with JBodyDeclaration
+                                  mod: List[Opt[JModifier]],
+                                  isInterface: Boolean,
+                                  name: JId,
+                                  typeParameter: Any,
+                                  extendsList: List[Opt[JClassOrInterfaceType]],
+                                  implementsList: List[Opt[JClassOrInterfaceType]],
+                                  members: List[Opt[JBodyDeclaration]]) extends JTypeDecl with JBodyDeclaration
 
 case class JEnumDecl(mod: List[Opt[JModifier]], name: JId, implementsList: List[Opt[JClassOrInterfaceType]], enumBody: Any) extends JTypeDecl with JBodyDeclaration
 

@@ -22,24 +22,24 @@
  */
 package de.fosd.typechef.lexer
 
+import de.fosd.typechef.lexer.Token._
+
 import java.io._
 import java.{util => jUtil}
-import java.util.Iterator
-import de.fosd.typechef.lexer.Token._
-import util.control.Breaks
-import java.lang.StringBuilder
-import collection.JavaConverters._
-import collection.immutable.Queue
-import annotation.tailrec
+import scala.annotation.tailrec
+import scala.collection.immutable.Queue
+import scala.collection.mutable
+import scala.jdk.CollectionConverters._
+import scala.util.control.Breaks
 
 object MacroTokenSource {
   /* XXX Called from Preprocessor [ugly]. */
-  private[lexer] def escape(buf: StringBuilder, cs: CharSequence): Unit = {
+  private[lexer] def escape(buf: java.lang.StringBuilder, cs: CharSequence): Unit = {
     {
       var i: Int = 0
       while (i < cs.length) {
         {
-          var c: Char = cs.charAt(i)
+          val c: Char = cs.charAt(i)
           c match {
             case '\\' =>
               buf.append("\\\\")
@@ -53,17 +53,16 @@ object MacroTokenSource {
               buf.append(c)
           }
         }
-        ({
-          i += 1;
-          i
-        })
+        {
+          i += 1
+        }
       }
     }
   }
 }
 
 class MacroTokenSource extends Source {
-  private[lexer] def this(macroName: String, m: MacroData, args: jUtil.List[Argument], gnuCExtensions: Boolean) {
+  private[lexer] def this(macroName: String, m: MacroData, args: jUtil.List[Argument], gnuCExtensions: Boolean) = {
     this()
     this.macroName = macroName
     this._macro = m
@@ -75,7 +74,7 @@ class MacroTokenSource extends Source {
 
   private[lexer] override def mayExpand(macroName: String): Boolean = {
     if (macroName.equals(this.macroName)) return false
-    return super.mayExpand(macroName)
+    super.mayExpand(macroName)
   }
 
   @tailrec
@@ -98,20 +97,20 @@ class MacroTokenSource extends Source {
   private def extractTokensForConcat(arg: Argument) =
     addFirstNonSpaceToken(arg.tokens, Queue[Token]())
 
-  private def tokensToStr(printWriter: PrintWriter, arg: Argument) {
+  private def tokensToStr(printWriter: PrintWriter, arg: Argument): Unit = {
     extractTokensForConcat(arg) foreach {
       _.lazyPrint(printWriter)
     }
   }
 
   private def stringify(pos: Token, arg: Argument): Token = {
-    var buf: StringWriter = new StringWriter
-    var printWriter: PrintWriter = new PrintWriter(buf)
+    val buf: StringWriter = new StringWriter
+    val printWriter: PrintWriter = new PrintWriter(buf)
     tokensToStr(printWriter, arg)
-    var str: StringBuilder = new StringBuilder("\"")
+    val str: java.lang.StringBuilder = new java.lang.StringBuilder("\"")
     MacroTokenSource.escape(str, buf.getBuffer)
     str.append("\"")
-    return new SimpleToken(STRING, pos.getLine, pos.getColumn, str.toString, buf.toString, this)
+    new SimpleToken(STRING, pos.getLine, pos.getColumn, str.toString, buf.toString, this)
   }
 
   private def paste(_ptok: Token): Unit = {
@@ -120,7 +119,7 @@ class MacroTokenSource extends Source {
     var tokens = Queue[Token]()
     var stringPasting = false
 
-    def strToTokens() {
+    def strToTokens(): Unit = {
       if (stringPasting) {
         val sl = new StringLexerSource(buf.toString)
         stringPasting = false
@@ -163,12 +162,12 @@ class MacroTokenSource extends Source {
           error(ptok.getLine, ptok.getColumn, "Paste at end of expansion")
           strToTokens()
           tokens ++= Seq(Token.space, ptok)
-          break
+          break()
         }
-        var tok: Token = tokenIter.next
+        val tok: Token = tokenIter.next
         if (queuedComma.isDefined && tok.getType != M_ARG) {
           strToTokens()
-          tokens = tokens enqueue (queuedComma.get)
+          tokens = tokens enqueue queuedComma.get
           queuedComma = None
         }
         tok.getType match {
@@ -176,7 +175,7 @@ class MacroTokenSource extends Source {
             count += 2
             ptok = tok
           case M_ARG =>
-            val idx: Int = (tok.getValue.asInstanceOf[java.lang.Integer]).intValue
+            val idx: Int = tok.getValue.asInstanceOf[java.lang.Integer].intValue
             tokens = concat(tokens, args.get(idx), queuedComma)
           /* XXX Test this. */
           case CCOMMENT | CPPCOMMENT =>
@@ -198,15 +197,15 @@ class MacroTokenSource extends Source {
 
   def token(): Token = {
     val tok: Token = _token()
-    if (tok.getType != P_FEATUREEXPR && tok.getText.equals(macroName)) tok.setNoFurtherExpansion
-    return tok
+    if (tok.getType != P_FEATUREEXPR && tok.getText.equals(macroName)) tok.setNoFurtherExpansion()
+    tok
   }
 
   def _token(): Token = {
     while (true) {
       if (arg != null) {
         if (arg.hasNext) {
-          var tok: Token = arg.next
+          val tok: Token = arg.next
           assert(tok.getType != M_PASTE, "Unexpected paste token")
           return tok
         }
@@ -217,10 +216,10 @@ class MacroTokenSource extends Source {
       var idx: Int = 0
       tok.getType match {
         case M_STRING =>
-          idx = (tok.getValue.asInstanceOf[java.lang.Integer]).intValue
+          idx = tok.getValue.asInstanceOf[java.lang.Integer].intValue
           return stringify(tok, args.get(idx))
         case M_ARG =>
-          idx = (tok.getValue.asInstanceOf[java.lang.Integer]).intValue
+          idx = tok.getValue.asInstanceOf[java.lang.Integer].intValue
           if (idx < args.size) {
             arg = args.get(idx).expansion
           } else {
@@ -239,21 +238,26 @@ class MacroTokenSource extends Source {
   }
 
   override def toString: String = {
-    var buf: StringBuilder = new StringBuilder
+    var buf: mutable.StringBuilder = new mutable.StringBuilder
     buf = buf.append("expansion of ").append(macroName)
-    var parent: Source = getParent
+    val parent: Source = getParent
     if (parent != null) buf = buf.append(" in ").append(String.valueOf(parent))
-    return buf.toString
+    buf.toString
   }
 
   private[lexer] def debug_getContent: String = {
-    return _macro.getTokens.toString + " args: " + args
+    _macro.getTokens.toString + " args: " + args
   }
 
+  //noinspection ConvertNullInitializerToUnderscore
   private final var _macro: MacroData = null
-  private var tokenIter: Iterator[Token] = null
+  //noinspection ConvertNullInitializerToUnderscore
+  private var tokenIter: jUtil.Iterator[Token] = null
+  //noinspection ConvertNullInitializerToUnderscore
   private var args: jUtil.List[Argument] = null
-  private var arg: Iterator[Token] = null
+  //noinspection ConvertNullInitializerToUnderscore
+  private var arg: jUtil.Iterator[Token] = null
+  //noinspection ConvertNullInitializerToUnderscore
   private final var macroName: String = null
   private var gnuCExtensions: Boolean = false
 }

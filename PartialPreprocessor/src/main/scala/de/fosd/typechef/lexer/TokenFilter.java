@@ -9,10 +9,11 @@ import java.util.List;
  *
  * @author ckaestne
  */
+@SuppressWarnings("unused")
 public class TokenFilter {
 
     String output = "";
-    List<Token> tokenBuffer = new ArrayList<Token>();
+    List<Token> tokenBuffer = new ArrayList<>();
     boolean inIfdef = false;
 
     public void push(Token tok) {
@@ -33,6 +34,7 @@ public class TokenFilter {
             output = output + tok.getText();
     }
 
+    @SuppressWarnings("StringConcatenationInLoop")
     private void flushBuffer(boolean ignoreIfdef) {
         for (Token tok : tokenBuffer) {
 //			if (ignoreIfdef
@@ -46,10 +48,12 @@ public class TokenFilter {
         inIfdef = false;
     }
 
+    @SuppressWarnings("unused")
     public boolean hasLines() {
         return output.contains("\n");
     }
 
+    @SuppressWarnings("unused")
     public String nextLine() {
         int offset = output.indexOf('\n');
         String line = output.substring(0, offset);

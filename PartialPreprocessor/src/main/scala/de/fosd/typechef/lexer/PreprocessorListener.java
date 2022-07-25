@@ -43,8 +43,8 @@ public class PreprocessorListener {
 
     private int errors;
     private int warnings;
-    private VALexer pp;
-    private ILexerOptions options;
+    private final VALexer pp;
+    private final ILexerOptions options;
 
     private FeatureExpr invalidConfigurations = FeatureExprFactory.False();
 
@@ -99,8 +99,6 @@ public class PreprocessorListener {
      * <p/>
      * The behaviour of this method is defined by the implementation. It may
      * simply record the error message, or it may throw an exception.
-     *
-     * @param featureExpr
      */
     public void handleError(String source, int line, int column, String msg,
                             FeatureExpr featureExpr) throws LexerException {
@@ -114,13 +112,13 @@ public class PreprocessorListener {
                 + "; condition: " + featureExpr, Level.SEVERE);
         pp.debugPreprocessorDone();
 
-        errorList.add(new Pair<FeatureExpr, LexerFrontend.LexerError>(featureExpr, new LexerFrontend.LexerError(msg, source, line, column)));
+        errorList.add(new Pair<>(featureExpr, new LexerFrontend.LexerError(msg, source, line, column)));
         invalidConfigurations = invalidConfigurations.or(featureExpr);
         if (invalidConfigurations.isTautology(pp.getFeatureModel()))
             throw new LexerException("Lexer exception in all configurations. Quitting.");
     }
 
-    public void handleSourceChange(Source source, String event) {
+    public void handleSourceChange(Source ignoredSource, String ignoredEvent) {
     }
 
 
@@ -137,8 +135,9 @@ public class PreprocessorListener {
     /**
      * ordered list of errors occurring in the lexer and their conditions
      */
-    private final List<Pair<FeatureExpr, LexerFrontend.LexerError>> errorList = new ArrayList<Pair<FeatureExpr, LexerFrontend.LexerError>>();
+    private final List<Pair<FeatureExpr, LexerFrontend.LexerError>> errorList = new ArrayList<>();
 
+    @SuppressWarnings("unused")
     public FeatureExpr getInvalidConfigurations() {
         return invalidConfigurations;
     }
