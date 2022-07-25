@@ -224,7 +224,7 @@ trait IntraCFG extends ASTNavigation with ConditionalNavigation {
 
               if (predComplete(ctx, res)) {}
               else {
-                elif match {
+                elif.asInstanceOf[ElifStatement] match {
                   case ElifStatement(elif_condition, _) =>
                     val newres = getCondExprPred(elif_condition, ctx, oldres, env)
 
@@ -707,7 +707,7 @@ trait IntraCFG extends ASTNavigation with ConditionalNavigation {
             }
 
             if (!succComplete(ctx, res)) {
-              parentAST(t, env) match {
+              parentAST(t, env).asInstanceOf[IfStatement] match {
                 case tp@IfStatement(_, _, _, None) => res ++= getStmtSucc(tp, ctx, res, env)
                 case IfStatement(_, _, _, Some(elseBranch)) => res ++= getCondStmtSucc(elseBranch, ctx, res, env)
               }
@@ -892,7 +892,7 @@ trait IntraCFG extends ASTNavigation with ConditionalNavigation {
               for (e <- elifs.reverse.map(childAST)) {
                 if (predComplete(ctx, res)) {}
                 else {
-                  e match {
+                  e.asInstanceOf[ElifStatement] match {
                     case ElifStatement(elif_condition, _) =>
                       val newres = getCondExprPred(elif_condition, ctx, oldres, env)
 
@@ -927,7 +927,7 @@ trait IntraCFG extends ASTNavigation with ConditionalNavigation {
               for (e <- elifs) {
                 if (predCompleteBlock(ctx, res)) {}
                 else {
-                  e match {
+                  e.asInstanceOf[ElifStatement] match {
                     case ElifStatement(elif_condition, _) =>
                       val newres = getCondExprPred(elif_condition, ctx, oldres, env)
 
@@ -940,7 +940,7 @@ trait IntraCFG extends ASTNavigation with ConditionalNavigation {
               }
 
               if (!predCompleteBlock(ctx, res)) {
-                parentAST(t, env) match {
+                parentAST(t, env).asInstanceOf[IfStatement] match {
                   case IfStatement(if_condition, _, _, _) => res ++= getCondExprPred(if_condition, ctx, oldres, env)
                 }
               }

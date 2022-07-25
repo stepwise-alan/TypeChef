@@ -53,7 +53,7 @@ trait CDeclUseInterface extends CEnv {
 
   def addEnumUse(entry: AST, env: Env, feature: FeatureExpr): Unit = {}
 
-  def addTypeUse(entry: AST, env: Env, feature: FeatureExpr): Unit = {}
+  def addTypeUse(entry: Id, env: Env, feature: FeatureExpr): Unit = {}
 
   def addUse(entry: AST, feature: FeatureExpr, env: Env): Unit = {}
 
@@ -270,7 +270,7 @@ trait CDeclUse extends CDeclUseInterface with CEnv with CEnvCache {
     }
   }
 
-  override def addTypeUse(entry: AST, env: Env, feature: FeatureExpr): Unit = {
+  override def addTypeUse(entry: Id, env: Env, feature: FeatureExpr): Unit = {
     def addOne(one: One[AST], use: Id, env: Env): Unit = {
       one match {
         case One(InitDeclaratorI(declarator, _, _)) => addToDeclUseMap(declarator.getId, use)

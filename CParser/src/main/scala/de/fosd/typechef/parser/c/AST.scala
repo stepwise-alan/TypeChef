@@ -57,13 +57,13 @@ import de.fosd.typechef.error.{Position, WithPosition}
  */
 
 //Expressions
-trait AST extends Product with Serializable with Cloneable with WithPosition {
+sealed trait AST extends Product with Serializable with Cloneable with WithPosition {
   override def clone(): AST.this.type = super.clone().asInstanceOf[AST.this.type]
 }
 
-trait CFGStmt extends AST
+sealed trait CFGStmt extends AST
 
-trait CDef extends AST
+sealed trait CDef extends AST
 
 sealed abstract class Expr extends AST with CFGStmt
 
@@ -327,7 +327,7 @@ case class ParameterDeclarationD(override val specifiers: List[Opt[Specifier]], 
 
 case class ParameterDeclarationAD(override val specifiers: List[Opt[Specifier]], decl: AbstractDeclarator, attr: List[Opt[AttributeSpecifier]]) extends ParameterDeclaration(specifiers)
 
-trait OldParameterDeclaration extends AST
+sealed trait OldParameterDeclaration extends AST
 
 case class VarArgs() extends ParameterDeclaration(List()) with OldParameterDeclaration
 
@@ -356,7 +356,7 @@ case class NestedFunctionDef(isAuto: Boolean, specifiers: List[Opt[Specifier]], 
 }
 
 
-trait ExternalDef extends AST with CFGStmt
+sealed trait ExternalDef extends AST with CFGStmt
 
 case class EmptyExternalDef() extends ExternalDef
 
