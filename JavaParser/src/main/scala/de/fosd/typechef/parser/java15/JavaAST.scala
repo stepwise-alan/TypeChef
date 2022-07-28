@@ -7,7 +7,7 @@ import de.fosd.typechef.error.WithPosition
  * an incomplete AST for Java
  */
 
-trait AST extends Product with Cloneable with WithPosition {
+sealed trait AST extends Product with Cloneable with WithPosition {
   override def clone(): AST.this.type = super.clone().asInstanceOf[AST.this.type]
 }
 
@@ -23,7 +23,7 @@ case class JId(name: String) extends AST
 case class JImport(isStatic: Boolean, name: JName, dotStar: Boolean) extends AST
 
 
-trait JTypeDecl extends AST
+sealed trait JTypeDecl extends AST
 
 case class JEmptyTypeDecl() extends JTypeDecl
 
@@ -41,7 +41,7 @@ case class JEnumDecl(mod: List[Opt[JModifier]], name: JId, implementsList: List[
 case class JAnnotationTypeDecl(mod: List[Opt[JModifier]], cl: Any) extends JTypeDecl
 
 
-trait JBodyDeclaration extends AST
+sealed trait JBodyDeclaration extends AST
 
 case class JEmptyBodyDecl() extends JBodyDeclaration
 
@@ -53,7 +53,7 @@ case class JFieldDecl(mod: List[Opt[JModifier]], typ: JType, vars: List[Opt[JVar
 
 case class JMethodDecl(mod: List[Opt[JModifier]], typeParameters: List[Opt[Any]], resultType: JType, name: JId, params: List[Opt[Any]], arrays: Int, exceptions: List[Opt[JName]], body: Option[JBlock]) extends JBodyDeclaration
 
-trait JModifier extends AST
+sealed trait JModifier extends AST
 
 case class JAtomicModifier(s: String) extends JModifier
 

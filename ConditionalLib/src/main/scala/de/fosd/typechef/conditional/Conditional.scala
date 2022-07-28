@@ -36,7 +36,7 @@ case class Opt[+T](condition: FeatureExpr, entry: T) {
 }
 
 //Conditional is either Choice or One
-abstract class Conditional[+T] extends Product {
+sealed abstract class Conditional[+T] extends Product {
 
   /**
    * flattens datastructure from a Conditional[T] to a single T with the provided merge function
