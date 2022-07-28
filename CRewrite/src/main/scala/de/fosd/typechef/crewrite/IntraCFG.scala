@@ -501,7 +501,7 @@ trait IntraCFG extends ASTNavigation with ConditionalNavigation {
     }
   }
 
-  private def getCondStmtPred(cond: Conditional[_], ctx: FeatureExpr, oldres: CFGRes, env: ASTEnv): CFGRes = {
+  private def getCondStmtPred(cond: Conditional[Statement], ctx: FeatureExpr, oldres: CFGRes, env: ASTEnv): CFGRes = {
     cond match {
       case Choice(_, thenBranch, elseBranch) =>
         getCondStmtPred(thenBranch, ctx, oldres, env) ++ getCondStmtPred(elseBranch, ctx, oldres, env)
