@@ -4,6 +4,8 @@ import de.fosd.typechef.conditional.{One, Opt}
 import de.fosd.typechef.error.WithPosition
 import org.bitbucket.inkytonik.kiama.rewriting.Rewriter._
 
+import scala.annotation.unused
+
 
 /**
  * preparation and checks for downstream tools
@@ -18,15 +20,21 @@ trait EnforceTreeHelper {
    * unfortunately cloning loses position information, so we have to reassign it
    */
   def copyPositions(source: Product, target: Product): Unit = {
-    assert(source.getClass == target.getClass, "cloned tree should match exactly the original, typewise")
+    if (source.getClass != target.getClass)
+      System.err.println(s"cloned tree should match exactly the original, typewise " +
+        s"(source: ${source.getClass.getName}, target: ${target.getClass.getName})")
     source match {
       case position: WithPosition => target.asInstanceOf[WithPosition].range = position.range
       case _ =>
     }
 
-    assert(source.productArity == target.productArity, "cloned tree should match exactly the original")
+    if (source.productArity != target.productArity)
+      System.err.println("cloned tree should match exactly the original " +
+        s"(productArity, source: ${source.productArity}, target: ${source.productArity})")
     for ((c1, c2) <- source.productIterator.zip(target.productIterator)) {
-      assert(c1.getClass == c2.getClass, "cloned tree should match exactly the original, typewise")
+      if (c1.getClass != c2.getClass)
+        System.err.println("cloned tree should match exactly the original, typewise " +
+          s"(source: ${c1.getClass.getName}, target: ${c2.getClass.getName})")
       c1 match {
         case product: Product if c2.isInstanceOf[Product] => copyPositions(product, c2.asInstanceOf[Product])
         case _ =>
@@ -59,6 +67,7 @@ trait EnforceTreeHelper {
   // cparser creates dead ast nodes that causes problems in the control flow analysis (grouping of ast nodes etc.)
   // the function removes dead nodes from the ast
   // see issue: https://github.com/ckaestne/TypeChef/issues/4
+  @unused
   def removeDeadNodes[T <: Product](ast: T, env: ASTEnv): T = {
     assert(ast != null, "ast should not be null")
 
