@@ -23,8 +23,8 @@ trait EnforceTreeHelper {
     if (source.getClass != target.getClass)
       System.err.println(s"cloned tree should match exactly the original, typewise " +
         s"(source: ${source.getClass.getName}, target: ${target.getClass.getName})")
-    source match {
-      case position: WithPosition => target.asInstanceOf[WithPosition].range = position.range
+    (source, target) match {
+      case (sourcePosition: WithPosition, targetPosition: WithPosition) => targetPosition.range = sourcePosition.range
       case _ =>
     }
 
